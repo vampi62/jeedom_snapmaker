@@ -1,0 +1,33 @@
+{
+    "status": "IDLE",
+    "x": -19,
+    "y": 347,
+    "z": 326.005,
+    "homed": true,
+    "offsetX": 0,
+    "offsetY": 0,
+    "offsetZ": 0,
+    "toolHead": "TOOLHEAD_3DPRINTING_1",
+    "nozzleTemperature": 24,
+    "nozzleTargetTemperature": 0,
+    "heatedBedTemperature": 18,
+    "heatedBedTargetTemperature": 0,
+    "isFilamentOut": false,
+    "workSpeed": 3000,
+    "printStatus": "Complete",
+    "fileName": "snapmakeriso_1677404439355.gcode",
+    "totalLines": 26264,
+    "estimatedTime": 3600,
+    "currentLine": 26276,
+    "progress": 1.0004569292068481,
+    "elapsedTime": 1134,
+    "remainingTime": -0.5181577205657959,
+    "moduleList": {
+        "enclosure": true,
+        "rotaryModule": false,
+        "emergencyStopButton": false,
+        "airPurifier": false
+    },
+    "isEnclosureDoorOpen": false,
+    "doorSwitchCount": 0
+}
