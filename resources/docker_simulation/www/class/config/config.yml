@@ -1,0 +1,10 @@
+#Ce fichier contiens la config de base du serveur---
+Install: false
+General:
+    name: computercraft_api
+DataBase:
+    dbAdress: 0.0.0.0
+    dbName: dbname
+    dbUser: dbuser
+    dbPassword: dbpass
+    dbPort: 3306
