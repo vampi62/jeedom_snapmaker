@@ -1,85 +1,116 @@
 <?php
-class Jeton
+class Simu
 {
 	private $bdd;
-	private $id;
+	private $token;
 	
 	private $reponseConnection;
-	
-	public function __construct($player, $bdd)
+	public function __construct($token, $bdd)
 	{
 		$this->bdd = $bdd;
-		$this->id = $player;
+		$this->token = $token;
+		
+		$reponseConnection = $bdd->prepare('SELECT * FROM apikey WHERE keyg = :user');
+		$reponseConnection->execute(array(
+			'user' => $token,
+		));
+
+
+		$reponseConnection = $reponseConnection->fetch(PDO::FETCH_ASSOC);
+		$this->reponseConnection = $reponseConnection;
 	}
 	
-	public function getReponseConnection()
+	public function key_exist()
 	{
-		return $this->reponseConnection;
-	}
-
-	public function getJetons()
-	{
-		$req = $this->bdd->query('SELECT * FROM jeton_banque');
-		$req = $this->rangejeton($req);
-		return $req;
-	}
-
-	public function setInitJeton($jeton)
-	{
-		$date = date("Y-m-d H:i:s");
-		$req = $this->bdd->prepare('INSERT INTO jeton_banque(jeton1, jeton10, jeton100, jeton1k, jeton10k, id_user, date, heure) VALUES(:jeton1, :jeton10, :jeton100, :jeton1k, :jeton10k, :id_user, :date, :heure)');
-		$req->execute(array(
-			'jeton1' => $jeton["1"],
-			'jeton10' => $jeton["10"],
-			'jeton100' => $jeton["100"],
-			'jeton1k' => $jeton["1k"],
-			'jeton10k' => $jeton["10k"],
-			'id_user' => $this->id,
-			'date' => $date
-		));
-	}
-
-	public function setSyncJeton($jeton)
-	{
-		$date = date("Y-m-d H:i:s");
-		$req = $this->bdd->prepare('UPDATE jeton_banque SET jeton1 = :jeton1, jeton10 = :jeton10, jeton100 = :jeton100, jeton1k = :jeton1k, jeton10k = :jeton10k, date = :date, heure = :heure WHERE id_user = :id_user');
-		$req->execute(array(
-			'jeton1' => intval($jeton["1"]),
-			'jeton10' => intval($jeton["10"]),
-			'jeton100' => intval($jeton["100"]),
-			'jeton1k' => intval($jeton["1k"]),
-			'jeton10k' => intval($jeton["10k"]),
-			'id_user' => $this->id,
-			'date' => $date
-		));
-	}
-
-	private function rangejeton($req)
-	{
-		$list_jetons = array();
-		$listidplayer = ConvertTable::gettableidplayer($this->bdd);
-		while ($donnees = $req->fetch())
+		if(!empty($this->reponseConnection))
 		{
-			$jeton = array();
-			$jeton['id_user'] = $listidplayer[$donnees['id_user']];
-			$jeton['jeton1'] = $donnees['jeton1'];
-			$jeton['jeton10'] = $donnees['jeton10'];
-			$jeton['jeton100'] = $donnees['jeton100'];
-			$jeton['jeton1k'] = $donnees['jeton1k'];
-			$jeton['jeton10k'] = $donnees['jeton10k'];
-			$jeton['date'] = $donnees['date'];
-			$jeton['heure'] = $donnees['heure'];
-			if (empty($list_jetons))
-			{
-				$list_jetons = array(1 => $jeton);
-			}
-			else
-			{
-				$list_jetons[] = $jeton;
-			}
+			return true;
 		}
-		$req->closeCursor();
-		return $list_jetons;
+		else
+		{
+			return false;
+		}
+	}
+	public function key_valide()
+	{
+		if($this->reponseConnection["valide"])
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public function setnewkey()
+	{
+		$newkey = gen_api_key();
+		$this->setkeydb($newkey);
+		$this->token = $newkey;
+		$this->set_key_connect(1);
+		return $this->token;
+	}
+
+	public function connectkey()
+	{
+		$this->set_key_connect(1);
+		return $this->token;
+	}
+	public function getstatus()
+	{
+		$this->set_key_connect(1);
+		return $this->token;
+	}
+	public function getenclosure()
+	{
+		$this->set_key_connect(1);
+		return $this->token;
+	}
+
+	private function gen_api_key()
+	{
+		$alphabet = '4A1B81CD4EF8G3HI5JK5L6M7N7OP0QR9S3T6UVW02X9YZ2';
+		$api_key = '';
+		$alphaLength = strlen($alphabet) - 1;
+		for ($i = 0; $i < 12; $i++)
+		{
+			$n = mt_rand(0, $alphaLength);
+			$api_key .= $alphabet[$n];
+		}
+		return $api_key;
+	}
+
+	private function set_key_connect($con)
+	{
+		$date = strtotime(date('Y-m-d H:i:s'));
+		$req = $this->bdd->prepare('UPDATE apikey SET connect = :connect, time = :date WHERE keyg = :keyg');
+		$req->execute(array(
+			'connect' => $con,
+			'keyg' => $this->token,
+			'date' => $date
+		));
+	}
+
+	private function setkeydb($key)
+	{
+		$date = strtotime(date('Y-m-d H:i:s'));
+		$req = $this->bdd->prepare('INSERT INTO apikey(keyg, valide, connect, time) VALUES(:keyg, 0, 0, :date)');
+		$req->execute(array(
+			'keyg' => $keyg,
+			'date' => $date
+		));
+	}
+
+	public function setlogdb($code)
+	{
+		$date = date("Y-m-d H:i:s");
+		$req = $this->bdd->prepare('INSERT INTO log(date, status, id_apikey) VALUES(:date, :status, :id_apikey)');
+		$req->execute(array(
+			'date' => $date,
+			'id_apikey' => $this->token,
+			'status' => $code
+		));
 	}
 }
 ?>

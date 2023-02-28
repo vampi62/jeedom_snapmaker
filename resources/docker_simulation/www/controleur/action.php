@@ -2,28 +2,25 @@
 /*
 	Ce fichier PHP effectue telle ou telle action selon le contenu des gets envoyés
 */
-if(isset($_GET['action']))
+if(isset($url[0]))
 {
-	switch(strtolower($_GET['action']))	{
+	switch(strtolower($url[0]))	{
 		// on utilise ici un switch pour inclure telle ou telle page selon l'action.
 	
 		//connection doit être appelé à chaque action securisée car computercraft n'enregistre pas de session
 		
 		// action libre
 
-		case 'listntp': // compte libre
-			include('controleur/listntp.php');
+		case 'connect': // compte libre
+			include('controleur/connect.php');
 		break;
 
-		case 'listconfig': // compte libre
-			include('controleur/listConfig.php');
+		case 'connect': // compte libre
+			include('controleur/connect.php');
 		break;
 
-		// gestion utilisateur
-
-		case 'inscription': // compte libre
-			// paramètres - mdp - pseudo - mdpconfirm - email
-			include('controleur/joueur/inscription.php');
+		case 'status': // compte libre
+			include('controleur/status.php');
 		break;
 	}
 }
