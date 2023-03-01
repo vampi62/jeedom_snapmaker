@@ -18,13 +18,13 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 // Fonction exécutée automatiquement après l'installation du plugin
-function jeedom_snapmaker_install() {
+function snapmaker_install() {
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
-function jeedom_snapmaker_update() {
+function snapmaker_update() {
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
-function jeedom_snapmaker_remove() {
+function snapmaker_remove() {
 }

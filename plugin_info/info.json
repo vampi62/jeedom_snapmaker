@@ -1,6 +1,6 @@
 {
-	"id" : "jeedom_snapmaker",
-	"name" : "jeedom_snapmaker",
+	"id" : "snapmaker",
+	"name" : "snapmaker",
 	"specialAttributes" : {
 		"object" : {
 			"toto" : {"name" : {"fr_FR" : "Plop je suis un attribut spécial"},"type" : "input"},

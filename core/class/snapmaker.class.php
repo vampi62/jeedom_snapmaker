@@ -18,7 +18,7 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class jeedom_snapmaker extends eqLogic {
+class snapmaker extends eqLogic {
   /*     * *************************Attributs****************************** */
 
   /*
@@ -141,7 +141,7 @@ class jeedom_snapmaker extends eqLogic {
 
 }
 
-class jeedom_snapmakerCmd extends cmd {
+class snapmakerCmd extends cmd {
   /*     * *************************Attributs****************************** */
 
   /*
