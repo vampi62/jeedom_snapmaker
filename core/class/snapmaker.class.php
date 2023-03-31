@@ -206,7 +206,70 @@ class snapmaker extends eqLogic {
   */
 
   /*     * **********************Getteur Setteur*************************** */
-
+  public function toHtml($_version = 'dashboard') {
+    $replace = $this->preToHtml($_version);
+    if (!is_array($replace)) {
+      return $replace;
+    }
+    $version = jeedom::versionAlias($_version);
+    foreach ($this->getCmd('info') as $cmd) {
+      if (!is_object($cmd)) {
+        continue;
+      }
+      $replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+      $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+      $replace['#' . $cmd->getLogicalId() . '_valueDate#']= date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
+      $replace['#' . $cmd->getLogicalId() . '_collectDate#'] =date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
+      $replace['#' . $cmd->getLogicalId() . '_updatetime#'] =date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
+      $replace['#lastCommunication#'] =date('d-m-Y H:i:s',strtotime($this->getStatus('lastCommunication')));
+      $replace['#numberTryWithoutSuccess#'] = $this->getStatus('numberTryWithoutSuccess', 0);
+      if ($cmd->getIsHistorized() == 1) {
+        $replace['#' . $cmd->getLogicalId() . '_history#'] = 'history cursor';
+      }
+    }
+    foreach ($this->getCmd('action') as $cmd) {
+      if (!is_object($cmd)) {
+        continue;
+      }
+      $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+      if ($cmd->getConfiguration('listValue', '') != '') {
+        $listOption = '';
+        $elements = explode(';', $cmd->getConfiguration('listValue', ''));
+        $foundSelect = false;
+        foreach ($elements as $element) {
+          list($item_val, $item_text) = explode('|', $element);
+          //$coupleArray = explode('|', $element);
+          $cmdValue = $cmd->getCmdValue();
+          if (is_object($cmdValue) && $cmdValue->getType() == 'info') {
+            if ($cmdValue->execCmd() == $item_val) {
+              $listOption .= '<option value="' . $item_val . '" selected>' . $item_text . '</option>';
+              $foundSelect = true;
+            } else {
+              $listOption .= '<option value="' . $item_val . '">' . $item_text . '</option>';
+            }
+          } else {
+            $listOption .= '<option value="' . $item_val . '">' . $item_text . '</option>';
+          }
+        }
+        //if (!$foundSelect) {
+        //	$listOption = '<option value="">Aucun</option>' . $listOption;
+        //}
+        //$replace['#listValue#'] = $listOption;
+        $replace['#' . $cmd->getLogicalId() . '_id_listValue#'] = $listOption;
+        $replace['#' . $cmd->getLogicalId() . '_listValue#'] = $listOption;
+      }
+    }
+    $parameters = $this->getDisplay('parameters');
+    if (is_array($parameters)) {
+      foreach ($parameters as $key => $value) {
+        $replace['#' . $key . '#'] = $value;
+      }
+    }
+    $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-150);
+    $replace['#widthfilelist#'] = strval(intval($replace['#width#']));
+    $widgetType = getTemplate('core', $version, 'box', __CLASS__);
+		return $this->postToHtml($version, template_replace($replace, $widgetType));
+	}
 }
 
 class snapmakerCmd extends cmd {
