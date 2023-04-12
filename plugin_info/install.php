@@ -23,8 +23,18 @@ function snapmaker_install() {
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
 function snapmaker_update() {
+	foreach (eqLogic::byType('snapmaker') as $snapmaker) {
+		$snapmaker->save();
+	}
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
 function snapmaker_remove() {
+	$plugin = plugin::byId('snapmaker');
+	$eqLogics = eqLogic::byType($plugin->getId(), true);
+  	foreach ($eqLogics as $eqLogic) {
+        if (is_object($eqLogic)) {
+          $eqLogic->remove();
+        }
+    }
 }

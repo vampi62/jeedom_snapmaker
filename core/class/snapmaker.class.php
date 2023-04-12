@@ -42,8 +42,16 @@ class snapmaker extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-  public static function cron5() {}
   */
+  public static function cron5() {
+    foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
+      $cmd = $snapmaker->getCmd(null, 'getlistfile');
+      if (!is_object($cmd)) {
+        continue;
+      }
+      $cmd->execCmd();
+    }
+  }
 
   /*
   * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
@@ -112,12 +120,10 @@ class snapmaker extends eqLogic {
     $this->create_element('newtempnozzle','newtempnozzle','action','texte');
     $this->create_element('newtempbed'   ,'newtempbed'   ,'action','texte');
     $this->create_element('newspeed'     ,'newspeed'     ,'action','texte');
-    $this->create_element('newlazer'     ,'newlazer'     ,'action','texte');
     $this->create_element('newzoffset'   ,'newzoffset'   ,'action','other');
     $this->create_element('settempnozzle','settempnozzle','action','other');
     $this->create_element('settempbed'   ,'settempbed'   ,'action','other');
     $this->create_element('setspeed'     ,'setspeed'     ,'action','other');
-    $this->create_element('setlazer'     ,'setlazer'     ,'action','other');
     $this->create_element('setzoffset'   ,'setzoffset'   ,'action','other');
     $this->create_element('setlight'     ,'setlight'     ,'action','other');
     $this->create_element('setfan'       ,'setfan'       ,'action','other');
@@ -139,6 +145,7 @@ class snapmaker extends eqLogic {
     $this->create_element('estimatedTime'             ,'estimatedTime'             ,'info','string');
     $this->create_element('currentLine'               ,'currentLine'               ,'info','string');
     $this->create_element('progress'                  ,'progress'                  ,'info','string');
+    //$this->set_limit_element('progress',0,100);
     $this->create_element('elapsedTime'               ,'elapsedTime'               ,'info','string');
     $this->create_element('remainingTime'             ,'remainingTime'             ,'info','string');
     $this->create_element('enclosure'                 ,'enclosure'                 ,'info','string');
@@ -150,6 +157,10 @@ class snapmaker extends eqLogic {
     $this->create_element('EnclosureLight'            ,'EnclosureLight'            ,'info','string');
     $this->create_element('stopIfEnclosureFan'        ,'stopIfEnclosureFan'        ,'info','string');
     $this->create_element('zoffset'                   ,'zoffset'                   ,'info','string');
+    $path = dirname(__FILE__) . '/../../data/' . $this->getId();
+    if (!file_exists($path)) {
+      mkdir($path, 0777, true);
+    }
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -160,7 +171,17 @@ class snapmaker extends eqLogic {
   public function postRemove() {
   }
 
-  private function create_element($newcmd,$newname,$newtype,$newsubtype){
+  private function set_limit_element($cmd,$mini,$maxi){
+    $element = $this->getCmd(null, $cmd);
+    if (is_object($element)) {
+      if (($element->getConfiguration('maxValue', "") != $maxi) || ($element->getConfiguration('minValue', "") != $mini)) {
+        $element->setConfiguration('maxValue', $maxi);
+        $element->setConfiguration('minValue', $mini);
+        $element->save();
+      }
+    }
+  }
+  private function create_element($newcmd,$newname,$newtype,$newsubtype,$newunit = "",$newtemplate = 'default'){
     $newelement = $this->getCmd(null, $newcmd);
     if (!is_object($newelement)) {
       $newelement = new snapmakerCmd();
@@ -170,6 +191,10 @@ class snapmaker extends eqLogic {
     $newelement->setLogicalId($newcmd);
     $newelement->setType($newtype);
     $newelement->setSubType($newsubtype);
+    $newelement->setTemplate('dashboard',$newtemplate);
+    if ($newunit != "") {
+      $newelement->setUnite($newunit);
+    }
     $newelement->save();
   }
   /*
@@ -204,7 +229,9 @@ class snapmaker extends eqLogic {
     // no return value
   }
   */
-
+  public function sendmessage($message,$value){
+    log::add('snapmaker','debug','sendmessage : '.$message . ' : ' . $value);
+  }
   /*     * **********************Getteur Setteur*************************** */
   public function toHtml($_version = 'dashboard') {
     $replace = $this->preToHtml($_version);
@@ -296,99 +323,134 @@ class snapmakerCmd extends cmd {
     $eqlogic = $this->getEqLogic(); //récupère l'éqlogic de la commande $this
     switch ($this->getLogicalId()) { //vérifie le logicalid de la commande
       case 'refresh':
-        $eqlogic->checkAndUpdateCmd('status', $info['status']);
-        $eqlogic->checkAndUpdateCmd('homed', $info['homed']);
-        $eqlogic->checkAndUpdateCmd('toolHead', $info['toolHead']);
-        $eqlogic->checkAndUpdateCmd('nozzleTemperature', $info['nozzleTemperature']);
-        $eqlogic->checkAndUpdateCmd('nozzleTargetTemperature', $info['nozzleTargetTemperature']);
-        $eqlogic->checkAndUpdateCmd('heatedBedTemperature', $info['heatedBedTemperature']);
-        $eqlogic->checkAndUpdateCmd('heatedBedTargetTemperature', $info['heatedBedTargetTemperature']);
-        $eqlogic->checkAndUpdateCmd('isFilamentOut', $info['isFilamentOut']);
-        $eqlogic->checkAndUpdateCmd('workSpeed', $info['workSpeed']);
-        $eqlogic->checkAndUpdateCmd('printStatus', $info['printStatus']);
-        $eqlogic->checkAndUpdateCmd('fileName', $info['fileName']);
-        $eqlogic->checkAndUpdateCmd('totalLines', $info['totalLines']);
-        $eqlogic->checkAndUpdateCmd('estimatedTime', $info['estimatedTime']);
-        $eqlogic->checkAndUpdateCmd('currentLine', $info['currentLine']);
-        $eqlogic->checkAndUpdateCmd('progress', $info['progress']);
-        $eqlogic->checkAndUpdateCmd('elapsedTime', $info['elapsedTime']);
-        $eqlogic->checkAndUpdateCmd('remainingTime', $info['remainingTime']);
-        $eqlogic->checkAndUpdateCmd('toolHead', $info['toolHead']);
-        $eqlogic->checkAndUpdateCmd('enclosure', $info['moduleList']['enclosure']);
-        $eqlogic->checkAndUpdateCmd('rotaryModule', $info['moduleList']['rotaryModule']);
-        $eqlogic->checkAndUpdateCmd('emergencyStopButton', $info['moduleList']['emergencyStopButton']);
-        $eqlogic->checkAndUpdateCmd('airPurifier', $info['moduleList']['airPurifier']);
-        $eqlogic->checkAndUpdateCmd('isEnclosureDoorOpen', $info['isEnclosureDoorOpen']);
+        $eqlogic->sendmessage('refresh',1);
+        $this->getallvaluearray($info);
+      break;
       case 'enclosure':
-        $eqlogic->checkAndUpdateCmd('stopIfEnclosureDoorOpen', $info['stopIfEnclosureDoorOpen']);
-        $eqlogic->checkAndUpdateCmd('EnclosureLight', $info['EnclosureLight']);
-        $eqlogic->checkAndUpdateCmd('stopIfEnclosureDoorOpen', $info['stopIfEnclosureDoorOpen']);
-        break;
-      case 'file':
-        $eqlogic->checkAndUpdateCmd('stopIfEnclosureDoorOpen', $info['stopIfEnclosureDoorOpen']);
-        $eqlogic->checkAndUpdateCmd('EnclosureLight', $info['EnclosureLight']);
-        $eqlogic->checkAndUpdateCmd('stopIfEnclosureFan', $info['stopIfEnclosureFan']);
-        break;
+        $eqlogic->sendmessage('enclosure',1);
+        $this->getallvaluearray($info);
+      break;
+      case 'getlistfile':
+        $filelist = array();
+        $files = array_diff(scandir(dirname(__FILE__) . '/../../data/' . $eqlogic->getId()), array('.', '..'));
+        foreach ($files as $file) {
+          $filelist[] = $file . '-:-' . filesize(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file) . '-:-' . date("Y-m-d H:i:s", filemtime(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file));
+        }
+        $filelist = implode("-!-", $filelist);
+        $eqlogic->checkAndUpdateCmd('filelist', json_encode($filelist));
+      break;
+      case 'addfile':
+        $name = str_replace('/', '_', $name);
+        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
+          $i = 1;
+          while (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '_' . $i . '.gcode')) {
+            $i++;
+          }
+          $name = $name . '_' . $i;
+        }
+        file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode', $file_data);
+      break;
+      case 'delfile':
+        $name = str_replace('/', '_', $name);
+        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
+          unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode');
+        }
+      break;
+      case 'renamefile':
+        $name = str_replace('/', '_', $name);
+        $newname = str_replace('/', '_', $newname);
+        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
+          rename(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode', dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $newname . '.gcode');
+        }
+      break;
       case 'connect':
-        
+        $eqlogic->sendmessage('connect',1);
       break;
       case 'disconnect':
-        
+        $eqlogic->sendmessage('disconnect',1);
       break;
       case 'sendfile':
         //uploadFile
+        $eqlogic->sendmessage('sendfile',$_options['message']);
       break;
       case 'startprintfile':
         //uploadGcodeFile
+        $eqlogic->sendmessage('startprintfile',$_options['message']);
       break;
       case 'settempnozzle':
-        
+        $eqlogic->sendmessage('settempnozzle',$_options['message']);
       break;
       case 'settempbed':
-        
+        $eqlogic->sendmessage('settempbed',$_options['message']);
       break;
       case 'setspeed':
-        
-      break;
-      case 'setlazer':
-        
+        $eqlogic->sendmessage('setspeed',$_options['message']);
       break;
       case 'pause':
-        
+        $eqlogic->sendmessage('pause',1);
       break;
       case 'start':
-        
+        $eqlogic->sendmessage('start',$_options['message']);
       break;
       case 'stop':
-        
+        $eqlogic->sendmessage('stop',1);
       break;
       case 'resume':
-        
+        $eqlogic->sendmessage('resume',1);
       break;
       case 'reload':
-        
+        $eqlogic->sendmessage('reload',1);
       break;
       case 'unload':
-        
+        $eqlogic->sendmessage('unload',1);
       break;
       case 'setpauseifopen':
-        
+        $eqlogic->sendmessage('setpauseifopen',1);
       break;
       case 'unsetpauseifopen':
-        
+        $eqlogic->sendmessage('unsetpauseifopen',1);
       break;
       case 'setzoffset':
-        
+        $eqlogic->sendmessage('setzoffset',$_options['message']);
       break;
       case 'setlight':
-        
+        $eqlogic->sendmessage('setlight',1);
       break;
       case 'setfan':
-        
+        $eqlogic->sendmessage('setfan',1);
       break;
-    }   
+      case 'unsetlight':
+        $eqlogic->sendmessage('setlight',0);
+      break;
+      case 'unsetfan':
+        $eqlogic->sendmessage('setfan',0);
+      break;
+      case 'setautoconnect':
+        $eqlogic->sendmessage('setautoconnect',1);
+      break;
+      case 'unsetautoconnect':
+        $eqlogic->sendmessage('setautoconnect',0);
+      break;
+    }
   }
-
+  private function getallvaluearray($liste, $keyorigin = "") {
+    $eqlogic = $this->getEqLogic();
+    foreach ($liste as $key => $value) {
+      if (is_array($value)) {
+        $this->getallvaluearray($value,$key);
+      }
+      else {
+        $element = $this->getCmd(null, $keyorigin . $key);
+        if (is_object($element)) {
+          $eqlogic->checkAndUpdateCmd($keyorigin . $key, $value);
+        }
+        else {
+          log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqligic " . $eqlogic->getName());
+        }
+      }
+    }
+    return $result;
+  }
   /*     * **********************Getteur Setteur*************************** */
 
 }
