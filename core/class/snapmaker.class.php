@@ -51,13 +51,9 @@ class snapmaker extends eqLogic {
       }
       $cmd->execCmd();
 
-      $returalim = round(jeedom::evaluateExpression($snapmaker->getConfiguration('statusalim')), 1);
-      $buttonon = cmd::humanReadableToCmd($snapmaker->getConfiguration('onalim'));
-      log::add('snapmaker','debug',$snapmaker->getConfiguration('statusalim'));
-      log::add('snapmaker','debug',$returalim);
-      log::add('snapmaker','debug',$snapmaker->getConfiguration('onalim'));
-      log::add('snapmaker','debug',$buttonon);
-      //round(jeedom::evaluateExpression($snapmaker->getConfiguration('offalim')), 1);
+      //$returalim = round(jeedom::evaluateExpression($snapmaker->getConfiguration('statusalim')), 1); // 0 ou 1
+      //$buttonon = cmd::byId(str_replace("#","",$snapmaker->getConfiguration('onalim'))); // action active prise
+      //$buttonon->execCmd();
     }
   }
 
@@ -122,8 +118,8 @@ class snapmaker extends eqLogic {
     $this->create_element('renamefile','renamefile','action','other');
     $this->create_element('deletefile','deletefile','action','other');
     $this->create_element('addfile'   ,'addfile'   ,'action','other');
-    $this->create_element('newnamefile','newnamefile','action','texte');
-    $this->create_element('newfile'    ,'newfile'    ,'action','texte');
+    $this->create_element('newnamefile','newnamefile','action','message');
+    $this->create_element('newfile'    ,'newfile'    ,'action','message');
 
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
@@ -137,10 +133,10 @@ class snapmaker extends eqLogic {
     $this->create_element('setpauseifopen'  ,'setpauseifopen'  ,'action','other');
     $this->create_element('unsetpauseifopen','unsetpauseifopen','action','other');
     
-    $this->create_element('newtempnozzle','newtempnozzle','action','texte');
-    $this->create_element('newtempbed'   ,'newtempbed'   ,'action','texte');
-    $this->create_element('newspeed'     ,'newspeed'     ,'action','texte');
-    $this->create_element('newzoffset'   ,'newzoffset'   ,'action','texte');
+    $this->create_element('newtempnozzle','newtempnozzle','action','message');
+    $this->create_element('newtempbed'   ,'newtempbed'   ,'action','message');
+    $this->create_element('newspeed'     ,'newspeed'     ,'action','message');
+    $this->create_element('newzoffset'   ,'newzoffset'   ,'action','message');
     $this->create_element('settempnozzle','settempnozzle','action','other');
     $this->create_element('settempbed'   ,'settempbed'   ,'action','other');
     $this->create_element('setspeed'     ,'setspeed'     ,'action','other');
