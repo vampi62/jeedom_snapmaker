@@ -132,7 +132,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez l'ip de l'imprimante snapmaker}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="adresse">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="adresseip">
 								</div>
 							</div>
 							<div class="form-group">
@@ -140,7 +140,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{token utiliser pour se connecter a la snapmaker}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="token" disabled>
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="tokenapihttp" disabled>
 								</div>
 							</div>
 							<div class="form-group">
@@ -148,7 +148,46 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{activer la connexion automatique à chaque démarrage de l'imprimante}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="auto">{{auto connect}}</label>
+									<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autoconnect">{{auto connect}}</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{status alim}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{retour de la prise d'alimentation de la snapmaker}}"></i></sup>
+								</label>
+								<div class="col-sm-7">
+									<div class="input-group">
+										<input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration" data-l2key="statusalim" data-concat="1"/>
+										<span class="input-group-btn">
+											<a class="btn btn-default listCmdInfo roundedRight"><i class="fas fa-list-alt"></i></a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{on alim}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{bouton on de la prise d'alimentation de la snapmaker}}"></i></sup>
+								</label>
+								<div class="col-sm-7">
+									<div class="input-group">
+										<input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration" data-l2key="onalim" data-concat="1"/>
+										<span class="input-group-btn">
+											<a class="btn btn-default listCmdAction roundedRight"><i class="fas fa-list-alt"></i></a>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{off alim}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{bouton off de la prise d'alimentation de la snapmaker}}"></i></sup>
+								</label>
+								<div class="col-sm-7">
+									<div class="input-group">
+										<input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration" data-l2key="offalim" data-concat="1"/>
+										<span class="input-group-btn">
+											<a class="btn btn-default listCmdAction roundedRight"><i class="fas fa-list-alt"></i></a>
+										</span>
+									</div>
 								</div>
 							</div>
 							<!-- Exemple de champ de saisie du cron d'auto-actualisation avec assistant -->

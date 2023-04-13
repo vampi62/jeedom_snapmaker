@@ -50,6 +50,14 @@ class snapmaker extends eqLogic {
         continue;
       }
       $cmd->execCmd();
+
+      $returalim = round(jeedom::evaluateExpression($snapmaker->getConfiguration('statusalim')), 1);
+      $buttonon = cmd::humanReadableToCmd($snapmaker->getConfiguration('onalim'));
+      log::add('snapmaker','debug',$snapmaker->getConfiguration('statusalim'));
+      log::add('snapmaker','debug',$returalim);
+      log::add('snapmaker','debug',$snapmaker->getConfiguration('onalim'));
+      log::add('snapmaker','debug',$buttonon);
+      //round(jeedom::evaluateExpression($snapmaker->getConfiguration('offalim')), 1);
     }
   }
 
@@ -107,6 +115,18 @@ class snapmaker extends eqLogic {
     $this->create_element('start'  ,'start'     ,'action','other');
     $this->create_element('stop'   ,'stop'      ,'action','other');
     $this->create_element('resume' ,'resume'    ,'action','other');
+    $this->create_element('getlistfile','getlistfile','action','other');
+
+    $this->create_element('connect'   ,'connect'   ,'action','other');
+    $this->create_element('disconnect','disconnect','action','other');
+    $this->create_element('renamefile','renamefile','action','other');
+    $this->create_element('deletefile','deletefile','action','other');
+    $this->create_element('addfile'   ,'addfile'   ,'action','other');
+    $this->create_element('newnamefile','newnamefile','action','texte');
+    $this->create_element('newfile'    ,'newfile'    ,'action','texte');
+
+    $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
+    $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
 
     $this->create_element('sendfile'  ,'sendfile'     ,'action','other');
     $this->create_element('sendgcode' ,'sendgcode'    ,'action','other');
@@ -120,7 +140,7 @@ class snapmaker extends eqLogic {
     $this->create_element('newtempnozzle','newtempnozzle','action','texte');
     $this->create_element('newtempbed'   ,'newtempbed'   ,'action','texte');
     $this->create_element('newspeed'     ,'newspeed'     ,'action','texte');
-    $this->create_element('newzoffset'   ,'newzoffset'   ,'action','other');
+    $this->create_element('newzoffset'   ,'newzoffset'   ,'action','texte');
     $this->create_element('settempnozzle','settempnozzle','action','other');
     $this->create_element('settempbed'   ,'settempbed'   ,'action','other');
     $this->create_element('setspeed'     ,'setspeed'     ,'action','other');
@@ -130,6 +150,7 @@ class snapmaker extends eqLogic {
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
     $this->create_element('unsetfan'     ,'unsetfan'     ,'action','other');
 
+    $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
     $this->create_element('status'                    ,'status'                    ,'info','string');
     $this->create_element('homed'                     ,'homed'                     ,'info','string');
     $this->create_element('toolHead'                  ,'toolHead'                  ,'info','string');
@@ -155,7 +176,7 @@ class snapmaker extends eqLogic {
     $this->create_element('isEnclosureDoorOpen'       ,'isEnclosureDoorOpen'       ,'info','string');
     $this->create_element('stopIfEnclosureDoorOpen'   ,'stopIfEnclosureDoorOpen'   ,'info','string');
     $this->create_element('EnclosureLight'            ,'EnclosureLight'            ,'info','string');
-    $this->create_element('stopIfEnclosureFan'        ,'stopIfEnclosureFan'        ,'info','string');
+    $this->create_element('EnclosureFan'              ,'EnclosureFan'              ,'info','string');
     $this->create_element('zoffset'                   ,'zoffset'                   ,'info','string');
     $path = dirname(__FILE__) . '/../../data/' . $this->getId();
     if (!file_exists($path)) {
@@ -337,10 +358,16 @@ class snapmakerCmd extends cmd {
           $filelist[] = $file . '-:-' . filesize(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file) . '-:-' . date("Y-m-d H:i:s", filemtime(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file));
         }
         $filelist = implode("-!-", $filelist);
-        $eqlogic->checkAndUpdateCmd('filelist', json_encode($filelist));
+        $eqlogic->checkAndUpdateCmd('filelist', $filelist);
       break;
       case 'addfile':
-        $name = str_replace('/', '_', $name);
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
+        if (!isset($_options['fichier']) || !empty($_options['fichier'])) {
+          return;
+        }
+        $name = str_replace('/', '_', $_options['message']);
         if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
           $i = 1;
           while (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '_' . $i . '.gcode')) {
@@ -348,17 +375,26 @@ class snapmakerCmd extends cmd {
           }
           $name = $name . '_' . $i;
         }
-        file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode', $file_data);
+        file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode', $_options['fichier']);
       break;
       case 'delfile':
-        $name = str_replace('/', '_', $name);
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
+        $name = str_replace('/', '_', $_options['message']);
         if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
           unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode');
         }
       break;
       case 'renamefile':
-        $name = str_replace('/', '_', $name);
-        $newname = str_replace('/', '_', $newname);
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
+        if (!isset($_options['newmessage']) || !empty($_options['newmessage'])) {
+          return;
+        }
+        $name = str_replace('/', '_', $_options['message']);
+        $newname = str_replace('/', '_', $_options['newmessage']);
         if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
           rename(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode', dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $newname . '.gcode');
         }
@@ -370,27 +406,53 @@ class snapmakerCmd extends cmd {
         $eqlogic->sendmessage('disconnect',1);
       break;
       case 'sendfile':
-        //uploadFile
-        $eqlogic->sendmessage('sendfile',$_options['message']);
-      break;
-      case 'startprintfile':
-        //uploadGcodeFile
-        $eqlogic->sendmessage('startprintfile',$_options['message']);
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
+        if (!isset($_options['fichier']) || !empty($_options['fichier'])) {
+          return;
+        }
+        $name = str_replace('/', '_', $_options['message']);
+        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
+          $i = 1;
+          while (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '_' . $i . '.gcode')) {
+            $i++;
+          }
+          $name = $name . '_' . $i;
+        }
+        file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode', $_options['fichier']);
+        $eqlogic->sendmessage('sendfile',$name);
+        unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode');
       break;
       case 'settempnozzle':
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
         $eqlogic->sendmessage('settempnozzle',$_options['message']);
       break;
       case 'settempbed':
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
         $eqlogic->sendmessage('settempbed',$_options['message']);
       break;
       case 'setspeed':
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
         $eqlogic->sendmessage('setspeed',$_options['message']);
       break;
       case 'pause':
         $eqlogic->sendmessage('pause',1);
       break;
       case 'start':
-        $eqlogic->sendmessage('start',$_options['message']);
+        if (!isset($_options['message']) || !empty($_options['message'])) {
+          return;
+        }
+        $name = str_replace('/', '_', $_options['message']);
+        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode')) {
+          $eqlogic->sendmessage('startprintfile',$_options['message']);
+        }
       break;
       case 'stop':
         $eqlogic->sendmessage('stop',1);

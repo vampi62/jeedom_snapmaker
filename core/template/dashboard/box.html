@@ -17,12 +17,11 @@
 		}else{
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove();
 		}
-		function printhtmltable(list,nom_tableau,headtable,commande) {
+		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
 			local_table = document.createElement("table");
 			local_thr = document.createElement("thead");
 			local_tr = document.createElement("tr");
 			local_tr.setAttribute("style","white-space: nowrap;");
-			
 			for(j = 0; count(headtable) > j; j++) {
 				local_th = document.createElement("th");
 				local_th.setAttribute("style","padding: 5px;");
@@ -32,7 +31,7 @@
 			local_thr.appendChild(local_tr);
 			local_table.appendChild(local_thr);
 			local_tb = document.createElement("tbody");
-			player = new Array();
+			let player = new Array();
 			if (list != "") {
 				line = list.split('-!-');
 				for(j = 0; line.length > j; j++) {
@@ -57,13 +56,9 @@
 			}
 			local_table.appendChild(local_tb);
 			local_table.setAttribute("class","table table-condensed table-bordered table-striped");
-			divtable = document.getElementById(nom_tableau);
-			divtable.innerHTML = "";
-			divtable.appendChild(local_table);
-			
-			for(k = 0; player.length > k; k++) {
-				addkickfunction(player[k]);
-			}
+			$('.cmd[data-eqlogic_id=' + nom_tableau + '] .state').empty();
+			$('.cmd[data-eqlogic_id=' + nom_tableau + '] .state').append(local_table);
+			return player; // retourne la liste des joueurs pour les utiliser dans l'identification les commandes
 		}
 	</script>
 	<div class="eq_body_#id#" >
@@ -335,21 +330,54 @@
 				</div>
 				<div class="tooltips cmd cmd-widget filelist" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" data-eqlogic_id="#filelist_id#" style="display: block;">
 					<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px; overflow:auto;">
-						<div class="state" id="filelist">
+						<div class="state">
 							#filelist#
-							'sendfile'  ,'sendfile'     ,'action','other'
-							'sendgcode' ,'sendgcode'    ,'action','other'
 						</div>
 					</div>
 					<script>
 						jeedom.cmd.addUpdateFunction('#filelist_id#',function(_options) {
-							let cmd = $('.cmd[data-cmd_id=#filelist_id#]')
-							let headtable = ["fichier","date d'insersion","taille","temps d'impression","supprimer","start"];
-							let commande = ["<div class=\"cmd cmd-widget\" data-type=\"action\" data-subtype=\"other\" data-template=\"default\" data-cmd_id=\"#filelist_id#\" data-cmd_uid=\"cmd#filelist_uid#\" data-version=\"dashboard\" data-eqlogic_id=\"#id#\">\<div class=\"content-xs\"><a class=\"btn btn-sm btn-default #filelist_id##value#kick\">kick<\/a><\/div><\/div>"];
-							cmd.find('.state').empty().append(printhtmltable(_options.display_value,'filelist',headtable,commande))
-
+							let headtable = ["nom","date","temps d'impr"];
+							let commande = [];
+							let player = #uid#js_snapmaker_printhtmltable(_options.display_value,'#filelist_id#',headtable,commande);
 						});
 						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value: '#filelist#', valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
+					</script>
+				</div>
+				<div class="tooltips cmd cmd-widget fileselect" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" data-eqlogic_id="#filelist_id#" style="display: block;">
+					
+					
+					
+					<iframe id="my_iframe" style="display:none;"></iframe>
+					<script>
+						function Download(url) {
+							document.getElementById('my_iframe').src = url;
+						};
+						$('a#someID').attr({target: '_blank', href  : 'http://localhost/directory/file.pdf'});
+					</script>
+				</div>
+				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#newfile_id#" data-cmd_uid="cmd#newfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
+					<div>
+						<input type="file" class="fichierimport" accept="image/png, image/jpeg">
+						<div class="content-xs">
+							<a class="btn btn-sm btn-default uplocal">upload local</a>
+						</div>
+						<div class="content-xs">
+							<a class="btn btn-sm btn-default upsnap">upload snap</a>
+						</div>
+					</div>
+					<script>
+						$('.cmd[data-cmd_id=#newfile_id#]:last .uplocal').on('click', function() {
+							fichier = $('.cmd[data-cmd_id=#newfile_id#] .fichierimport');
+							jeedom.cmd.execute({id: '#addfile_id#', value: {message: fi.files[0].name, fichier: fi.files[0]}});
+							// vide le champ de saisie du message
+							$('.cmd[data-cmd_id=#addfile_id#] .fichierimport').val('');
+						});
+						$('.cmd[data-cmd_id=#newfile_id#]:last .upsnap').on('click', function() {
+							fichier = $('.cmd[data-cmd_id=#newfile_id#] .fichierimport');
+							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fi.files[0].name, fichier: fi.files[0]}});
+							// vide le champ de saisie du message
+							$('.cmd[data-cmd_id=#sendfile_id#] .fichierimport').val('');
+						});
 					</script>
 				</div>
 			</div>  <!-- Pan_fichier -->
