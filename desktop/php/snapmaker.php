@@ -144,14 +144,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{auto connect}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{activer la connexion automatique à chaque démarrage de l'imprimante}}"></i></sup>
-								</label>
-								<div class="col-sm-6">
-									<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autoconnect">{{auto connect}}</label>
-								</div>
-							</div>
-							<div class="form-group">
 								<label class="col-sm-4 control-label">{{status alim}}
 									<sup><i class="fas fa-question-circle tooltips" title="{{retour de la prise d'alimentation de la snapmaker}}"></i></sup>
 								</label>

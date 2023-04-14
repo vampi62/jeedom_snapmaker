@@ -45,7 +45,7 @@ class snapmaker extends eqLogic {
   */
   public static function cron5() {
     foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
-      $cmd = $snapmaker->getCmd(null, 'getlistfile');
+      $cmd = $snapmaker->getCmd(null, 'refresh');
       if (!is_object($cmd)) {
         continue;
       }
@@ -107,7 +107,7 @@ class snapmaker extends eqLogic {
     $this->create_element('start'  ,'start'     ,'action','other');
     $this->create_element('stop'   ,'stop'      ,'action','other');
     $this->create_element('resume' ,'resume'    ,'action','other');
-    $this->create_element('getlistfile','getlistfile','action','other');
+    $this->create_element('status' ,'status'    ,'action','other');
 
     $this->create_element('connect'   ,'connect'   ,'action','other');
     $this->create_element('disconnect','disconnect','action','other');
@@ -142,6 +142,7 @@ class snapmaker extends eqLogic {
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
     $this->create_element('unsetfan'     ,'unsetfan'     ,'action','other');
 
+    $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
     $this->create_element('status'                    ,'status'                    ,'info','string');
     $this->create_element('homed'                     ,'homed'                     ,'info','string');
@@ -333,16 +334,19 @@ class snapmaker extends eqLogic {
     }
     $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('statusalim')));
     if (is_object($cmd)) {
-      $replace['#statusalim_id#'] = $cmd->getId();
+      $replace['#aliminfo#'] = $cmd->execCmd();
+      $replace['#aliminfo_id#'] = $cmd->getId();
+      $replace['#aliminfo_valueDate#']= date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
+      $replace['#aliminfo_collectDate#'] =date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
+      $replace['#aliminfo_updatetime#'] =date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
     }
     else {
-      $replace['#statusalim_id#'] = "-1";
+      $replace['#aliminfo#'] = "-1";
+      $replace['#aliminfo_id#'] = "-1";
+      $replace['#aliminfo_valueDate#']= date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
+      $replace['#aliminfo_collectDate#'] =date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
+      $replace['#aliminfo_updatetime#'] =date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
     }
-    $replace['#aliminfo#'] = $cmd->execCmd();
-    $replace['#aliminfo_id#'] = $cmd->getId();
-    $replace['#aliminfo_valueDate#']= date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
-    $replace['#aliminfo_collectDate#'] =date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
-    $replace['#aliminfo_updatetime#'] =date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
     $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-150);
     $replace['#widthfilelist#'] = strval(intval($replace['#width#']));
     $widgetType = getTemplate('core', $version, 'box', __CLASS__);
@@ -374,14 +378,6 @@ class snapmakerCmd extends cmd {
     $eqlogic = $this->getEqLogic(); //récupère l'éqlogic de la commande $this
     switch ($this->getLogicalId()) { //vérifie le logicalid de la commande
       case 'refresh':
-        $eqlogic->sendmessage('refresh',1);
-        $this->getallvaluearray($info);
-      break;
-      case 'enclosure':
-        $eqlogic->sendmessage('enclosure',1);
-        $this->getallvaluearray($info);
-      break;
-      case 'getlistfile':
         $filelist = array();
         $files = array_diff(scandir(dirname(__FILE__) . '/../../data/' . $eqlogic->getId()), array('.', '..'));
         foreach ($files as $file) {
@@ -389,6 +385,14 @@ class snapmakerCmd extends cmd {
         }
         $filelist = implode("-!-", $filelist);
         $eqlogic->checkAndUpdateCmd('filelist', $filelist);
+      break;
+      case 'status':
+        $eqlogic->sendmessage('status',1);
+        $this->getallvaluearray($info);
+      break;
+      case 'enclosure':
+        $eqlogic->sendmessage('enclosure',1);
+        $this->getallvaluearray($info);
       break;
       case 'addfile':
         if (!isset($_options['message']) || !empty($_options['message'])) {
@@ -518,10 +522,10 @@ class snapmakerCmd extends cmd {
         $eqlogic->sendmessage('setfan',0);
       break;
       case 'setautoconnect':
-        $eqlogic->sendmessage('setautoconnect',1);
+        $eqlogic->checkAndUpdateCmd('autoconnect', "1");
       break;
       case 'unsetautoconnect':
-        $eqlogic->sendmessage('setautoconnect',0);
+        $eqlogic->checkAndUpdateCmd('autoconnect', "0");
       break;
     }
   }
