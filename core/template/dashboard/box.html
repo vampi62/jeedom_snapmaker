@@ -69,54 +69,6 @@
 						<strong>MENU</strong>
 					</div>
 					<div>
-    'reload','reload','action','other'
-    'unload','unload','action','other'
-    'newtempnozzle','newtempnozzle','action','texte'
-    'newtempbed'   ,'newtempbed'   ,'action','texte'
-    'newspeed'     ,'newspeed'     ,'action','texte'
-    'newzoffset'   ,'newzoffset'   ,'action','other'
-    'settempnozzle','settempnozzle','action','other'
-    'settempbed'   ,'settempbed'   ,'action','other'
-    'setspeed'     ,'setspeed'     ,'action','other'
-    'setzoffset'   ,'setzoffset'   ,'action','other'
-    'status'                    ,'status'                    ,'info','string'
-    'homed'                     ,'homed'                     ,'info','string'
-    'toolHead'                  ,'toolHead'                  ,'info','string'
-    'nozzleTemperature'         ,'nozzleTemperature'         ,'info','string'
-    'nozzleTargetTemperature'   ,'nozzleTargetTemperature'   ,'info','string'
-    'heatedBedTemperature'      ,'heatedBedTemperature'      ,'info','string'
-    'heatedBedTargetTemperature','heatedBedTargetTemperature','info','string'
-    'isFilamentOut'             ,'isFilamentOut'             ,'info','string'
-    'workSpeed'                 ,'workSpeed'                 ,'info','string'
-    'printStatus'               ,'printStatus'               ,'info','string'
-    'fileName'                  ,'fileName'                  ,'info','string'
-    'totalLines'                ,'totalLines'                ,'info','string'
-    'estimatedTime'             ,'estimatedTime'             ,'info','string'
-    'currentLine'               ,'currentLine'               ,'info','string'
-    'progress'                  ,'progress'                  ,'info','string'
-    'elapsedTime'               ,'elapsedTime'               ,'info','string'
-    'remainingTime'             ,'remainingTime'             ,'info','string'
-
-    'enclosure'                 ,'enclosure'                 ,'info','string'
-    'rotaryModule'              ,'rotaryModule'              ,'info','string'
-    'emergencyStopButton'       ,'emergencyStopButton'       ,'info','string'
-    'airPurifier'               ,'airPurifier'               ,'info','string'
-    'zoffset'                   ,'zoffset'                   ,'info','string'
-						<!--
-							status imprimante
-							home?
-							outil
-							nom fichier
-							temps restant
-							temps passer
-							pourcentage
-							ligne max
-							ligne actuelle
-							temperature actuelle
-							consigne temperature
-							temperature actuelle lit
-							consigne temperature lit
-						-->
 						<div class="cmd cmd-widget tooltips smstart" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#start_id#" data-cmd_uid="cmd#start_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 							<div class="content-xs">
 								<a class="btn btn-sm btn-default action">start</a>
@@ -182,15 +134,15 @@
 									$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
 								}
 							}
-							#uid#updateListButton('#state#');
-							jeedom.cmd.addUpdateFunction('#state_id#',function(_options) {
-								let cmd = $('.cmd[data-cmd_id=#state_id#]')
+							#uid#updateListButton('#status#');
+							jeedom.cmd.addUpdateFunction('#status_id#',function(_options) {
+								let cmd = $('.cmd[data-cmd_id=#status_id#]')
 								cmd.attr('title', 'Valeur du: '+_options.collectDate)
 								cmd.find('.state').empty().append(_options.display_value)
 								#uid#updateListButton(_options.display_value);
 							});
-							jeedom.cmd.refreshValue([{cmd_id :'#state_id#',display_value: '#state#', valueDate: '#state_valueDate#', collectDate: '#state_collectDate#', alertLevel: '#state_alertLevel#'}]);
-						</script>=
+							jeedom.cmd.refreshValue([{cmd_id :'#status_id#',display_value: '#status#', valueDate: '#status_valueDate#', collectDate: '#status_collectDate#', alertLevel: '#status_alertLevel#'}]);
+						</script>
 					</div>
 				</div>
 				<div class="menu-caisson">
@@ -198,21 +150,6 @@
 						<strong>MENU caisson</strong>
 					</div>
 					<div>
-						<!-- 
-							check - pause if open - voyant
-							light - on/off - voyant
-							ventilation - on/off - voyant
-						-->
-    'isEnclosureDoorOpen'       ,'isEnclosureDoorOpen'       ,'info','string');
-    'stopIfEnclosureDoorOpen'   ,'stopIfEnclosureDoorOpen'   ,'info','string');
-    'EnclosureLight'            ,'EnclosureLight'            ,'info','string');
-    'stopIfEnclosureFan'        ,'stopIfEnclosureFan'        ,'info','string');
-    'setpauseifopen'  ,'setpauseifopen'  ,'action','other');
-    'unsetpauseifopen','unsetpauseifopen','action','other');
-    'setlight'     ,'setlight'     ,'action','other');
-    'setfan'       ,'setfan'       ,'action','other');
-    'unsetlight'   ,'unsetlight'   ,'action','other');
-    'unsetfan'     ,'unsetfan'     ,'action','other');
 					</div>
 				</div>
 				<div class="menu-alim">
@@ -220,59 +157,66 @@
 						<strong>MENU alim</strong>
 					</div>
 					<div>
-						<!--
-							on
-							off
-							voyant
-						-->
-
-						<i class="fas fa-bars cursor tooltips changecmdmenu noRefresh" title='menu' style="margin-right: 3px;"></i>
+						<div class="cmd cmd-widget tooltips smalimon" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#onalim_id#" data-cmd_uid="cmd#onalim_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+							<div class="content-xs">
+								<a class="btn btn-sm btn-default action">on</a>
+							</div>
+						</div>
+						<div class="cmd cmd-widget tooltips smalimoff" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#offalim_id#" data-cmd_uid="cmd#offalim_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+							<div class="content-xs">
+								<a class="btn btn-sm btn-default action">off</a>
+							</div>
+						</div>
+						<div class="cmd cmd-widget tooltips smalimstatus" data-type="info" data-subtype="binary" data-template="default" data-cmd_id="#statusalim_id#" data-cmd_uid="cmd#statusalim_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+							<div class="content-xs">
+								<a class="state label label-default">#statusalim#</a>
+							</div>
+						</div>
 						<script>
-							$('.cmd[data-cmd_id=#resume_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#resume_id#'})
-								jeedom.cmd.execute({id: '#refresh_id#'})
+							$('.cmd[data-cmd_id=#onalim_id#]:last .action').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
-							$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#stop_id#'})
-								jeedom.cmd.execute({id: '#refresh_id#'})
+							$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#offalim_id#'})
 							})
+							jeedom.cmd.addUpdateFunction('#statusalim#',function(_options) {
+							let cmd = $('.cmd[data-cmd_id=#statusalim#]')
+							cmd.attr('title', 'Valeur du: '+_options.collectDate)
+							cmd.find('.state').empty().append(_options.display_value)
+						});
+						jeedom.cmd.refreshValue([{cmd_id :'#statusalim#',display_value: '#statusalim#', valueDate: '#statusalim_valueDate#', collectDate: '#statusalim_collectDate#', alertLevel: '#statusalim_alertLevel#'}]);
 						</script>
 					</div>
 				</div>
-
-
-					
-					
-				</div>
-				<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#percent_file_id#" data-cmd_uid="cmd#percent_file_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #percent_file_collectDate#">
+				<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#progress#" data-cmd_uid="cmd#progress_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #progress_collectDate#">
 					<div class="content-xs">
 						<span   class="cmdName">charge CPU: </span>
-						<strong class="state1">#percent_file#</strong>
+						<strong class="state1">#progress#</strong>
 						<strong class="state2"> %</strong>
 					</div>
 					<script>
-						jeedom.cmd.addUpdateFunction('#percent_file_id#',function(_options) {
-							let cmd = $('.cmd[data-cmd_id=#percent_file_id#]')
+						jeedom.cmd.addUpdateFunction('#progress#',function(_options) {
+							let cmd = $('.cmd[data-cmd_id=#progress#]')
 							cmd.attr('title', 'Valeur du: '+_options.collectDate)
 							cmd.find('.state1').empty().append(_options.display_value)
 						});
-						jeedom.cmd.refreshValue([{cmd_id :'#percent_file_id#',display_value: '#percent_file#', valueDate: '#percent_file_valueDate#', collectDate: '#percent_file_collectDate#', alertLevel: '#percent_file_alertLevel#'}]);
+						jeedom.cmd.refreshValue([{cmd_id :'#progress_id#',display_value: '#progress#', valueDate: '#progress_valueDate#', collectDate: '#progress_collectDate#', alertLevel: '#progress_alertLevel#'}]);
 					</script>
 				</div>
-				<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#ligneencours_id#" data-cmd_uid="cmd#ligneencours_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #ligneencours_collectDate#">
+				<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#currentLine#" data-cmd_uid="cmd#currentLine_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #currentLine_collectDate#">
 					<div class="content-xs">
 						<span   class="cmdName">ligne en cours: </span>
-						<strong class="state1">#ligneencours#</strong>
+						<strong class="state1">#currentLine#</strong>
 						<strong class="state2"> / </strong>
 						<strong class="state3">#lignemax#</strong>
 					</div>
 					<script>
-						jeedom.cmd.addUpdateFunction('#ligneencours_id#',function(_options) {
-							let cmd = $('.cmd[data-cmd_id=#ligneencours_id#]')
+						jeedom.cmd.addUpdateFunction('#currentLine#',function(_options) {
+							let cmd = $('.cmd[data-cmd_id=#currentLine#]')
 							cmd.attr('title', 'Valeur du: '+_options.collectDate)
 							cmd.find('.state1').empty().append(_options.display_value)
 						});
-						jeedom.cmd.refreshValue([{cmd_id :'#ligneencours_id#',display_value: '#ligneencours#', valueDate: '#ligneencours_valueDate#', collectDate: '#ligneencours_collectDate#', alertLevel: '#ligneencours_alertLevel#'}]);
+						jeedom.cmd.refreshValue([{cmd_id :'#currentLine#',display_value: '#currentLine#', valueDate: '#currentLine_valueDate#', collectDate: '#currentLine_collectDate#', alertLevel: '#currentLine_alertLevel#'}]);
 						jeedom.cmd.addUpdateFunction('#lignemax_id#',function(_options) {
 							let cmd = $('.cmd[data-cmd_id=#lignemax_id#]')
 							cmd.attr('title', 'Valeur du: '+_options.collectDate)
@@ -309,18 +253,18 @@
 						jeedom.cmd.refreshValue([{cmd_id :'#starttime_id#',display_value: '#starttime#', valueDate: '#starttime_valueDate#', collectDate: '#starttime_collectDate#', alertLevel: '#starttime_alertLevel#'}]);
 					</script>
 				</div>
-				<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#timeleft_id#" data-cmd_uid="cmd#timeleft_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #timeleft_collectDate#">
+				<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#remainingTime_id#" data-cmd_uid="cmd#remainingTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #remainingTime_collectDate#">
 					<div class="content-xs">
 						<span   class="cmdName">temps restant: </span>
-						<strong class="state">#timeleft#</strong>
+						<strong class="state">#remainingTime#</strong>
 					</div>
 					<script>
-						jeedom.cmd.addUpdateFunction('#timeleft_id#',function(_options) {
-							let cmd = $('.cmd[data-cmd_id=#timeleft_id#]')
+						jeedom.cmd.addUpdateFunction('#remainingTime_id#',function(_options) {
+							let cmd = $('.cmd[data-cmd_id=#remainingTime_id#]')
 							cmd.attr('title', 'Valeur du: '+_options.collectDate)
 							cmd.find('.state').empty().append(_options.display_value)
 						});
-						jeedom.cmd.refreshValue([{cmd_id :'#timeleft_id#',display_value: '#timeleft#', valueDate: '#timeleft_valueDate#', collectDate: '#timeleft_collectDate#', alertLevel: '#timeleft_alertLevel#'}]);
+						jeedom.cmd.refreshValue([{cmd_id :'#remainingTime_id#',display_value: '#remainingTime#', valueDate: '#remainingTime_valueDate#', collectDate: '#remainingTime_collectDate#', alertLevel: '#remainingTime_alertLevel#'}]);
 					</script>
 				</div>
 			</div> <!-- Pan_menu -->
@@ -398,7 +342,7 @@
 							let cmd = $('.cmd[data-cmd_id=#filelist_id#]')
 							let headtable = ["fichier","date d'insersion","taille","temps d'impression","supprimer","start"];
 							let commande = ["<div class=\"cmd cmd-widget\" data-type=\"action\" data-subtype=\"other\" data-template=\"default\" data-cmd_id=\"#filelist_id#\" data-cmd_uid=\"cmd#filelist_uid#\" data-version=\"dashboard\" data-eqlogic_id=\"#id#\">\<div class=\"content-xs\"><a class=\"btn btn-sm btn-default #filelist_id##value#kick\">kick<\/a><\/div><\/div>"];
-							cmd.find('.state').empty().append(printhtmltable(_options.display_value,'filelist',headtable,commande))
+							cmd.find('.state').empty().append(#uid#js_snapmaker_printhtmltable(_options.display_value,'filelist',headtable,commande))
 						});
 						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value: '#filelist#', valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
 					</script>

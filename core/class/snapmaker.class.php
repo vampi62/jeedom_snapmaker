@@ -50,10 +50,6 @@ class snapmaker extends eqLogic {
         continue;
       }
       $cmd->execCmd();
-
-      //$returalim = round(jeedom::evaluateExpression($snapmaker->getConfiguration('statusalim')), 1); // 0 ou 1
-      //$buttonon = cmd::byId(str_replace("#","",$snapmaker->getConfiguration('onalim'))); // action active prise
-      //$buttonon->execCmd();
     }
   }
 
@@ -177,6 +173,18 @@ class snapmaker extends eqLogic {
     $path = dirname(__FILE__) . '/../../data/' . $this->getId();
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
+    }
+    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('statusalim')));
+    if (!is_object($cmd)) {
+      $this->setConfiguration('statusalim', '');
+    }
+    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('onalim')));
+    if (!is_object($cmd)) {
+      $this->setConfiguration('onalim', '');
+    }
+    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('offalim')));
+    if (!is_object($cmd)) {
+      $this->setConfiguration('offalim', '');
     }
   }
 
@@ -309,6 +317,32 @@ class snapmaker extends eqLogic {
         $replace['#' . $key . '#'] = $value;
       }
     }
+    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('onalim')));
+    if (is_object($cmd)) {
+      $replace['#onalim_id#'] = $cmd->getId();
+    }
+    else {
+      $replace['#onalim_id#'] = "-1";
+    }
+    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('offalim')));
+    if (is_object($cmd)) {
+      $replace['#offalim_id#'] = $cmd->getId();
+    }
+    else {
+      $replace['#offalim_id#'] = "-1";
+    }
+    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('statusalim')));
+    if (is_object($cmd)) {
+      $replace['#statusalim_id#'] = $cmd->getId();
+    }
+    else {
+      $replace['#statusalim_id#'] = "-1";
+    }
+    $replace['#aliminfo#'] = $cmd->execCmd();
+    $replace['#aliminfo_id#'] = $cmd->getId();
+    $replace['#aliminfo_valueDate#']= date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
+    $replace['#aliminfo_collectDate#'] =date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
+    $replace['#aliminfo_updatetime#'] =date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
     $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-150);
     $replace['#widthfilelist#'] = strval(intval($replace['#width#']));
     $widgetType = getTemplate('core', $version, 'box', __CLASS__);
