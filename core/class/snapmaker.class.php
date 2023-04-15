@@ -42,8 +42,13 @@ class snapmaker extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
+  public static function cron5() {}
   */
-  public static function cron5() {
+
+  /*
+  * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
+  */
+  public static function cron10() {
     foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
       $cmd = $snapmaker->getCmd(null, 'refresh');
       if (!is_object($cmd)) {
@@ -52,11 +57,6 @@ class snapmaker extends eqLogic {
       $cmd->execCmd();
     }
   }
-
-  /*
-  * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
-  public static function cron10() {}
-  */
 
   /*
   * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom
@@ -107,7 +107,6 @@ class snapmaker extends eqLogic {
     $this->create_element('start'  ,'start'     ,'action','other');
     $this->create_element('stop'   ,'stop'      ,'action','other');
     $this->create_element('resume' ,'resume'    ,'action','other');
-    $this->create_element('status' ,'status'    ,'action','other');
 
     $this->create_element('connect'   ,'connect'   ,'action','other');
     $this->create_element('disconnect','disconnect','action','other');
@@ -191,6 +190,10 @@ class snapmaker extends eqLogic {
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
   public function preRemove() {
+    $path = dirname(__FILE__) . '/../../data/' . $this->getId();
+    if (file_exists($path)) {
+      rmdir($path);
+    }
   }
 
   // Fonction exécutée automatiquement après la suppression de l'équipement
@@ -381,7 +384,26 @@ class snapmakerCmd extends cmd {
         $filelist = array();
         $files = array_diff(scandir(dirname(__FILE__) . '/../../data/' . $eqlogic->getId()), array('.', '..'));
         foreach ($files as $file) {
-          $filelist[] = $file . '-:-' . filesize(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file) . '-:-' . date("Y-m-d H:i:s", filemtime(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file));
+          $filedir = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $file;
+          $filecont = fopen($filedir, "r");
+          // lire les 100 premire ligne a la recherche d'un des éléments suivant : ;thumbnail, ;file_total_lines, ;estimated_time. Si trouvé, on récupère le texte de la ligne et on le stocke dans une variable
+          $thumbnail = '';
+          $file_total_lines = '';
+          $estimated_time = '';
+          for ($i = 0; $i < 100; $i++) {
+            $line = fgets($filecont);
+            if (strpos($line, ';thumbnail:') !== false) {
+              $thumbnail = substr($line, strpos($line, ';thumbnail:') + strlen(';thumbnail:') + 1);
+            }
+            if (strpos($line, ';file_total_lines:') !== false) {
+              $file_total_lines = substr($line, strpos($line, ';file_total_lines:') + strlen(';file_total_lines:') + 1);
+            }
+            if (strpos($line, ';estimated_time(s):') !== false) {
+              $estimated_time = substr($line, strpos($line, ';estimated_time(s):') + strlen(';estimated_time(s):') + 1);
+            }
+          }
+          fclose($filecont);
+          $filelist[] = $file . '-:-' . filesize($filedir) . '-:-' . date("Y-m-d H:i:s", filemtime($filedir)) . '-:-' . $file_total_lines . '-:-' . $estimated_time . '-:-' . $thumbnail;
         }
         $filelist = implode("-!-", $filelist);
         $eqlogic->checkAndUpdateCmd('filelist', $filelist);
@@ -530,12 +552,16 @@ class snapmakerCmd extends cmd {
     }
   }
   private function getallvaluearray($liste, $keyorigin = "") {
+    $value_iniore = array("x","y","z","status");
     $eqlogic = $this->getEqLogic();
     foreach ($liste as $key => $value) {
       if (is_array($value)) {
-        $this->getallvaluearray($value,$key);
+        $this->getallvaluearray($value,$keyorigin . "/" .$key);
       }
       else {
+        if (in_array($key, $value_iniore)) {
+          continue;
+        }
         $element = $this->getCmd(null, $keyorigin . $key);
         if (is_object($element)) {
           $eqlogic->checkAndUpdateCmd($keyorigin . $key, $value);
