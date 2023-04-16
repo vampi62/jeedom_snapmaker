@@ -63,6 +63,7 @@
 						}
 						local_tr.appendChild(local_td);
 					}
+					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + j + ");");
 					local_tb.appendChild(local_tr);
 				}
 			}
@@ -188,124 +189,6 @@
 							jeedom.cmd.refreshValue([{cmd_id :'#printStatus_id#',display_value: '#printStatus#', valueDate: '#printStatus_valueDate#', collectDate: '#printStatus_collectDate#', alertLevel: '#printStatus_alertLevel#'}]);
 						</script>
 					</div>
-					<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#heatedBedTemperature_id#" data-cmd_uid="cmd#heatedBedTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #heatedBedTemperature_collectDate#">
-						<div class="content-xs">
-							<span   class="cmdName">heatedBedTemperature : </span> 
-							<strong class="state">#heatedBedTemperature#</strong>
-						</div>
-						<script>
-							jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
-								let cmd = $('.cmd[data-cmd_id=#heatedBedTemperature_id#]')
-								cmd.attr('title', 'Valeur du: '+_options.collectDate)
-								cmd.find('.state').empty().append(_options.display_value)
-							});
-							jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTemperature_id#',display_value: '#heatedBedTemperature#', valueDate: '#heatedBedTemperature_valueDate#', collectDate: '#heatedBedTemperature_collectDate#', alertLevel: '#heatedBedTemperature_alertLevel#'}]);
-						</script>
-					</div>
-					<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature_collectDate#">
-						<div class="content-xs">
-							<span   class="cmdName">nozzleTemperature : </span> 
-							<strong class="state">#nozzleTemperature#</strong>
-						</div>
-						<script>
-							jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
-								let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
-								cmd.attr('title', 'Valeur du: '+_options.collectDate)
-								cmd.find('.state').empty().append(_options.display_value)
-							});
-							jeedom.cmd.refreshValue([{cmd_id :'#nozzleTemperature_id#',display_value: '#nozzleTemperature#', valueDate: '#nozzleTemperature_valueDate#', collectDate: '#nozzleTemperature_collectDate#', alertLevel: '#nozzleTemperature_alertLevel#'}]);
-						</script>
-					</div>
-					<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
-						<div class="title ">
-							<div class="cmdName">nozzleTargetTemperature</div>
-						</div>
-						<div class="content-sm ">
-							<div class="input-group buttons">
-							<span class="input-group-btn" style="position: relative;">
-								<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-							</span>
-							<input type="text" class="input-sm in_value form-control" value="#nozzleTargetTemperature# °C">
-							<span class="input-group-btn" style="position: relative;">
-								<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-							</span>
-							</div>
-						</div>
-						<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-							<div class="content-sm">
-								<a class="btn btn-sm btn-default action">on</a>
-							</div>
-						</div>
-						<script>
-							$('.cmd[data-cmd_id=#settempnozzle_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val())}});
-							})
-							$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
-							let max = ('250' == '') ?  Number.MAX_VALUE : parseFloat('250')
-							let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
-							if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
-								jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
-								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
-							}
-							})
-							$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
-							let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
-							let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
-							if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
-								jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
-								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
-							}
-							})
-							jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
-							$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(_options.value+' °C')
-							});
-						</script>
-					</div>
-					<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
-						<div class="title ">
-							<div class="cmdName">heatedBedTargetTemperature</div>
-						</div>
-						<div class="content-sm ">
-							<div class="input-group buttons">
-							<span class="input-group-btn" style="position: relative;">
-								<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-							</span>
-							<input type="text" class="input-sm in_value form-control" value="#heatedBedTargetTemperature# °C">
-							<span class="input-group-btn" style="position: relative;">
-								<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-							</span>
-							</div>
-						</div>
-						<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-							<div class="content-sm">
-								<a class="btn btn-sm btn-default action">on</a>
-							</div>
-						</div>
-						<script>
-							$('.cmd[data-cmd_id=#settempbed_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val())}});
-							})
-							$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
-							let max = ('100' == '') ?  Number.MAX_VALUE : parseFloat('100')
-							let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
-							if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
-								jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
-								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
-							}
-							})
-							$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
-							let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
-							let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
-							if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
-								jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
-								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
-							}
-							})
-							jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
-							$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(_options.value+' °C')
-							});
-						</script>
-					</div>
 					<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#zoffset_id#" data-cmd_uid="#zoffset_uid#" data-version="dashboard" data-eqlogic_id="678">
 						<div class="title ">
 							<div class="cmdName">offset</div>
@@ -398,11 +281,6 @@
 						</script>
 					</div>
 					<div>
-						<div class="cmd cmd-widget tooltips smstart" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#start_id#" data-cmd_uid="cmd#start_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-							<div class="content-xs">
-								<a class="btn btn-sm btn-default action">start</a>
-							</div>
-						</div>
 						<div class="cmd cmd-widget tooltips smpause" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#pause_id#" data-cmd_uid="cmd#pause_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 							<div class="content-xs">
 								<a class="btn btn-sm btn-default action">pause</a>
@@ -419,10 +297,6 @@
 							</div>
 						</div>
 						<script>
-							$('.cmd[data-cmd_id=#start_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#start_id#'})
-								jeedom.cmd.execute({id: '#refresh_id#'})
-							})
 							$('.cmd[data-cmd_id=#pause_id#]:last .action').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#pause_id#'})
 								jeedom.cmd.execute({id: '#refresh_id#'})
@@ -633,6 +507,124 @@
 						<strong>MENU outil</strong>
 					</div>
 					<div>
+						<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#heatedBedTemperature_id#" data-cmd_uid="cmd#heatedBedTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #heatedBedTemperature_collectDate#">
+							<div class="content-xs">
+								<span   class="cmdName">heatedBedTemperature : </span> 
+								<strong class="state">#heatedBedTemperature#</strong>
+							</div>
+							<script>
+								jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
+									let cmd = $('.cmd[data-cmd_id=#heatedBedTemperature_id#]')
+									cmd.attr('title', 'Valeur du: '+_options.collectDate)
+									cmd.find('.state').empty().append(_options.display_value)
+								});
+								jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTemperature_id#',display_value: '#heatedBedTemperature#', valueDate: '#heatedBedTemperature_valueDate#', collectDate: '#heatedBedTemperature_collectDate#', alertLevel: '#heatedBedTemperature_alertLevel#'}]);
+							</script>
+						</div>
+						<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature_collectDate#">
+							<div class="content-xs">
+								<span   class="cmdName">nozzleTemperature : </span> 
+								<strong class="state">#nozzleTemperature#</strong>
+							</div>
+							<script>
+								jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
+									let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
+									cmd.attr('title', 'Valeur du: '+_options.collectDate)
+									cmd.find('.state').empty().append(_options.display_value)
+								});
+								jeedom.cmd.refreshValue([{cmd_id :'#nozzleTemperature_id#',display_value: '#nozzleTemperature#', valueDate: '#nozzleTemperature_valueDate#', collectDate: '#nozzleTemperature_collectDate#', alertLevel: '#nozzleTemperature_alertLevel#'}]);
+							</script>
+						</div>
+						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div class="title ">
+								<div class="cmdName">nozzleTargetTemperature</div>
+							</div>
+							<div class="content-sm ">
+								<div class="input-group buttons">
+								<span class="input-group-btn" style="position: relative;">
+									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+								</span>
+								<input type="text" class="input-sm in_value form-control" value="#nozzleTargetTemperature# °C">
+								<span class="input-group-btn" style="position: relative;">
+									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+								</span>
+								</div>
+							</div>
+							<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<a class="btn btn-sm btn-default action">set</a>
+								</div>
+							</div>
+							<script>
+								$('.cmd[data-cmd_id=#settempnozzle_id#]:last .action').off('click').on('click', function () {
+									jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val())}});
+								})
+								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
+								let max = ('250' == '') ?  Number.MAX_VALUE : parseFloat('250')
+								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
+									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
+								}
+								})
+								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
+								let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
+								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
+									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
+								}
+								})
+								jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
+								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(_options.value+' °C')
+								});
+							</script>
+						</div>
+						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div class="title ">
+								<div class="cmdName">heatedBedTargetTemperature</div>
+							</div>
+							<div class="content-sm ">
+								<div class="input-group buttons">
+								<span class="input-group-btn" style="position: relative;">
+									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+								</span>
+								<input type="text" class="input-sm in_value form-control" value="#heatedBedTargetTemperature# °C">
+								<span class="input-group-btn" style="position: relative;">
+									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+								</span>
+								</div>
+							</div>
+							<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<a class="btn btn-sm btn-default action">set</a>
+								</div>
+							</div>
+							<script>
+								$('.cmd[data-cmd_id=#settempbed_id#]:last .action').off('click').on('click', function () {
+									jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val())}});
+								})
+								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
+								let max = ('100' == '') ?  Number.MAX_VALUE : parseFloat('100')
+								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
+									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
+									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
+								}
+								})
+								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
+								let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
+								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
+									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
+									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
+								}
+								})
+								jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
+								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(_options.value+' °C')
+								});
+							</script>
+						</div>
 						<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 							<div class="content-sm">
 								<a class="btn btn-sm btn-default action">reload</a>
@@ -899,40 +891,89 @@
 							#filelist#
 						</div>
 					</div>
-					<!-- renamefile','renamefile','action'
-					deletefile','deletefile','action'
-					addfile'   ,'addfile'   ,'action'
-					newnamefile','newnamefile','action'
-					newfile'    ,'newfile'    ,'action'
-					sendgcode' ,'sendgcode'    ,'action' -->
 					<script>
 						jeedom.cmd.addUpdateFunction('#filelist_id#',function(_options) {
 							let headtable = ["nom","taille","date"];
 							let commande = [];
 							let player = #uid#js_snapmaker_printhtmltable(_options.display_value,'#filelist_id#',headtable,commande);
 						});
-						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value: "#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
+						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
+						function #uid#js_snapmaker_selectfichier(postion_tableau) {
+							/* let tableligne = $('.cmd[data-cmd_id=#filelist_id#] .table tbody tr:nth-child('+postion_tableau+')');
+							let nom = tableligne.find("td:eq(0)").text();
+							let date = tableligne.find("td:eq(1)").text();
+							let taille = tableligne.find("td:eq(2)").text();
+							let ligne = tableligne.find("td:eq(3)").text();
+							let temps = tableligne.find("td:eq(4)").text();
+							let image = tableligne.find("td:eq(5)").text();
+							$('.cmd .fileselect .fileselectname .state').text("nom");
+							$('.cmd .fileselect .fileselectdate .state').text("date");
+							$('.cmd .fileselect .fileselecttaille .state').text("taille");
+							$('.cmd .fileselect .fileselectligne .state').text("ligne");
+							$('.cmd .fileselect .fileselecttemps .state').text("temps");
+							$('.cmd .fileselect .fileselectimage .state').text("image"); */
+							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .renamefile').prop('disabled', false);
+							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .deletefile').prop('disabled', false);
+							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .start').prop('disabled', false);
+							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .download').prop('disabled', false);
+						}
 					</script>
 				</div>
-				<div class="tooltips cmd cmd-widget fileselect" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" data-eqlogic_id="#filelist_id#" style="display: block;">
-					
-					
-					
-					<iframe id="my_iframe" style="display:none;"></iframe>
-					<script>
-						function Download(url) {
-							document.getElementById('my_iframe').src = url;
-						};
-						$('a#someID').attr({target: '_blank', href  : 'http://localhost/directory/file.pdf'});
-					</script>
+				<div class="tooltips cmd cmd-widget fileselect" style="display: block;">
+					<div style="display: flex; justify-content: space-around;">
+						<div >
+							<div class="cmd cmd-widget fileselectname">
+								<div class="content-xs">
+									<span   class="cmdName">nom : </span> 
+									<strong class="state"></strong>
+								</div>
+							</div>
+							<div class="cmd cmd-widget fileselectdate">
+								<div class="content-xs">
+									<span   class="cmdName">date : </span> 
+									<strong class="state"></strong>
+								</div>
+							</div>
+							<div class="cmd cmd-widget fileselecttaille">
+								<div class="content-xs">
+									<span   class="cmdName">taille : </span> 
+									<strong class="state"></strong>
+								</div>
+							</div>
+						</div>
+						<div>
+							<div class="cmd cmd-widget fileselectligne">
+								<div class="content-xs">
+									<span   class="cmdName">nbr ligne : </span> 
+									<strong class="state"></strong>
+								</div>
+							</div>
+							<div class="cmd cmd-widget fileselecttemps">
+								<div class="content-xs">
+									<span   class="cmdName">temps : </span> 
+									<strong class="state"></strong>
+								</div>
+							</div>
+							<div class="cmd cmd-widget fileselectimage">
+								<div class="content-xs">
+									<span   class="cmdName">image : </span> 
+									<strong class="state"></strong>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="content-xs">
+						<a class="btn btn-sm btn-default renamefile" disabled>rename</a>
+						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
+						<a class="btn btn-sm btn-default start" disabled>start</a>
+						<a class="btn btn-sm btn-default download" disabled>download</a>
+					</div>
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#newfile_id#" data-cmd_uid="cmd#newfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<div>
 						<input type="file" class="fichierimport" accept="gcode">
 						<div class="content-xs">
 							<a class="btn btn-sm btn-default uplocal">upload local</a>
-						</div>
-						<div class="content-xs">
 							<a class="btn btn-sm btn-default upsnap">upload snap</a>
 						</div>
 					</div>

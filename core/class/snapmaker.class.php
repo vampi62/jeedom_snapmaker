@@ -113,8 +113,6 @@ class snapmaker extends eqLogic {
     $this->create_element('renamefile','renamefile','action','other');
     $this->create_element('deletefile','deletefile','action','other');
     $this->create_element('addfile'   ,'addfile'   ,'action','other');
-    $this->create_element('newnamefile','newnamefile','action','message');
-    $this->create_element('newfile'    ,'newfile'    ,'action','message');
 
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
@@ -128,10 +126,6 @@ class snapmaker extends eqLogic {
     $this->create_element('setpauseifopen'  ,'setpauseifopen'  ,'action','other');
     $this->create_element('unsetpauseifopen','unsetpauseifopen','action','other');
     
-    $this->create_element('newtempnozzle','newtempnozzle','action','message');
-    $this->create_element('newtempbed'   ,'newtempbed'   ,'action','message');
-    $this->create_element('newspeed'     ,'newspeed'     ,'action','message');
-    $this->create_element('newzoffset'   ,'newzoffset'   ,'action','message');
     $this->create_element('settempnozzle','settempnozzle','action','other');
     $this->create_element('settempbed'   ,'settempbed'   ,'action','other');
     $this->create_element('setspeed'     ,'setspeed'     ,'action','other');
@@ -394,12 +388,15 @@ class snapmakerCmd extends cmd {
             $line = fgets($filecont);
             if (strpos($line, ';thumbnail:') !== false) {
               $thumbnail = substr($line, strpos($line, ';thumbnail:') + strlen(';thumbnail:') + 1);
+              $thumbnail = str_replace(array("\r", "" . PHP_EOL), '', $thumbnail);
             }
             if (strpos($line, ';file_total_lines:') !== false) {
               $file_total_lines = substr($line, strpos($line, ';file_total_lines:') + strlen(';file_total_lines:') + 1);
+              $file_total_lines = str_replace(array("\r", "" . PHP_EOL), '', $file_total_lines);
             }
             if (strpos($line, ';estimated_time(s):') !== false) {
               $estimated_time = substr($line, strpos($line, ';estimated_time(s):') + strlen(';estimated_time(s):') + 1);
+              $estimated_time = str_replace(array("\r", "" . PHP_EOL), '', $estimated_time);
             }
           }
           fclose($filecont);
