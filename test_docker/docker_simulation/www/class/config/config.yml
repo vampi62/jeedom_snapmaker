@@ -3,8 +3,8 @@ Install: false
 General:
     name: computercraft_api
 DataBase:
-    dbAdress: 0.0.0.0
-    dbName: dbname
-    dbUser: dbuser
-    dbPassword: dbpass
+    dbAdress: 192.168.2.52
+    dbName: snapmaker
+    dbUser: snapmaker
+    dbPassword: snapmaker
     dbPort: 3306

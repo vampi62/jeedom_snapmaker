@@ -9,15 +9,20 @@ class Simu
 	{
 		$this->bdd = $bdd;
 		$this->token = $token;
-		
-		$reponseConnection = $bdd->prepare('SELECT * FROM apikey WHERE keyg = :user');
-		$reponseConnection->execute(array(
-			'user' => $token,
-		));
+		if ($_GET['token'] != "") {
+			$reponseConnection = $bdd->prepare('SELECT * FROM apikey WHERE keyg = :user');
+			$reponseConnection->execute(array(
+				'user' => $token,
+			));
 
 
-		$reponseConnection = $reponseConnection->fetch(PDO::FETCH_ASSOC);
-		$this->reponseConnection = $reponseConnection;
+			$reponseConnection = $reponseConnection->fetch(PDO::FETCH_ASSOC);
+			$this->reponseConnection = $reponseConnection;
+		}
+		else
+		{
+			$this->reponseConnection = array();
+		}
 	}
 	
 	public function key_exist()
@@ -42,10 +47,21 @@ class Simu
 			return false;
 		}
 	}
+	public function key_connect()
+	{
+		if($this->reponseConnection["connect"])
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 	public function setnewkey()
 	{
-		$newkey = gen_api_key();
+		$newkey = $this->gen_api_key();
 		$this->setkeydb($newkey);
 		$this->token = $newkey;
 		$this->set_key_connect(1);
@@ -83,7 +99,7 @@ class Simu
 
 	private function set_key_connect($con)
 	{
-		$date = strtotime(date('Y-m-d H:i:s'));
+		$date = date('Y-m-d H:i:s');
 		$req = $this->bdd->prepare('UPDATE apikey SET connect = :connect, time = :date WHERE keyg = :keyg');
 		$req->execute(array(
 			'connect' => $con,
@@ -94,10 +110,10 @@ class Simu
 
 	private function setkeydb($key)
 	{
-		$date = strtotime(date('Y-m-d H:i:s'));
-		$req = $this->bdd->prepare('INSERT INTO apikey(keyg, valide, connect, time) VALUES(:keyg, 0, 0, :date)');
+		$date = date('Y-m-d H:i:s');
+		$req = $this->bdd->prepare('INSERT INTO apikey(keyg, valide, connect, time) VALUES(:keyg, 0, 1, :date)');
 		$req->execute(array(
-			'keyg' => $keyg,
+			'keyg' => $key,
 			'date' => $date
 		));
 	}

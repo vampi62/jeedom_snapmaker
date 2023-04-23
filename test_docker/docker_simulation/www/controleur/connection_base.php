@@ -4,7 +4,7 @@
 	On utilise pour cela une classe intermédiaire "base" qui récupère / écrit / update les données sans 
 	aucun traitement.
 	*/
-	require_once('modele/base.php');
+	require_once('class/base.php');
 	$base = new base($_Serveur_['DataBase']);
 	$bddConnection = $base->getConnection();
 

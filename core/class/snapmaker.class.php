@@ -117,8 +117,9 @@ class snapmaker extends eqLogic {
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
 
-    $this->create_element('sendfile'  ,'sendfile'     ,'action','other');
-    $this->create_element('sendgcode' ,'sendgcode'    ,'action','other');
+    $this->create_element('sendfile'   ,'sendfile'   ,'action','other');
+    $this->create_element('sendgcode'  ,'sendgcode'  ,'action','other');
+    $this->create_element('execcomande','execcomande','action','message');
 
     $this->create_element('reload','reload','action','other');
     $this->create_element('unload','unload','action','other');

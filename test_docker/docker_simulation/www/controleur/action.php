@@ -2,9 +2,9 @@
 /*
 	Ce fichier PHP effectue telle ou telle action selon le contenu des gets envoyés
 */
-if(isset($url[0]))
+if(isset($_GET['action']))
 {
-	switch(strtolower($url[0]))	{
+	switch(strtolower($_GET['action']))	{
 		// on utilise ici un switch pour inclure telle ou telle page selon l'action.
 	
 		//connection doit être appelé à chaque action securisée car computercraft n'enregistre pas de session
@@ -15,8 +15,8 @@ if(isset($url[0]))
 			include('controleur/connect.php');
 		break;
 
-		case 'connect': // compte libre
-			include('controleur/connect.php');
+		case 'enclosure': // compte libre
+			include('controleur/enclosure.php');
 		break;
 
 		case 'status': // compte libre
