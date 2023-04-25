@@ -547,6 +547,9 @@ class snapmakerCmd extends cmd {
       case 'unsetautoconnect':
         $eqlogic->checkAndUpdateCmd('autoconnect', "0");
       break;
+      case 'execcomande':
+        $eqlogic->sendmessage('execcomande', $_options['message']);
+      break;
     }
   }
   private function getallvaluearray($liste, $keyorigin = "") {
@@ -569,7 +572,6 @@ class snapmakerCmd extends cmd {
         }
       }
     }
-    return $result;
   }
   /*     * **********************Getteur Setteur*************************** */
 

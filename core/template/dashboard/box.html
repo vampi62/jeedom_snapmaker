@@ -83,6 +83,13 @@
 					</div>
 					<div class="contenue">
 						<div>
+							<span   class="cmdName">status connexion : </span>
+							<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#status_id#" data-cmd_uid="cmd#status_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #status_collectDate#">
+								<div class="content-sm">
+									<span class="iconoff"><i class="fas fa-times"></i></span>
+									<span class="iconon"><i class="icon jeedom-prise"></i></span>
+								</div>
+							</div>
 							<div class="cmd cmd-widget tooltips connect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#connect_id#" data-cmd_uid="cmd#connect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">connect</a>
@@ -91,12 +98,6 @@
 							<div class="cmd cmd-widget tooltips disconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#disconnect_id#" data-cmd_uid="cmd#disconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">disconnect</a>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#status_id#" data-cmd_uid="cmd#status_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #status_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="fas fa-times"></i></span>
-									<span class="iconon"><i class="icon jeedom-prise"></i></span>
 								</div>
 							</div>
 							<script>
@@ -130,6 +131,13 @@
 							</script>
 						</div>
 						<div>
+							<span   class="cmdName">status re-connexion : </span>
+							<div class="cmd cmd-widget tooltips autoconnect" data-type="info" data-subtype="numeric" data-cmd_id="#autoconnect_id#" data-cmd_uid="cmd#autoconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoconnect_collectDate#">
+								<div class="content-sm">
+									<span class="iconoff"><i class="fas fa-times"></i></span>
+									<span class="iconon"><i class="icon jeedom-prise"></i></span>
+								</div>
+							</div>
 							<div class="cmd cmd-widget tooltips setautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoconnect_id#" data-cmd_uid="cmd#setautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">activer auto-reco</a>
@@ -138,12 +146,6 @@
 							<div class="cmd cmd-widget tooltips unsetautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoconnect_id#" data-cmd_uid="cmd#unsetautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">deactiver auto-reco</a>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips autoconnect" data-type="info" data-subtype="numeric" data-cmd_id="#autoconnect_id#" data-cmd_uid="cmd#autoconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoconnect_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="fas fa-times"></i></span>
-									<span class="iconon"><i class="icon jeedom-prise"></i></span>
 								</div>
 							</div>
 							<script>
@@ -199,7 +201,7 @@
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
 								</span>
-								<input type="text" class="input-sm in_value form-control" value="#workSpeed# mm">
+								<input type="text" class="input-sm in_value form-control" value="#zoffset# mm">
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
 								</span>
@@ -235,7 +237,7 @@
 								});
 							</script>
 						</div>
-						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#newspeed_id#" data-cmd_uid="#newspeed_uid#" data-version="dashboard" data-eqlogic_id="678">
+						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#workSpeed_id#" data-cmd_uid="#workSpeed_uid#" data-version="dashboard" data-eqlogic_id="678">
 							<div class="title ">
 								<div class="cmdName">vitesse</div>
 							</div>
@@ -258,26 +260,26 @@
 							<script>
 								$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
 									jeedom.cmd.execute({id: '#setspeed_id#'})
-									jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#newspeed_id#] .in_value').val())}});
+									jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val())}});
 								})
-								$('.cmd[data-cmd_id=#newspeed_id#] .bt_plus').on('click', function () {
+								$('.cmd[data-cmd_id=#workSpeed_id#] .bt_plus').on('click', function () {
 								let max = ('200' == '') ?  Number.MAX_VALUE : parseFloat('200')
 								let step = (isNaN(parseFloat('#step#'))) ?  0.5 : parseFloat('#step#')
-								if (parseFloat($('.cmd[data-cmd_id=#newspeed_id#] .in_value').val()) <= max - step ) {
-									jeedom.cmd.refreshValue([{cmd_id :'#newspeed_id#',value: parseFloat($('.cmd[data-cmd_id=#newspeed_id#] .in_value').val()) + step}])
-									$('.cmd[data-cmd_id=#newspeed_id#] .in_value').trigger('change')
+								if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
+									jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
+									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').trigger('change')
 								}
 								})
-								$('.cmd[data-cmd_id=#newspeed_id#] .bt_minus').on('click', function () {
+								$('.cmd[data-cmd_id=#workSpeed_id#] .bt_minus').on('click', function () {
 								let min = ('1' == '') ? Number.MIN_VALUE : parseFloat('1')
 								let step = (isNaN(parseFloat('#step#'))) ?  0.5 : parseFloat('#step#')
-								if (parseFloat($('.cmd[data-cmd_id=#newspeed_id#] .in_value').val()) >= min + step) {
-									jeedom.cmd.refreshValue([{cmd_id :'#newspeed_id#',value: parseFloat($('.cmd[data-cmd_id=#newspeed_id#] .in_value').val()) - step}])
-									$('.cmd[data-cmd_id=#newspeed_id#] .in_value').trigger('change')
+								if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
+									jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
+									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').trigger('change')
 								}
 								})
-								jeedom.cmd.addUpdateFunction('#newspeed_id#',function(_options) {
-								$('.cmd[data-cmd_id=#newspeed_id#] .in_value').val(_options.value+' %')
+								jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
+								$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.value+' %')
 								});
 							</script>
 						</div>
@@ -661,6 +663,13 @@
 					</div>
 					<div class="contenue">
 						<div>
+							<span   class="cmdName">lumière : </span>
+							<div class="cmd cmd-widget tooltips EnclosureLight" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureLight_id#" data-cmd_uid="cmd#EnclosureLight_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureLight_collectDate#">
+								<div class="content-sm">
+									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
+									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+								</div>
+							</div>
 							<div class="cmd cmd-widget tooltips setlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setlight_id#" data-cmd_uid="cmd#setlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">on</a>
@@ -669,12 +678,6 @@
 							<div class="cmd cmd-widget tooltips unsetlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetlight_id#" data-cmd_uid="cmd#unsetlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">off</a>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips EnclosureLight" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureLight_id#" data-cmd_uid="cmd#EnclosureLight_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureLight_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
 								</div>
 							</div>
 							<script>
@@ -708,6 +711,13 @@
 							</script>
 						</div>
 						<div>
+							<span   class="cmdName">ventilation : </span>
+							<div class="cmd cmd-widget tooltips EnclosureFan" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureFan_id#" data-cmd_uid="cmd#EnclosureFan_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureFan_collectDate#">
+								<div class="content-sm">
+									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
+									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+								</div>
+							</div>
 							<div class="cmd cmd-widget tooltips setfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setfan_id#" data-cmd_uid="cmd#setfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">on</a>
@@ -716,12 +726,6 @@
 							<div class="cmd cmd-widget tooltips unsetfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetfan_id#" data-cmd_uid="cmd#unsetfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">off</a>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips EnclosureFan" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureFan_id#" data-cmd_uid="cmd#EnclosureFan_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureFan_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
 								</div>
 							</div>
 							<script>
@@ -755,9 +759,16 @@
 							</script>
 						</div>
 						<div>
+							<span   class="cmdName">pause si caisson ouvert : </span>
+							<div class="cmd cmd-widget tooltips stopIfEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#stopIfEnclosureDoorOpen_id#" data-cmd_uid="cmd#stopIfEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #stopIfEnclosureDoorOpen_collectDate#">
+								<div class="content-sm">
+									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
+									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+								</div>
+							</div>
 							<div class="cmd cmd-widget tooltips setpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setpauseifopen_id#" data-cmd_uid="cmd#setpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">pause</a>
+									<a class="btn btn-sm btn-default action">on</a>
 								</div>
 							</div>
 							<div class="cmd cmd-widget tooltips unsetpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetpauseifopen_id#" data-cmd_uid="cmd#unsetpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
@@ -765,12 +776,7 @@
 									<a class="btn btn-sm btn-default action">off</a>
 								</div>
 							</div>
-							<div class="cmd cmd-widget tooltips stopIfEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#stopIfEnclosureDoorOpen_id#" data-cmd_uid="cmd#stopIfEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #stopIfEnclosureDoorOpen_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
-								</div>
-							</div>
+							<span   class="cmdName">etat caisson : </span>
 							<div class="cmd cmd-widget tooltips isEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#isEnclosureDoorOpen_id#" data-cmd_uid="cmd#isEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #isEnclosureDoorOpen_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
@@ -855,15 +861,15 @@
 						</div>
 						<script>
 							function #uid#updatealim_but(stats) {
-								if (stats == 0) { // en attente
+								if (stats == '0') { // en attente
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
 								}
-								if (stats == 1) { // en cours
+								if (stats == '1') { // en cours
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
 								}
-								if (stats == -1) { // pas de commande
+								if (stats == '-1') { // pas de commande
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
 								}
@@ -973,7 +979,7 @@
 						<a class="btn btn-sm btn-default download" disabled>download</a>
 					</div>
 				</div>
-				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#newfile_id#" data-cmd_uid="cmd#newfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
+				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<div>
 						<input type="file" class="fichierimport" accept="gcode">
 						<div class="content-xs">
@@ -982,14 +988,14 @@
 						</div>
 					</div>
 					<script>
-						$('.cmd[data-cmd_id=#newfile_id#]:last .uplocal').on('click', function() {
-							fi = $('.cmd[data-cmd_id=#newfile_id#] .fichierimport');
+						$('.cmd[data-cmd_id=#sendfile_id#]:last .uplocal').on('click', function() {
+							fi = $('.cmd[data-cmd_id=#sendfile_id#] .fichierimport');
 							//jeedom.cmd.execute({id: '#addfile_id#', value: {message: fi.files[0].name, fichier: fi.files[0]}});
 							// vide le champ de saisie du message
 							fi.val('');
 						});
-						$('.cmd[data-cmd_id=#newfile_id#]:last .upsnap').on('click', function() {
-							fi = $('.cmd[data-cmd_id=#newfile_id#] .fichierimport');
+						$('.cmd[data-cmd_id=#sendfile_id#]:last .upsnap').on('click', function() {
+							fi = $('.cmd[data-cmd_id=#sendfile_id#] .fichierimport');
 							//jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fi.files[0].name, fichier: fi.files[0]}});
 							// vide le champ de saisie du message
 							fi.val('');
@@ -1003,60 +1009,54 @@
 				</div>
 				<div class="tooltips cmd cmd-widget axesarrow" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" style="display: block;">
 					<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px;">
-						<table style="border: none;">
+						<table style="border: none; ">
 							<tr>
 								<td ><button class="" hidden><i class=""></i></button></td>
-								<td ><button class="ymax"><i class="fa fa-arrow-up"></i></button></td>
+								<td ><button class="ymax"><i class="fa fa-arrow-up fa-5x"></i></button></td>
 								<td ><button class="" hidden><i class="" ></i></button></td>
-								<td ><button class="up"><i class="fa fa-arrow-up"></i></button></td>
+								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
+								<td ><button class="insert"><i class="fa fa-plus fa-5x"></i></button></td>
 							</tr>
 							<tr>
-								<td ><button class="left"><i class="fa fa-arrow-left"></i></button></td>
-								<td ><i class="fa fa-arrows" hidden></i></td>
-								<td ><button class="right"><i class="fa fa-arrow-right"></i></button></td>
-								<td ><i class="fa fa-arrows-v" hidden></i></td>
+								<td style="text-align: right;"><button class="left"><i class="fa fa-arrow-left fa-5x"></i></button></td>
+								<td class="text-center">XY</td>
+								<td ><button class="right"><i class="fa fa-arrow-right fa-5x"></i></button></td>
+								<td class="text-center">Z</td>
+								<td class="text-center">E</td>
 							</tr>
 							<tr>
-								<td ><button class="home"><i class="fa fa-home"></i></button></td>
-								<td ><button class="ymin"><i class="fa fa-arrow-down"></i></button></td>
-								<td ><button class="" hidden><i class="fa fa-arrow"></i></button></td>
-								<td ><button class="down"><i class="fa fa-arrow-down"></i></button></td>
+								<td ><button class="home"><i class="fa fa-home fa-5x"></i></button></td>
+								<td ><button class="ymin"><i class="fa fa-arrow-down fa-5x"></i></button></td>
+								<td ><button class="" hidden><i class="fa fa-arrow fa-5x"></i></button></td>
+								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
+								<td ><button class="retract"><i class="fa fa-minus fa-5x"></i></button></td>
 							</tr>
 						</table>
-						<div class="cmd cmd-widget tooltips smstop" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#stop_id#" data-cmd_uid="cmd#stop_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-							<div class="content-xs">
-								<a class="btn btn-sm btn-default action">stop</a>
-							</div>
-						</div>
-						<div class="tooltips cmd cmd-widget sendchat" data-type="action" data-subtype="message" data-cmd_id="#sendchat_id#" data-cmd_uid="cmd#sendchat_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
+						<div class="tooltips cmd cmd-widget execcomande" data-type="action" data-subtype="message" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 							<div class="content-lg">
-								<textarea class="form-control input-sm message" rows="1" placeholder="Message" data-cmd_id="#sendchat_id#" data-cmd_uid="cmd#sendchat_uid#"></textarea>
+								<textarea class="form-control input-sm message" rows="1" placeholder="Commande" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#"></textarea>
 								<a class="btn btn-xs execute">envoyer</a>
 							</div>
 							<script>
-								$('.cmd[data-cmd_id=#sendchat_id#]:last .execute').on('click', function() {
-									jeedom.cmd.execute({id: '#sendchat_id#', value: {message: $('.cmd[data-cmd_id=#sendchat_id#] .message').value()}});
+								$('.cmd[data-cmd_id=#execcomande_id#]:last .execute').on('click', function() {
+									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
 									// vide le champ de saisie du message
-									$('.cmd[data-cmd_id=#sendchat_id#] .message').val('');
+									$('.cmd[data-cmd_id=#execcomande_id#] .message').val('');
 								});
 							</script>
 						</div>
 						<script>
 							$('.cmd[data-cmd_id=#pause_id#]:last .action').off('click').on('click', function () {
-							jeedom.cmd.execute({id: '#sendchat_id#', value: {message: $('.cmd[data-cmd_id=#sendchat_id#] .message').value()}});
-								jeedom.cmd.execute({id: '#refresh_id#'})
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
 							})
 							$('.cmd[data-cmd_id=#resume_id#]:last .action').off('click').on('click', function () {
-							jeedom.cmd.execute({id: '#sendchat_id#', value: {message: $('.cmd[data-cmd_id=#sendchat_id#] .message').value()}});
-								jeedom.cmd.execute({id: '#refresh_id#'})
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
 							})
 							$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
-							jeedom.cmd.execute({id: '#sendchat_id#', value: {message: $('.cmd[data-cmd_id=#sendchat_id#] .message').value()}});
-								jeedom.cmd.execute({id: '#refresh_id#'})
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
 							})
 							$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#sendchat_id#'});
-								jeedom.cmd.execute({id: '#refresh_id#'})
+								jeedom.cmd.execute({id: '#execcomande_id#'});
 							})
 						</script>
 					</div>
