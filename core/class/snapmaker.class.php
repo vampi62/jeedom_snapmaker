@@ -334,19 +334,21 @@ class snapmaker extends eqLogic {
     if (is_object($cmd)) {
       $replace['#aliminfo#'] = $cmd->execCmd();
       $replace['#aliminfo_id#'] = $cmd->getId();
-      $replace['#aliminfo_valueDate#']= date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
-      $replace['#aliminfo_collectDate#'] =date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
-      $replace['#aliminfo_updatetime#'] =date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
+      $replace['#aliminfo_valueDate#'] = date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
+      $replace['#aliminfo_collectDate#'] = date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
+      $replace['#aliminfo_updatetime#'] = date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
     }
     else {
       $replace['#aliminfo#'] = "-1";
       $replace['#aliminfo_id#'] = "-1";
-      $replace['#aliminfo_valueDate#']= date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
-      $replace['#aliminfo_collectDate#'] =date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
-      $replace['#aliminfo_updatetime#'] =date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
+      $replace['#aliminfo_valueDate#'] = date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
+      $replace['#aliminfo_collectDate#'] = date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
+      $replace['#aliminfo_updatetime#'] = date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
     }
-    $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-150);
+    $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-180);
     $replace['#widthfilelist#'] = strval(intval($replace['#width#']));
+    $replace['#heightmenu#'] = strval(intval($replace['#height#'])-50);
+    $replace['#widthmenu#'] = strval(intval($replace['#width#']));
     $widgetType = getTemplate('core', $version, 'box', __CLASS__);
 		return $this->postToHtml($version, template_replace($replace, $widgetType));
 	}

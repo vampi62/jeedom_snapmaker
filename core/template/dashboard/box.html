@@ -76,7 +76,7 @@
 	</script>
 	<div class="eq_body_#id#" >
 		<center>
-			<div class="Pan_menu">
+			<div class="Pan_menu" style="max-width: #widthmenu#px; min-width: #widthmenu#px; max-height: #heightmenu#px; min-height: #heightmenu#px; overflow:auto;">
 				<div class="menu-menu">
 					<div class="content-xs titre">
 						<strong>MENU</strong>
@@ -102,15 +102,19 @@
 							</div>
 							<script>
 								function #uid#updatestatus_but(stats) {
-									if (stats == 0) { // en attente
+									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#status_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#status_id#] .iconon').hide();
+										$('.cmd[data-cmd_id=#status_id#] .connect').show();
+										$('.cmd[data-cmd_id=#status_id#] .disconnect').hide();
 									}
-									if (stats == 1) { // en cours
+									else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#status_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#status_id#] .iconon').show();
+										$('.cmd[data-cmd_id=#status_id#] .connect').hide();
+										$('.cmd[data-cmd_id=#status_id#] .disconnect').show();
 									}
-									if (stats == -1) { // pas de commande
+									else { // pas de commande
 										$('.cmd[data-cmd_id=#status_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#status_id#] .iconon').hide();
 									}
@@ -150,15 +154,19 @@
 							</div>
 							<script>
 								function #uid#updatereco_but(stats) {
-									if (stats == 0) { // en attente
+									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#autoconnect_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#autoconnect_id#] .iconon').hide();
+										$('.cmd[data-cmd_id=#autoconnect_id#] .setautoconnect').show();
+										$('.cmd[data-cmd_id=#autoconnect_id#] .unsetautoconnect').hide();
 									}
-									if (stats == 1) { // en cours
+									else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#autoconnect_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#autoconnect_id#] .iconon').show();
+										$('.cmd[data-cmd_id=#autoconnect_id#] .setautoconnect').hide();
+										$('.cmd[data-cmd_id=#autoconnect_id#] .unsetautoconnect').show();
 									}
-									if (stats == -1) { // pas de commande
+									else { // pas de commande
 										$('.cmd[data-cmd_id=#autoconnect_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#autoconnect_id#] .iconon').hide();
 									}
@@ -315,26 +323,22 @@
 							</script>
 							<script>
 								function #uid#updateListButton(stats) {
-									if (stats == 0) { // en attente
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstart').show();
+									if (stats == '0') { // en attente
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
 									}
-									if (stats == 10) { // en cours
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstart').hide();
+									else if (stats == '10') { // en cours
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
 									}
-									if (stats == 20) { //en pause
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstart').hide();
+									else if (stats == '20') { //en pause
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
 									}
-									if (stats == -1) {// retirer toutes les commandes
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstart').hide();
+									else {// retirer toutes les commandes
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
@@ -682,15 +686,19 @@
 							</div>
 							<script>
 								function #uid#updatelight_but(stats) {
-									if (stats == 0) { // en attente
+									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').hide();
+										$('.cmd[data-cmd_id=#EnclosureLight_id#] .setlight').show();
+										$('.cmd[data-cmd_id=#EnclosureLight_id#] .unsetlight').hide();
 									}
-									if (stats == 1) { // en cours
+									else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').show();
+										$('.cmd[data-cmd_id=#EnclosureLight_id#] .setlight').hide();
+										$('.cmd[data-cmd_id=#EnclosureLight_id#] .unsetlight').show();
 									}
-									if (stats == -1) { // pas de commande
+									else { // pas de commande
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').hide();
 									}
@@ -715,7 +723,7 @@
 							<div class="cmd cmd-widget tooltips EnclosureFan" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureFan_id#" data-cmd_uid="cmd#EnclosureFan_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureFan_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+									<span class="iconon"><i class="fas fa-fan"></i></span>
 								</div>
 							</div>
 							<div class="cmd cmd-widget tooltips setfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setfan_id#" data-cmd_uid="cmd#setfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
@@ -730,15 +738,19 @@
 							</div>
 							<script>
 								function #uid#updatefan_but(stats) {
-									if (stats == 0) { // en attente
+									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').hide();
+										$('.cmd[data-cmd_id=#EnclosureFan_id#] .setfan').show();
+										$('.cmd[data-cmd_id=#EnclosureFan_id#] .unsetfan').hide();
 									}
-									if (stats == 1) { // en cours
+									else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').show();
+										$('.cmd[data-cmd_id=#EnclosureFan_id#] .setfan').hide();
+										$('.cmd[data-cmd_id=#EnclosureFan_id#] .unsetfan').show();
 									}
-									if (stats == -1) { // pas de commande
+									else { // pas de commande
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').hide();
 									}
@@ -779,21 +791,21 @@
 							<span   class="cmdName">etat caisson : </span>
 							<div class="cmd cmd-widget tooltips isEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#isEnclosureDoorOpen_id#" data-cmd_uid="cmd#isEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #isEnclosureDoorOpen_collectDate#">
 								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+									<span class="iconoff"><i class="fas fa-door-closed"></i></span>
+									<span class="iconon"><i class="fas fa-door-open"></i></span>
 								</div>
 							</div>
 							<script>
 								function #uid#updatsifopen_but(stats) {
-									if (stats == 0) { // en attente
+									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
 									}
-									if (stats == 1) { // en cours
+									else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').show();
 									}
-									if (stats == -1) { // pas de commande
+									else { // pas de commande
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
 									}
@@ -814,15 +826,15 @@
 							</script>
 							<script>
 								function #uid#updatsisopen_but(stats) {
-									if (stats == 0) { // en attente
+									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
 									}
-									if (stats == 1) { // en cours
+									else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').show();
 									}
-									if (stats == -1) { // pas de commande
+									else { // pas de commande
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
 									}
@@ -864,12 +876,16 @@
 								if (stats == '0') { // en attente
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').show();
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').hide();
 								}
-								if (stats == '1') { // en cours
+								else if (stats == '1') { // en cours
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').hide();
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').show();
 								}
-								if (stats == '-1') { // pas de commande
+								else { // pas de commande
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
 								}
@@ -896,7 +912,7 @@
 					<strong>LISTE FICHIER</strong>
 				</div>
 				<div class="tooltips cmd cmd-widget filelist" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" data-eqlogic_id="#filelist_id#" style="display: block;">
-					<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px; overflow:auto;">
+					<div style="max-width: #widthfilelist#px; min-width: #widthfilelist#px; max-height: #heightfilelist#px; min-height: #heightfilelist#px; overflow:auto;">
 						<div class="state">
 							#filelist#
 						</div>
@@ -1025,13 +1041,45 @@
 								<td class="text-center">E</td>
 							</tr>
 							<tr>
-								<td ><button class="home"><i class="fa fa-home fa-5x"></i></button></td>
+								<td ><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
 								<td ><button class="ymin"><i class="fa fa-arrow-down fa-5x"></i></button></td>
 								<td ><button class="" hidden><i class="fa fa-arrow fa-5x"></i></button></td>
 								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
 								<td ><button class="retract"><i class="fa fa-minus fa-5x"></i></button></td>
 							</tr>
 						</table>
+						<div style="display: flex; justify-content: space-around;">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="exampleRadios" value="0.1" checked>
+								<label class="form-check-label">
+									0.1mm
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="exampleRadios" value="0.5">
+								<label class="form-check-label">
+									0.5mm
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="exampleRadios" value="1">
+								<label class="form-check-label">
+									1mm
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="exampleRadios" value="10">
+								<label class="form-check-label">
+									10mm
+								</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="exampleRadios" value="50">
+								<label class="form-check-label">
+									50mm
+								</label>
+							</div>
+						</div>
 						<div class="tooltips cmd cmd-widget execcomande" data-type="action" data-subtype="message" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 							<div class="content-lg">
 								<textarea class="form-control input-sm message" rows="1" placeholder="Commande" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#"></textarea>
@@ -1089,8 +1137,8 @@
 				</td>
 				<td class="td_bot3" style="width: 18px;text-align: right;" nowrap>
 					<i class="fas fa-bars cursor tooltips changecmdmenu noRefresh" title='menu' style="margin-right: 3px;"></i>
-					<i class="fas fa-child cursor tooltips changecmdfichier noRefresh" title='fichiers' style="margin-right: 3px;"></i>
-					<i class="fas fa-comment cursor tooltips changecmdaxes noRefresh" title='axes' style="margin-right: 3px;"></i>
+					<i class="fas fa-tools cursor tooltips changecmdfichier noRefresh" title='fichiers' style="margin-right: 3px;"></i>
+					<i class="fas fa-border-none cursor tooltips changecmdaxes noRefresh" title='axes' style="margin-right: 3px;"></i>
 				</td>
 			</tr>
 			<script>
