@@ -120,11 +120,11 @@
 									}
 								}
 								#uid#updatestatus_but('#status#');
-								$('.cmd[data-cmd_id=#onalim_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#onalim_id#'})
+								$('.cmd[data-cmd_id=#connect_id#]:last .action').off('click').on('click', function () {
+									jeedom.cmd.execute({id: '#connect_id#'})
 								})
-								$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#offalim_id#'})
+								$('.cmd[data-cmd_id=#disconnect_id#]:last .action').off('click').on('click', function () {
+									jeedom.cmd.execute({id: '#disconnect_id#'})
 								})
 								jeedom.cmd.addUpdateFunction('#status_id#',function(_options) {
 									let cmd = $('.cmd[data-cmd_id=#status_id#]')
@@ -225,23 +225,37 @@
 									jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val())}});
 								})
 								$('.cmd[data-cmd_id=#zoffset_id#] .bt_plus').on('click', function () {
-								let max = ('5' == '') ?  Number.MAX_VALUE : parseFloat('5')
-								let step = (isNaN(parseFloat('#step#'))) ?  0.05 : parseFloat('#step#')
+								let max = ('2' == '') ?  Number.MAX_VALUE : parseFloat('2')
+								let step = 0.05
 								if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
 									jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
 									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').trigger('change')
 								}
 								})
 								$('.cmd[data-cmd_id=#zoffset_id#] .bt_minus').on('click', function () {
-								let min = ('-5' == '') ? Number.MIN_VALUE : parseFloat('-5')
-								let step = (isNaN(parseFloat('#step#'))) ?  0.05 : parseFloat('#step#')
+								let min = ('-2' == '') ? Number.MIN_VALUE : parseFloat('-2')
+								let step = 0.05
 								if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
 									jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
 									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').trigger('change')
 								}
 								})
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
+									// on affiche la valeur
+									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+								} else {
+									// on affiche la valeur avec le suffixe
+									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(_options.display_value+' mm')
+								}
 								jeedom.cmd.addUpdateFunction('#zoffset_id#',function(_options) {
-								$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(_options.value+' mm')
+									// si la valeur n'est pas un nombre
+									if (isNaN(_options.display_value)) {
+										// on affiche la valeur
+										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+									} else {
+										// on affiche la valeur avec le suffixe
+										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(_options.display_value+' mm')
+									}
 								});
 							</script>
 						</div>
@@ -286,8 +300,23 @@
 									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').trigger('change')
 								}
 								})
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
+									// on affiche la valeur
+									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('0 %')
+								} else {
+									// on affiche la valeur avec le suffixe
+									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.display_value+' %')
+								}
 								jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
 								$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.value+' %')
+									// si la valeur n'est pas un nombre
+									if (isNaN(_options.display_value)) {
+										// on affiche la valeur
+										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('0 %')
+									} else {
+										// on affiche la valeur avec le suffixe
+										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.display_value+' %')
+									}
 								});
 							</script>
 						</div>
@@ -571,7 +600,7 @@
 								})
 								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
 								let max = ('250' == '') ?  Number.MAX_VALUE : parseFloat('250')
-								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								let step = 5
 								if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
 									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
@@ -579,7 +608,7 @@
 								})
 								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
 								let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
-								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								let step = 5
 								if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
 									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
@@ -616,7 +645,7 @@
 								})
 								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
 								let max = ('100' == '') ?  Number.MAX_VALUE : parseFloat('100')
-								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								let step = 5
 								if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
 									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
 									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
@@ -624,7 +653,7 @@
 								})
 								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
 								let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
-								let step = (isNaN(parseFloat('#step#'))) ?  5 : parseFloat('#step#')
+								let step = 5
 								if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
 									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
 									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
@@ -645,6 +674,14 @@
 								<a class="btn btn-sm btn-default action">unload</a>
 							</div>
 						</div>
+						<script>
+							$('.cmd[data-cmd_id=#reload_id#]:last .action').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#reload_id#'})
+							})
+							$('.cmd[data-cmd_id=#unload_id#]:last .action').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#unload_id#'})
+							})
+						</script>
 						<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric" data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
 							<div class="content-sm">
 								<span class="cmdName">isFilamentOut : </span>
@@ -895,7 +932,12 @@
 								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
 							$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#offalim_id#'})
+								if ($('.cmd[data-cmd_id=#printStatus_id#] .state').val() == '0') { // ne permetre d'eteindre que si l'imprimante n'est pas en cours d'impression
+									jeedom.cmd.execute({id: '#offalim_id#'})
+								}
+								else {
+									jeedom.cmd.error('Impossible d\'éteindre l\'alimentation, l\'imprimante est en cours d\'impression')
+								}
 							})
 							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
 								let cmd = $('.cmd[data-cmd_id=#aliminfo_id#]')
@@ -1050,31 +1092,31 @@
 						</table>
 						<div style="display: flex; justify-content: space-around;">
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="exampleRadios" value="0.1" checked>
+								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.1" checked>
 								<label class="form-check-label">
 									0.1mm
 								</label>
 							</div>
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="exampleRadios" value="0.5">
+								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.5">
 								<label class="form-check-label">
 									0.5mm
 								</label>
 							</div>
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="exampleRadios" value="1">
+								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="1">
 								<label class="form-check-label">
 									1mm
 								</label>
 							</div>
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="exampleRadios" value="10">
+								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="10">
 								<label class="form-check-label">
 									10mm
 								</label>
 							</div>
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="exampleRadios" value="50">
+								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="50">
 								<label class="form-check-label">
 									50mm
 								</label>
@@ -1094,17 +1136,44 @@
 							</script>
 						</div>
 						<script>
-							$('.cmd[data-cmd_id=#pause_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .home').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
 							})
-							$('.cmd[data-cmd_id=#resume_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
+
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .left').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 X+" + vitesse}}); // deplacement
 							})
-							$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .right').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 X-" + vitesse}}); // deplacement
 							})
-							$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#'});
+
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymax').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Y+" + vitesse}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymin').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Y-" + vitesse}}); // deplacement
+							})
+
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .up').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Z+" + vitesse}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .down').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Z-" + vitesse}}); // deplacement
+							})
+
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .insert').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F1000 E+" + vitesse}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retract').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F1000 E-" + vitesse}}); // deplacement
 							})
 						</script>
 					</div>
