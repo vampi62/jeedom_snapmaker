@@ -209,7 +209,7 @@
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
 								</span>
-								<input type="text" class="input-sm in_value form-control" value="#zoffset# mm">
+								<input type="text" class="input-sm in_value form-control" value="">
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
 								</span>
@@ -217,44 +217,53 @@
 							</div>
 							<div class="cmd cmd-widget tooltips setzoffset" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#" data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">on</a>
+									<a class="btn btn-sm btn-default action">set</a>
 								</div>
 							</div>
 							<script>
-								$('.cmd[data-cmd_id=#setzoffset_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val())}});
+								function reset_#zoffset_id#() {
+									if (isNaN(#zoffset#)) {
+										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+									} else {
+										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
+									}
+								}
+								reset_#zoffset_id#()
+								$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
+										reset_#zoffset_id#()
+									}
+									jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()).toFixed(2)}});
 								})
 								$('.cmd[data-cmd_id=#zoffset_id#] .bt_plus').on('click', function () {
-								let max = ('2' == '') ?  Number.MAX_VALUE : parseFloat('2')
+								let max = 2
 								let step = 0.05
-								if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
-									jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
-									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').trigger('change')
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
+									reset_#zoffset_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
+										jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
+									}
 								}
 								})
 								$('.cmd[data-cmd_id=#zoffset_id#] .bt_minus').on('click', function () {
-								let min = ('-2' == '') ? Number.MIN_VALUE : parseFloat('-2')
+								let min = -2
 								let step = 0.05
-								if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
-									jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
-									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').trigger('change')
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
+									reset_#zoffset_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
+										jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
+									}
 								}
 								})
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-									// on affiche la valeur
-									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
-								} else {
-									// on affiche la valeur avec le suffixe
-									$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(_options.display_value+' mm')
-								}
 								jeedom.cmd.addUpdateFunction('#zoffset_id#',function(_options) {
-									// si la valeur n'est pas un nombre
 									if (isNaN(_options.display_value)) {
-										// on affiche la valeur
-										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+										reset_#zoffset_id#()
 									} else {
-										// on affiche la valeur avec le suffixe
-										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(_options.display_value+' mm')
+										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(parseFloat(_options.display_value).toFixed(2) + " mm")
 									}
 								});
 							</script>
@@ -268,7 +277,7 @@
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
 								</span>
-								<input type="text" class="input-sm in_value form-control" value="#workSpeed# %">
+								<input type="text" class="input-sm in_value form-control" value="">
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
 								</span>
@@ -276,46 +285,53 @@
 							</div>
 							<div class="cmd cmd-widget tooltips setspeed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setspeed_id#" data-cmd_uid="cmd#setspeed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">on</a>
+									<a class="btn btn-sm btn-default action">set</a>
 								</div>
 							</div>
 							<script>
+								function reset_#workSpeed_id#() {
+									if (isNaN(#workSpeed#)) {
+										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
+									} else {
+										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
+									}
+								}
+								reset_#workSpeed_id#()
 								$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#setspeed_id#'})
-									jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val())}});
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
+										reset_#workSpeed_id#()
+									}
+									jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()).toFixed(0)}});
 								})
 								$('.cmd[data-cmd_id=#workSpeed_id#] .bt_plus').on('click', function () {
-								let max = ('200' == '') ?  Number.MAX_VALUE : parseFloat('200')
-								let step = (isNaN(parseFloat('#step#'))) ?  0.5 : parseFloat('#step#')
-								if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
-									jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
-									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').trigger('change')
+								let max = 200
+								let step = 1
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
+									reset_#workSpeed_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
+										jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
+									}
 								}
 								})
 								$('.cmd[data-cmd_id=#workSpeed_id#] .bt_minus').on('click', function () {
-								let min = ('1' == '') ? Number.MIN_VALUE : parseFloat('1')
-								let step = (isNaN(parseFloat('#step#'))) ?  0.5 : parseFloat('#step#')
-								if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
-									jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
-									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').trigger('change')
+								let min = 1
+								let step = 1
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
+									reset_#workSpeed_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
+										jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
+									}
 								}
 								})
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-									// on affiche la valeur
-									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('0 %')
-								} else {
-									// on affiche la valeur avec le suffixe
-									$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.display_value+' %')
-								}
 								jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
-								$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.value+' %')
-									// si la valeur n'est pas un nombre
 									if (isNaN(_options.display_value)) {
-										// on affiche la valeur
-										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('0 %')
+										reset_#workSpeed_id#()
 									} else {
-										// on affiche la valeur avec le suffixe
-										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(_options.display_value+' %')
+										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " %")
 									}
 								});
 							</script>
@@ -583,7 +599,7 @@
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
 								</span>
-								<input type="text" class="input-sm in_value form-control" value="#nozzleTargetTemperature# °C">
+								<input type="text" class="input-sm in_value form-control" value="">
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
 								</span>
@@ -595,27 +611,50 @@
 								</div>
 							</div>
 							<script>
-								$('.cmd[data-cmd_id=#settempnozzle_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val())}});
+								function reset_#nozzleTargetTemperature_id#() {
+									if (isNaN(#nozzleTargetTemperature#)) {
+										$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
+									} else {
+										$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
+									}
+								}
+								reset_#nozzleTargetTemperature_id#()
+								$('.cmd[data-cmd_id=#settempnozzle_id#] .action').off('click').on('click', function () {
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
+										reset_#nozzleTargetTemperature_id#()
+									}
+									jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()).toFixed(0)}});
 								})
 								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
-								let max = ('250' == '') ?  Number.MAX_VALUE : parseFloat('250')
-								let step = 5
-								if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
-									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
+								let max = 300
+								let step = 1
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
+									reset_#nozzleTargetTemperature_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
+										jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
+									}
 								}
 								})
 								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
-								let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
-								let step = 5
-								if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
-									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').trigger('change')
+								let min = 0
+								let step = 1
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
+									reset_#nozzleTargetTemperature_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
+										jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
+									}
 								}
 								})
 								jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
-								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(_options.value+' °C')
+									if (isNaN(_options.display_value)) {
+										reset_#nozzleTargetTemperature_id#()
+									} else {
+										$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
+									}
 								});
 							</script>
 						</div>
@@ -628,7 +667,7 @@
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
 								</span>
-								<input type="text" class="input-sm in_value form-control" value="#heatedBedTargetTemperature# °C">
+								<input type="text" class="input-sm in_value form-control" value="">
 								<span class="input-group-btn" style="position: relative;">
 									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
 								</span>
@@ -640,27 +679,50 @@
 								</div>
 							</div>
 							<script>
-								$('.cmd[data-cmd_id=#settempbed_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val())}});
+								function reset_#heatedBedTargetTemperature_id#() {
+									if (isNaN(#heatedBedTargetTemperature#)) {
+										$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
+									} else {
+										$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
+									}
+								}
+								reset_#heatedBedTargetTemperature_id#()
+								$('.cmd[data-cmd_id=#settempbed_id#] .action').off('click').on('click', function () {
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
+										reset_#heatedBedTargetTemperature_id#()
+									}
+									jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()).toFixed(0)}});
 								})
 								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
-								let max = ('100' == '') ?  Number.MAX_VALUE : parseFloat('100')
-								let step = 5
-								if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
-									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
-									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
+								let max = 100
+								let step = 1
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
+									reset_#heatedBedTargetTemperature_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
+										jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
+									}
 								}
 								})
 								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
-								let min = ('0' == '') ? Number.MIN_VALUE : parseFloat('0')
-								let step = 5
-								if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
-									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
-									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').trigger('change')
+								let min = 0
+								let step = 1
+								if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
+									reset_#heatedBedTargetTemperature_id#()
+								}
+								else {
+									if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
+										jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
+									}
 								}
 								})
 								jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
-								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(_options.value+' °C')
+									if (isNaN(_options.display_value)) {
+										reset_#heatedBedTargetTemperature_id#()
+									} else {
+										$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
+									}
 								});
 							</script>
 						</div>

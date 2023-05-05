@@ -481,21 +481,12 @@ class snapmakerCmd extends cmd {
         unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '.gcode');
       break;
       case 'settempnozzle':
-        if (!isset($_options['message']) || !empty($_options['message'])) {
-          return;
-        }
         $eqlogic->sendmessage('settempnozzle',$_options['message']);
       break;
       case 'settempbed':
-        if (!isset($_options['message']) || !empty($_options['message'])) {
-          return;
-        }
         $eqlogic->sendmessage('settempbed',$_options['message']);
       break;
       case 'setspeed':
-        if (!isset($_options['message']) || !empty($_options['message'])) {
-          return;
-        }
         $eqlogic->sendmessage('setspeed',$_options['message']);
       break;
       case 'pause':
