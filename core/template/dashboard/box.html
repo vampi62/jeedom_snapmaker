@@ -63,7 +63,7 @@
 						}
 						local_tr.appendChild(local_td);
 					}
-					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + j + ");");
+					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + j+1 + ");");
 					local_tb.appendChild(local_tr);
 				}
 			}
@@ -74,6 +74,11 @@
 			return player; // retourne la liste des joueurs pour les utiliser dans l'identification les commandes
 		}
 	</script>
+	<style>
+		.table tbody tr.highlight td {
+			background-color: rgb(118, 102, 184);
+		}
+	</style>
 	<div class="eq_body_#id#" >
 		<center>
 			<div class="Pan_menu" style="max-width: #widthmenu#px; min-width: #widthmenu#px; max-height: #heightmenu#px; min-height: #heightmenu#px; overflow:auto;">
@@ -479,7 +484,8 @@
 							</script>
 						</div>
 					</div>
-				</div><br/>
+					<br/>
+				</div>
 				<div class="menu-module">
 					<div class="content-xs titre">
 						<strong>MENU MODULE</strong>
@@ -556,7 +562,8 @@
 							</script>
 						</div>
 					</div>
-				</div><br/>
+					<br/>
+				</div>
 				<div class="menu-outil">
 					<div class="content-xs titre">
 						<strong>MENU outil</strong>
@@ -759,7 +766,8 @@
 							</script>
 						</div>
 					</div>
-				</div><br/>
+					<br/>
+				</div>
 				<div class="menu-caisson">
 					<div class="content-xs titre">
 						<strong>MENU caisson</strong>
@@ -948,7 +956,8 @@
 							</script>
 						</div>
 					</div>
-				</div><br/>
+					<br/>
+				</div>
 				<div class="menu-alim">
 					<div class="content-xs titre">
 						<strong>MENU alim</strong>
@@ -1009,6 +1018,7 @@
 							jeedom.cmd.refreshValue([{cmd_id :'#aliminfo#',display_value: '#aliminfo#', valueDate: '#aliminfo_valueDate#', collectDate: '#aliminfo_collectDate#', alertLevel: '#aliminfo_alertLevel#'}]);
 						</script>
 					</div>
+					<br/>
 				</div>
 			</div> <!-- Pan_menu -->
 			<div class="Pan_fichier" style="display: none;">
@@ -1029,23 +1039,35 @@
 						});
 						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
 						function #uid#js_snapmaker_selectfichier(postion_tableau) {
-							/* let tableligne = $('.cmd[data-cmd_id=#filelist_id#] .table tbody tr:nth-child('+postion_tableau+')');
-							let nom = tableligne.find("td:eq(0)").text();
-							let date = tableligne.find("td:eq(1)").text();
-							let taille = tableligne.find("td:eq(2)").text();
-							let ligne = tableligne.find("td:eq(3)").text();
-							let temps = tableligne.find("td:eq(4)").text();
-							let image = tableligne.find("td:eq(5)").text();
-							$('.cmd .fileselect .fileselectname .state').text("nom");
-							$('.cmd .fileselect .fileselectdate .state').text("date");
-							$('.cmd .fileselect .fileselecttaille .state').text("taille");
-							$('.cmd .fileselect .fileselectligne .state').text("ligne");
-							$('.cmd .fileselect .fileselecttemps .state').text("temps");
-							$('.cmd .fileselect .fileselectimage .state').text("image"); */
-							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .renamefile').prop('disabled', false);
-							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .deletefile').prop('disabled', false);
-							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .start').prop('disabled', false);
-							$('.eqLogic[data-eqLogic_uid=#uid#] .fileselect .download').prop('disabled', false);
+							// ajoute l'atribut selected sur la ligne selectionner
+							$('.cmd[data-eqlogic_id=#filelist_id#] .state tr').removeClass('highlight');
+							$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
+							// recupere le nom du fichier
+							let nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
+							// recupere la taille du fichier
+							let taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
+							// recupere la date du fichier
+							let datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
+							// recupere le nombre de ligne du fichier
+							let nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
+							// recupere le temps d'impression du fichier
+							let temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
+							// recupere l'image en base64 du fichier
+							let img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
+							// affiche les info du fichier
+							$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text(nomfichier);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectdate .state').text(datefichier);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttaille .state').text(taillefichier);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectligne .state').text(nbrligne);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttemps .state').text(temps_impr);
+							// insert l'image en base64 dans le src de l'image
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectimage .state').attr('src',img64);
+							// active les bouton
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .renamefile').attr('disabled',false);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .deletefile').attr('disabled',false);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
+
 						}
 					</script>
 				</div>
@@ -1086,17 +1108,21 @@
 							</div>
 							<div class="cmd cmd-widget fileselectimage">
 								<div class="content-xs">
-									<span   class="cmdName">image : </span> 
-									<strong class="state"></strong>
+									<span   class="cmdName">image : </span>
+									<img class="state" src="" style="width: 100px; height: 100px;">
 								</div>
 							</div>
 						</div>
+					</div>
+					<!-- modal rename file-->
+					<div hidden>
+
 					</div>
 					<div class="content-xs">
 						<a class="btn btn-sm btn-default renamefile" disabled>rename</a>
 						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
 						<a class="btn btn-sm btn-default start" disabled>start</a>
-						<a class="btn btn-sm btn-default download" disabled>download</a>
+						<a class="btn btn-sm btn-default download" download="" disabled>download</a>
 					</div>
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
@@ -1108,17 +1134,43 @@
 						</div>
 					</div>
 					<script>
+
+
+
+						$('.cmd[data-cmd_id=#sendfile_id#]:last .start').on('click', function() {
+							jeedom.cmd.execute({id: '#start_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
+						});
+						$('.cmd[data-cmd_id=#sendfile_id#]:last .deletefile').on('click', function() {
+							jeedom.cmd.execute({id: '#deletefile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
+						});
+						$('.cmd[data-cmd_id=#sendfile_id#]:last .download').on('click', function() {
+							// telecharge le fichier gcode selectionner
+							let nomfichier = $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text();
+							let url = "plugins/snapmaker/data/#id#/" + nomfichier;
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('href','data:text/plain;charset=utf-8,'+encodeURIComponent(url));
+						});
+
 						$('.cmd[data-cmd_id=#sendfile_id#]:last .uplocal').on('click', function() {
-							fi = $('.cmd[data-cmd_id=#sendfile_id#] .fichierimport');
-							//jeedom.cmd.execute({id: '#addfile_id#', value: {message: fi.files[0].name, fichier: fi.files[0]}});
-							// vide le champ de saisie du message
-							fi.val('');
+							// recupere le fichier uploader dans le champ input
+							let fichier = $('.cmd[data-cmd_id=#sendfile_id#]:last .fichierimport').prop('files')[0];
+							let nomfichier = fichier.name;
+							let typefichier = fichier.type;
+							let contenufichier = fichier.text();
+							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: nomfichier}});
+							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: typefichier}});
+							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: contenufichier}});
+							jeedom.cmd.execute({id: '#addfile_id#', value: {nom: nomfichier, typefile: typefichier, content: contenufichier}});
 						});
 						$('.cmd[data-cmd_id=#sendfile_id#]:last .upsnap').on('click', function() {
-							fi = $('.cmd[data-cmd_id=#sendfile_id#] .fichierimport');
-							//jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fi.files[0].name, fichier: fi.files[0]}});
-							// vide le champ de saisie du message
-							fi.val('');
+							// recupere le fichier uploader dans le champ input
+							let fichier = $('.cmd[data-cmd_id=#sendfile_id#]:last .fichierimport').prop('files')[0];
+							let nomfichier = fichier.name;
+							let typefichier = fichier.type;
+							let contenufichier = fichier.text();
+							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: nomfichier}});
+							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: typefichier}});
+							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: contenufichier}});
+							jeedom.cmd.execute({id: '#sendfile_id#', value: {nom: nomfichier, typefile: typefichier, content: contenufichier}});
 						});
 					</script>
 				</div>
@@ -1330,6 +1382,9 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-alim .titre').on('click',function () { // fichier
 					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-alim .contenue').toggle();
 				});
+				if ('#enclosure#' == false || '#enclosure#' == "") {
+					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-caisson').hide();
+				}
 			</script>
 		</table>		
 	</div>
