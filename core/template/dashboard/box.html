@@ -1134,21 +1134,56 @@
 						</div>
 					</div>
 					<script>
-
-
-
-						$('.cmd[data-cmd_id=#sendfile_id#]:last .start').on('click', function() {
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
 							jeedom.cmd.execute({id: '#start_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
 						});
-						$('.cmd[data-cmd_id=#sendfile_id#]:last .deletefile').on('click', function() {
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').on('click', function() {
 							jeedom.cmd.execute({id: '#deletefile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
+							jeedom.cmd.execute({id: '#refresh_id#'});
 						});
-						$('.cmd[data-cmd_id=#sendfile_id#]:last .download').on('click', function() {
-							// telecharge le fichier gcode selectionner
-							let nomfichier = $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text();
-							let url = "plugins/snapmaker/data/#id#/" + nomfichier;
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('href','data:text/plain;charset=utf-8,'+encodeURIComponent(url));
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
+							jeedom.cmd.execute({id: '#downloadfile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
 						});
+						jeedom.cmd.addUpdateFunction('#downloadcontent_id#',function(_options) {
+							let cmd = $('.cmd[data-cmd_id=#downloadcontent_id#]')
+							cmd.find('.state').empty().append(_options.display_value)
+							if (_options.display_value != '') { // evite un bouclage lors de la supression de la valeur une fois le fichier telecharger
+								var a = document.body.appendChild(
+									document.createElement("a")
+								);
+								a.download = "export.html";
+								a.href = "data:text/html," + cmd.find('.state').text(); // Grab the HTML
+								a.click(); // Trigger a click on the element
+								jeedom.cmd.execute({id: '#downloadfile_id#', value: {message: ""}});
+							}
+						});
+						jeedom.cmd.refreshValue([{cmd_id :'#downloadcontent#',display_value: '#downloadcontent#', valueDate: '#downloadcontent_valueDate#', collectDate: '#downloadcontent_collectDate#', alertLevel: '#downloadcontent_alertLevel#'}]);
+
+
+
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .renamefile').on('click', function() {
+							//jeedom.cmd.execute({id: '#downloadfile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
+						});
+						<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									...
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+									<button type="button" class="btn btn-primary">Save changes</button>
+								</div>
+								</div>
+							</div>
+						</div>
+
 
 						$('.cmd[data-cmd_id=#sendfile_id#]:last .uplocal').on('click', function() {
 							// recupere le fichier uploader dans le champ input
@@ -1160,19 +1195,12 @@
 							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: typefichier}});
 							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: contenufichier}});
 							jeedom.cmd.execute({id: '#addfile_id#', value: {nom: nomfichier, typefile: typefichier, content: contenufichier}});
-						});
-						$('.cmd[data-cmd_id=#sendfile_id#]:last .upsnap').on('click', function() {
-							// recupere le fichier uploader dans le champ input
-							let fichier = $('.cmd[data-cmd_id=#sendfile_id#]:last .fichierimport').prop('files')[0];
-							let nomfichier = fichier.name;
-							let typefichier = fichier.type;
-							let contenufichier = fichier.text();
-							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: nomfichier}});
-							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: typefichier}});
-							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: contenufichier}});
-							jeedom.cmd.execute({id: '#sendfile_id#', value: {nom: nomfichier, typefile: typefichier, content: contenufichier}});
+							jeedom.cmd.execute({id: '#refresh_id#'});
 						});
 					</script>
+					<div class="tooltips cmd cmd-widget downloadcontent" data-type="action" data-subtype="message" data-cmd_id="#downloadcontent_id#" data-cmd_uid="cmd#downloadcontent_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" hidden>
+						<div class="state"></div>
+					</div>
 				</div>
 			</div>  <!-- Pan_fichier -->
 			<div class="Pan_axes" style="display: none;">

@@ -117,7 +117,6 @@ class snapmaker extends eqLogic {
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
 
-    $this->create_element('sendfile'   ,'sendfile'   ,'action','other');
     $this->create_element('sendgcode'  ,'sendgcode'  ,'action','other');
     $this->create_element('execcomande','execcomande','action','message');
 
@@ -136,6 +135,10 @@ class snapmaker extends eqLogic {
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
     $this->create_element('unsetfan'     ,'unsetfan'     ,'action','other');
 
+
+    $this->create_element('downloadfile'              ,'downloadfile'              ,'action','other');
+    $this->create_element('downloadcontent'           ,'downloadcontent'           ,'info','string');
+    
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
     $this->create_element('status'                    ,'status'                    ,'info','string');
@@ -436,14 +439,13 @@ class snapmakerCmd extends cmd {
         }
         file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name, $_options['fichier']);
       break;
-      case 'delfile':
+      case 'deletefile':
         if (!isset($_options['message']) || empty($_options['message'])) {
           return;
         }
         $name = str_replace('/', '_', $_options['message']);
         if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-          $eqlogic->sendmessage('delfileok',1);
-          //unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name);
+          unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name);
         }
       break;
       case 'renamefile':
@@ -459,34 +461,26 @@ class snapmakerCmd extends cmd {
           rename(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name, dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $newname);
         }
       break;
+      case 'downloadfile':
+        if (!isset($_options['message'])) {
+          return;
+        }
+        if (empty($_options['message'])) {
+          $eqlogic->checkAndUpdateCmd("downloadcontent", "");
+        }
+        else {
+          $name = str_replace('/', '_', $_options['message']);
+          if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
+            // recupere le contenue du fichier
+            $file = file_get_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name);
+            $eqlogic->checkAndUpdateCmd("downloadcontent", $file);
+          }
+        }
       case 'connect':
         $eqlogic->sendmessage('connect',1);
       break;
       case 'disconnect':
         $eqlogic->sendmessage('disconnect',1);
-      break;
-      case 'sendfile':
-        if (!isset($_options['nom']) || empty($_options['nom'])) {
-          return;
-        }
-        if (!isset($_options['typefile']) || empty($_options['typefile'])) {
-          return;
-        }
-        if (!isset($_options['content']) || empty($_options['content'])) {
-          return;
-        }
-        $name = str_replace('/', '_', $_options['nom']);
-        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-          $i = 1;
-          // separe nom de fichier avant le point de l'extension
-          $name = substr($name, 0, strrpos($name, '.'));
-          while (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '_' . $i)) {
-            $i++;
-          }
-          $name = $name . '_' . $i;
-        }
-        file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name, $_options['content']);
-        unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name);
       break;
       case 'settempnozzle':
         $eqlogic->sendmessage('settempnozzle',$_options['message']);
