@@ -1114,25 +1114,15 @@
 							</div>
 						</div>
 					</div>
-					<!-- modal rename file-->
-					<div hidden>
-
-					</div>
 					<div class="content-xs">
 						<a class="btn btn-sm btn-default renamefile" disabled>rename</a>
 						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
 						<a class="btn btn-sm btn-default start" disabled>start</a>
 						<a class="btn btn-sm btn-default download" download="" disabled>download</a>
+						<a class="btn btn-sm btn-default upsnap" disabled>upload snap</a>
 					</div>
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
-					<div>
-						<input type="file" class="fichierimport" accept="gcode">
-						<div class="content-xs">
-							<a class="btn btn-sm btn-default uplocal">upload local</a>
-							<a class="btn btn-sm btn-default upsnap">upload snap</a>
-						</div>
-					</div>
 					<script>
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
 							jeedom.cmd.execute({id: '#start_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
@@ -1141,50 +1131,6 @@
 							jeedom.cmd.execute({id: '#deletefile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
 							jeedom.cmd.execute({id: '#refresh_id#'});
 						});
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
-							jeedom.cmd.execute({id: '#downloadfile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
-						});
-						jeedom.cmd.addUpdateFunction('#downloadcontent_id#',function(_options) {
-							let cmd = $('.cmd[data-cmd_id=#downloadcontent_id#]')
-							cmd.find('.state').empty().append(_options.display_value)
-							if (_options.display_value != '') { // evite un bouclage lors de la supression de la valeur une fois le fichier telecharger
-								var a = document.body.appendChild(
-									document.createElement("a")
-								);
-								a.download = "export.html";
-								a.href = "data:text/html," + cmd.find('.state').text(); // Grab the HTML
-								a.click(); // Trigger a click on the element
-								jeedom.cmd.execute({id: '#downloadfile_id#', value: {message: ""}});
-							}
-						});
-						jeedom.cmd.refreshValue([{cmd_id :'#downloadcontent#',display_value: '#downloadcontent#', valueDate: '#downloadcontent_valueDate#', collectDate: '#downloadcontent_collectDate#', alertLevel: '#downloadcontent_alertLevel#'}]);
-
-
-
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .renamefile').on('click', function() {
-							//jeedom.cmd.execute({id: '#downloadfile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
-						});
-						<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-									...
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-primary">Save changes</button>
-								</div>
-								</div>
-							</div>
-						</div>
-
-
 						$('.cmd[data-cmd_id=#sendfile_id#]:last .uplocal').on('click', function() {
 							// recupere le fichier uploader dans le champ input
 							let fichier = $('.cmd[data-cmd_id=#sendfile_id#]:last .fichierimport').prop('files')[0];
@@ -1215,23 +1161,31 @@
 								<td ><button class="ymax"><i class="fa fa-arrow-up fa-5x"></i></button></td>
 								<td ><button class="" hidden><i class="" ></i></button></td>
 								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
-								<td ><button class="insert"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td ><button class="inserte1"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td ><button class="inserte2"><i class="fa fa-plus fa-5x"></i></button></td>
 							</tr>
 							<tr>
 								<td style="text-align: right;"><button class="left"><i class="fa fa-arrow-left fa-5x"></i></button></td>
 								<td class="text-center">XY</td>
 								<td ><button class="right"><i class="fa fa-arrow-right fa-5x"></i></button></td>
 								<td class="text-center">Z</td>
-								<td class="text-center">E</td>
+								<td class="text-center">E1</td>
+								<td class="text-center">E2</td>
 							</tr>
 							<tr>
 								<td ><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
 								<td ><button class="ymin"><i class="fa fa-arrow-down fa-5x"></i></button></td>
 								<td ><button class="" hidden><i class="fa fa-arrow fa-5x"></i></button></td>
 								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
-								<td ><button class="retract"><i class="fa fa-minus fa-5x"></i></button></td>
+								<td ><button class="retracte1"><i class="fa fa-minus fa-5x"></i></button></td>
+								<td ><button class="retracte2"><i class="fa fa-minus fa-5x"></i></button></td>
 							</tr>
 						</table>
+						<span style="display: flex; justify-content: space-around;">
+							<span>Puissance : </span>
+							<input type=range min=0 max=100 value=0 step=1 class="sliderpower" style="width: 80%;">
+							<span class="sliderpowerValue" style="white-space:nowrap"></span><span> %</span>
+						</span>
 						<div style="display: flex; justify-content: space-around;">
 							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.1" checked>
@@ -1264,6 +1218,11 @@
 								</label>
 							</div>
 						</div>
+						<div style="display: flex; justify-content: space-around;">
+							<span>Vitesse : </span>
+							<input type=range min=100 max=12000 value=6000 step=100 class="sliderspeed" style="width: 80%;">
+							<span class="sliderspeedValue" style="white-space:nowrap"></span>
+						</div>
 						<div class="tooltips cmd cmd-widget execcomande" data-type="action" data-subtype="message" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 							<div class="content-lg">
 								<textarea class="form-control input-sm message" rows="1" placeholder="Commande" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#"></textarea>
@@ -1278,50 +1237,73 @@
 							</script>
 						</div>
 						<script>
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last').ready(function() {
+								var slider = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderpower');
+								var sliderValue = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderpowerValue');
+								slider.on('input', function() {
+									sliderValue.text(slider.val());
+								});
+							});
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last').ready(function() {
+								var slider = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeed');
+								var sliderValue = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue');
+								slider.on('input', function() {
+									sliderValue.text(slider.val());
+								});
+							});
+
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .home').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
 							})
-
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .left').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 X+" + vitesse}}); // deplacement
+								var sliderValue = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue');
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " X+" + vitesse}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .right').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 X-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " X-" + vitesse}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymax').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Y+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Y+" + vitesse}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymin').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Y-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Y-" + vitesse}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .up').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Z+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Z+" + vitesse}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .down').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F1000 Z-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Z-" + vitesse}}); // deplacement
 							})
 
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .insert').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte1').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F1000 E+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E1+" + vitesse}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retract').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte2').off('click').on('click', function () {
 								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F1000 E-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E2+" + vitesse}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte1').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E1-" + vitesse}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte2').off('click').on('click', function () {
+								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E2-" + vitesse}}); // deplacement
 							})
 						</script>
 					</div>
 				</div>
-			</div>  <!-- Pan_axes -->
-		</center> 
+			</div> <!-- Pan_axes -->
+		</center>
 	</div>
 	<div class="table_bottom" style="">
 		<table style="position:absolute; right:0px; bottom:0px; width: 100%; height:;border-radius:#border-radius#;" cellspacing="0" cellpadding="0" border="0">	

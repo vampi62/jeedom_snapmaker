@@ -110,9 +110,6 @@ class snapmaker extends eqLogic {
 
     $this->create_element('connect'   ,'connect'   ,'action','other');
     $this->create_element('disconnect','disconnect','action','other');
-    $this->create_element('renamefile','renamefile','action','other');
-    $this->create_element('deletefile','deletefile','action','other');
-    $this->create_element('addfile'   ,'addfile'   ,'action','other');
 
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
@@ -134,10 +131,6 @@ class snapmaker extends eqLogic {
     $this->create_element('setfan'       ,'setfan'       ,'action','other');
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
     $this->create_element('unsetfan'     ,'unsetfan'     ,'action','other');
-
-
-    $this->create_element('downloadfile'              ,'downloadfile'              ,'action','other');
-    $this->create_element('downloadcontent'           ,'downloadcontent'           ,'info','string');
     
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
@@ -348,7 +341,7 @@ class snapmaker extends eqLogic {
       $replace['#aliminfo_collectDate#'] = date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
       $replace['#aliminfo_updatetime#'] = date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
     }
-    $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-250);
+    $replace['#heightfilelist#'] = strval(intval($replace['#height#'])-500);
     $replace['#widthfilelist#'] = strval(intval($replace['#width#']));
     $replace['#heightmenu#'] = strval(intval($replace['#height#'])-50);
     $replace['#widthmenu#'] = strval(intval($replace['#width#']));
@@ -410,6 +403,7 @@ class snapmakerCmd extends cmd {
         }
         $filelist = implode("-!-", $filelist);
         $eqlogic->checkAndUpdateCmd('filelist', $filelist);
+        
       break;
       case 'status':
         $eqlogic->sendmessage('status',1);
@@ -419,63 +413,6 @@ class snapmakerCmd extends cmd {
         $eqlogic->sendmessage('enclosure',1);
         $this->getallvaluearray($info);
       break;
-      case 'addfile':
-        if (!isset($_options['nom']) || empty($_options['nom'])) {
-          return;
-        }
-        if (!isset($_options['typefile']) || empty($_options['typefile'])) {
-          return;
-        }
-        if (!isset($_options['content']) || empty($_options['content'])) {
-          return;
-        }
-        $name = str_replace('/', '_', $_options['nom']);
-        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-          $i = 1;
-          while (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name . '_' . $i)) {
-            $i++;
-          }
-          $name = $name . '_' . $i;
-        }
-        file_put_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name, $_options['fichier']);
-      break;
-      case 'deletefile':
-        if (!isset($_options['message']) || empty($_options['message'])) {
-          return;
-        }
-        $name = str_replace('/', '_', $_options['message']);
-        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-          unlink(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name);
-        }
-      break;
-      case 'renamefile':
-        if (!isset($_options['message']) || empty($_options['message'])) {
-          return;
-        }
-        if (!isset($_options['newmessage']) || empty($_options['newmessage'])) {
-          return;
-        }
-        $name = str_replace('/', '_', $_options['message']);
-        $newname = str_replace('/', '_', $_options['newmessage']);
-        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-          rename(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name, dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $newname);
-        }
-      break;
-      case 'downloadfile':
-        if (!isset($_options['message'])) {
-          return;
-        }
-        if (empty($_options['message'])) {
-          $eqlogic->checkAndUpdateCmd("downloadcontent", "");
-        }
-        else {
-          $name = str_replace('/', '_', $_options['message']);
-          if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-            // recupere le contenue du fichier
-            $file = file_get_contents(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name);
-            $eqlogic->checkAndUpdateCmd("downloadcontent", $file);
-          }
-        }
       case 'connect':
         $eqlogic->sendmessage('connect',1);
       break;
