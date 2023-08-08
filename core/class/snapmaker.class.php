@@ -485,7 +485,7 @@ class snapmakerCmd extends cmd {
     }
   }
   private function getallvaluearray($liste, $keyorigin = "") {
-    $value_iniore = array("x","y","z","status");
+    $value_iniore = array("x","y","z","status"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
     $eqlogic = $this->getEqLogic();
     foreach ($liste as $key => $value) {
       if (is_array($value)) {

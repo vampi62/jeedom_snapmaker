@@ -63,7 +63,8 @@
 						}
 						local_tr.appendChild(local_td);
 					}
-					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + j+1 + ");");
+					local_incrementj = j + 1;
+					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + local_incrementj + ");");
 					local_tb.appendChild(local_tr);
 				}
 			}
@@ -76,7 +77,23 @@
 	</script>
 	<style>
 		.table tbody tr.highlight td {
-			background-color: rgb(118, 102, 184);
+			background-color: rgb(72, 150, 92);
+		}
+    	th:last-child(-n + 2), td:last-child(-n + 2) {
+			position: relative;
+		}
+		.range-container {
+			height: 80%;
+		}
+
+		.vertical-range {
+			appearance: slider-vertical; /* Pour les navigateurs basés sur WebKit */
+			width: 10px;
+			height: 175px;
+			padding: 0 5px;
+		}
+		.titre {
+			cursor: pointer;
 		}
 	</style>
 	<div class="eq_body_#id#" >
@@ -1073,7 +1090,7 @@
 				</div>
 				<div class="tooltips cmd cmd-widget fileselect" style="display: block;">
 					<div style="display: flex; justify-content: space-around;">
-						<div >
+						<div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
 							<div class="cmd cmd-widget fileselectname">
 								<div class="content-xs">
 									<span   class="cmdName">nom : </span> 
@@ -1092,8 +1109,6 @@
 									<strong class="state"></strong>
 								</div>
 							</div>
-						</div>
-						<div>
 							<div class="cmd cmd-widget fileselectligne">
 								<div class="content-xs">
 									<span   class="cmdName">nbr ligne : </span> 
@@ -1106,10 +1121,10 @@
 									<strong class="state"></strong>
 								</div>
 							</div>
-							<div class="cmd cmd-widget fileselectimage">
+							<div class="cmd cmd-widget fileselectimage" style="position: relative;">
 								<div class="content-xs">
 									<span   class="cmdName">image : </span>
-									<img class="state" src="" style="width: 100px; height: 100px;">
+									<img id="imagetd" class="state" src="" style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease;">
 								</div>
 							</div>
 						</div>
@@ -1143,6 +1158,18 @@
 							jeedom.cmd.execute({id: '#addfile_id#', value: {nom: nomfichier, typefile: typefichier, content: contenufichier}});
 							jeedom.cmd.execute({id: '#refresh_id#'});
 						});
+						const imageElement = document.getElementById("imagetd");
+						let isZoomed = false;
+
+						imageElement.addEventListener("click", function() {
+						if (isZoomed) {
+							imageElement.style.transform = "scale(1)";
+							isZoomed = false;
+						} else {
+							imageElement.style.transform = "scale(2)";
+							isZoomed = true;
+						}
+						});
 					</script>
 					<div class="tooltips cmd cmd-widget downloadcontent" data-type="action" data-subtype="message" data-cmd_id="#downloadcontent_id#" data-cmd_uid="cmd#downloadcontent_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" hidden>
 						<div class="state"></div>
@@ -1163,6 +1190,20 @@
 								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
 								<td ><button class="inserte1"><i class="fa fa-plus fa-5x"></i></button></td>
 								<td ><button class="inserte2"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td rowspan="3" style="width:75px;">
+									<div class="range-container">
+										<div style="text-align: center;">vitesse</div>
+										<input type="range" class="vertical-range" min="0" max="100" value="50" oninput="updateRangeValue(this,'rangeValue1')" onmouseup="onRangeRelease()">
+										<div id="rangeValue1" style="text-align: center;">50</div>
+									</div>
+								</td>
+								<td rowspan="3" style="width:75px;">
+									<div class="range-container">
+										<div style="text-align: center;">puissance</div>
+										<input type="range" class="vertical-range" min="0" max="100" value="50" oninput="updateRangeValue(this,'rangeValue2')" onmouseup="onRangeRelease()">
+										<div id="rangeValue2" style="text-align: center;">50</div>
+									</div>
+								</td>
 							</tr>
 							<tr>
 								<td style="text-align: right;"><button class="left"><i class="fa fa-arrow-left fa-5x"></i></button></td>
@@ -1181,11 +1222,6 @@
 								<td ><button class="retracte2"><i class="fa fa-minus fa-5x"></i></button></td>
 							</tr>
 						</table>
-						<span style="display: flex; justify-content: space-around;">
-							<span>Puissance : </span>
-							<input type=range min=0 max=100 value=0 step=1 class="sliderpower" style="width: 80%;">
-							<span class="sliderpowerValue" style="white-space:nowrap"></span><span> %</span>
-						</span>
 						<div style="display: flex; justify-content: space-around;">
 							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.1" checked>
@@ -1218,11 +1254,6 @@
 								</label>
 							</div>
 						</div>
-						<div style="display: flex; justify-content: space-around;">
-							<span>Vitesse : </span>
-							<input type=range min=100 max=12000 value=6000 step=100 class="sliderspeed" style="width: 80%;">
-							<span class="sliderspeedValue" style="white-space:nowrap"></span>
-						</div>
 						<div class="tooltips cmd cmd-widget execcomande" data-type="action" data-subtype="message" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 							<div class="content-lg">
 								<textarea class="form-control input-sm message" rows="1" placeholder="Commande" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#"></textarea>
@@ -1234,6 +1265,13 @@
 									// vide le champ de saisie du message
 									$('.cmd[data-cmd_id=#execcomande_id#] .message').val('');
 								});
+								function updateRangeValue(input,namedisplay) {
+									document.getElementById(namedisplay).innerText = input.value;
+								}
+								function onRangeRelease() {
+									// Code à exécuter lorsque le curseur du range est relâché
+									alert("Curseur relâché !");
+								}
 							</script>
 						</div>
 						<script>
@@ -1396,7 +1434,7 @@
 					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-caisson').hide();
 				}
 			</script>
-		</table>		
+		</table>
 	</div>
 	<!-- fin table_bottom    -->
 </div>
