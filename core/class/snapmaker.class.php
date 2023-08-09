@@ -500,7 +500,7 @@ class snapmakerCmd extends cmd {
           $eqlogic->checkAndUpdateCmd($keyorigin . $key, $value);
         }
         else {
-          log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqligic " . $eqlogic->getName());
+          log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqlogic " . $eqlogic->getName());
         }
       }
     }

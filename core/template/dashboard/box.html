@@ -74,18 +74,51 @@
 			$('.cmd[data-eqlogic_id=' + nom_tableau + '] .state').append(local_table);
 			return player; // retourne la liste des joueurs pour les utiliser dans l'identification les commandes
 		}
+		function #uid#change_visibility_toolhead(local_value) {
+			if (local_value == "3dprint") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprint').css('display', 'auto');
+			}
+			else if (local_value == "3ddoubleprint") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3ddoubleprint').css('display', 'auto');
+			}
+			else if (local_value == "cnc") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .iscnc').css('display', 'auto');
+			}
+			else if (local_value == "laser") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .islaser').css('display', 'auto');
+			}
+		}
+		function #uid#change_visibility_connect(local_value) {
+			if (local_value) {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').css('display', 'auto');
+			}
+			else {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').css('display', 'none');
+			}
+		}
+		function #uid#change_visibility_status(local_value) {
+			if (local_value == "pause") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+			}
+			else if (local_value == "idle") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+			}
+			else if (local_value == "printing") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'auto');
+			}
+			else if (local_value == "ready") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+			}
+		}
 	</script>
 	<style>
 		.table tbody tr.highlight td {
 			background-color: rgb(72, 150, 92);
 		}
-    	th:last-child(-n + 2), td:last-child(-n + 2) {
-			position: relative;
-		}
-		.range-container {
-			height: 80%;
-		}
-
 		.vertical-range {
 			appearance: slider-vertical; /* Pour les navigateurs basés sur WebKit */
 			width: 10px;
@@ -95,6 +128,35 @@
 		.titre {
 			cursor: pointer;
 		}
+
+		.isconnected {
+			display: none;
+		}
+		.isprintrunning {
+			display: none;
+		}
+		.is3dprint {
+			display: none;
+		}
+		.is3dprintpauseoridle {
+			display: none;
+		}
+		.is3ddoubleprint {
+			display: none;
+		}
+		.islazer {
+			display: none;
+		}
+		.iscnc {
+			display: none;
+		}
+		.iscaissonon {
+			display: none;
+		}
+		.isaliminfo {
+			display: none;
+		}
+
 	</style>
 	<div class="eq_body_#id#" >
 		<center>
@@ -104,8 +166,8 @@
 						<strong>MENU</strong>
 					</div>
 					<div class="contenue">
-						<div>
-							<span   class="cmdName">status connexion : </span>
+						<div class="statusimpr">
+							<span class="cmdName">status connexion : </span>
 							<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#status_id#" data-cmd_uid="cmd#status_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #status_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="fas fa-times"></i></span>
@@ -124,21 +186,19 @@
 							</div>
 							<script>
 								function #uid#updatestatus_but(stats) {
-									if (stats == '0') { // en attente
-										$('.cmd[data-cmd_id=#status_id#] .iconoff').show();
-										$('.cmd[data-cmd_id=#status_id#] .iconon').hide();
-										$('.cmd[data-cmd_id=#status_id#] .connect').show();
-										$('.cmd[data-cmd_id=#status_id#] .disconnect').hide();
+									if (stats == '1') { // connecter
+										#uid#change_visibility_connect(true);
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'none');
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'inline');
 									}
-									else if (stats == '1') { // en cours
-										$('.cmd[data-cmd_id=#status_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#status_id#] .iconon').show();
-										$('.cmd[data-cmd_id=#status_id#] .connect').hide();
-										$('.cmd[data-cmd_id=#status_id#] .disconnect').show();
-									}
-									else { // pas de commande
-										$('.cmd[data-cmd_id=#status_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#status_id#] .iconon').hide();
+									else { // pas de connexion
+										#uid#change_visibility_connect(false);
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'inline');
+										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'none');
 									}
 								}
 								#uid#updatestatus_but('#status#');
@@ -156,8 +216,8 @@
 								jeedom.cmd.refreshValue([{cmd_id :'#status#',display_value: '#status#', valueDate: '#status_valueDate#', collectDate: '#status_collectDate#', alertLevel: '#status_alertLevel#'}]);
 							</script>
 						</div>
-						<div>
-							<span   class="cmdName">status re-connexion : </span>
+						<div class="autoreco">
+							<span class="cmdName">status re-connexion : </span>
 							<div class="cmd cmd-widget tooltips autoconnect" data-type="info" data-subtype="numeric" data-cmd_id="#autoconnect_id#" data-cmd_uid="cmd#autoconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoconnect_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="fas fa-times"></i></span>
@@ -176,21 +236,17 @@
 							</div>
 							<script>
 								function #uid#updatereco_but(stats) {
-									if (stats == '0') { // en attente
-										$('.cmd[data-cmd_id=#autoconnect_id#] .iconoff').show();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .iconon').hide();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .setautoconnect').show();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .unsetautoconnect').hide();
+									if (stats == '1') { // autoconnect actif
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').hide();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').show();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'none');
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'inline');
 									}
-									else if (stats == '1') { // en cours
-										$('.cmd[data-cmd_id=#autoconnect_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .iconon').show();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .setautoconnect').hide();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .unsetautoconnect').show();
-									}
-									else { // pas de commande
-										$('.cmd[data-cmd_id=#autoconnect_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#autoconnect_id#] .iconon').hide();
+									else { // pas de valuer ou pas d'autoconnect
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').show();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').hide();
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'inline');
+										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'none');
 									}
 								}
 								#uid#updatereco_but('#autoconnect#');
@@ -210,299 +266,307 @@
 						</div>
 						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#printStatus_id#" data-cmd_uid="cmd#printStatus_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #printStatus_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">printStatus impression: </span>
+								<span   class="cmdName">print Status: </span>
 								<strong class="state">#printStatus#</strong>
 							</div>
 							<script>
+								#uid#change_visibility_status('#printStatus#');
 								jeedom.cmd.addUpdateFunction('#printStatus_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#printStatus_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
+									let cmd = $('.cmd[data-cmd_id=#printStatus_id#]');
+									cmd.attr('title', 'Valeur du: '+_options.collectDate);
+									cmd.find('.state').empty().append(_options.display_value);
+									#uid#change_visibility_status(_options.display_value);
 								});
 								jeedom.cmd.refreshValue([{cmd_id :'#printStatus_id#',display_value: '#printStatus#', valueDate: '#printStatus_valueDate#', collectDate: '#printStatus_collectDate#', alertLevel: '#printStatus_alertLevel#'}]);
 							</script>
 						</div>
-						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#zoffset_id#" data-cmd_uid="#zoffset_uid#" data-version="dashboard" data-eqlogic_id="678">
-							<div class="title ">
-								<div class="cmdName">offset</div>
-							</div>
-							<div class="content-sm ">
-								<div class="input-group buttons">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-								</span>
-								<input type="text" class="input-sm in_value form-control" value="">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-								</span>
+						<div class="isconnected"><!--visible si connecter -->
+							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#zoffset_id#" data-cmd_uid="#zoffset_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">offset</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips setzoffset" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#" data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">set</a>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
 								</div>
-							</div>
-							<script>
-								function reset_#zoffset_id#() {
-									if (isNaN(#zoffset#)) {
-										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
-									} else {
-										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
+								<div class="cmd cmd-widget tooltips setzoffset" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#" data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									function #uid#_set_value_zoffset() {
+										if (isNaN(#zoffset#)) {
+											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+										}
+										else {
+											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
+										}
 									}
-								}
-								reset_#zoffset_id#()
-								$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
+									#uid#_set_value_zoffset()
+									$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
+										if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
+											#uid#_set_value_zoffset()
+										}
+										jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()).toFixed(2)}});
+									})
+									$('.cmd[data-cmd_id=#zoffset_id#] .bt_plus').on('click', function () {
+									let max = 2
+									let step = 0.05
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-										reset_#zoffset_id#()
+										#uid#_set_value_zoffset()
 									}
-									jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()).toFixed(2)}});
-								})
-								$('.cmd[data-cmd_id=#zoffset_id#] .bt_plus').on('click', function () {
-								let max = 2
-								let step = 0.05
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-									reset_#zoffset_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
-										jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
+											jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
+										}
 									}
-								}
-								})
-								$('.cmd[data-cmd_id=#zoffset_id#] .bt_minus').on('click', function () {
-								let min = -2
-								let step = 0.05
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-									reset_#zoffset_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
-										jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
+									})
+									$('.cmd[data-cmd_id=#zoffset_id#] .bt_minus').on('click', function () {
+									let min = -2
+									let step = 0.05
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
+										#uid#_set_value_zoffset()
 									}
-								}
-								})
-								jeedom.cmd.addUpdateFunction('#zoffset_id#',function(_options) {
-									if (isNaN(_options.display_value)) {
-										reset_#zoffset_id#()
-									} else {
-										$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(parseFloat(_options.display_value).toFixed(2) + " mm")
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
+											jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
+										}
 									}
-								});
-							</script>
-						</div>
-						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#workSpeed_id#" data-cmd_uid="#workSpeed_uid#" data-version="dashboard" data-eqlogic_id="678">
-							<div class="title ">
-								<div class="cmdName">vitesse</div>
+									})
+									jeedom.cmd.addUpdateFunction('#zoffset_id#',function(_options) {
+										if (isNaN(_options.display_value)) {
+											#uid#_set_value_zoffset()
+										}
+										else {
+											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(parseFloat(_options.display_value).toFixed(2) + " mm")
+										}
+									});
+								</script>
 							</div>
-							<div class="content-sm ">
-								<div class="input-group buttons">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-								</span>
-								<input type="text" class="input-sm in_value form-control" value="">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-								</span>
+							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#workSpeed_id#" data-cmd_uid="#workSpeed_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">vitesse</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips setspeed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setspeed_id#" data-cmd_uid="cmd#setspeed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">set</a>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
 								</div>
-							</div>
-							<script>
-								function reset_#workSpeed_id#() {
-									if (isNaN(#workSpeed#)) {
-										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
-									} else {
-										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
+								<div class="cmd cmd-widget tooltips setspeed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setspeed_id#" data-cmd_uid="cmd#setspeed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									function #uid#_set_value_workSpeed() {
+										if (isNaN(#workSpeed#)) {
+											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
+										}
+										else {
+											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
+										}
 									}
-								}
-								reset_#workSpeed_id#()
-								$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
+									#uid#_set_value_workSpeed()
+									$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
+										if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
+											#uid#_set_value_workSpeed()
+										}
+										jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()).toFixed(0)}});
+									})
+									$('.cmd[data-cmd_id=#workSpeed_id#] .bt_plus').on('click', function () {
+									let max = 200
+									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-										reset_#workSpeed_id#()
+										#uid#_set_value_workSpeed()
 									}
-									jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()).toFixed(0)}});
-								})
-								$('.cmd[data-cmd_id=#workSpeed_id#] .bt_plus').on('click', function () {
-								let max = 200
-								let step = 1
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-									reset_#workSpeed_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
-										jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
+											jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
+										}
 									}
-								}
-								})
-								$('.cmd[data-cmd_id=#workSpeed_id#] .bt_minus').on('click', function () {
-								let min = 1
-								let step = 1
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-									reset_#workSpeed_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
-										jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
+									})
+									$('.cmd[data-cmd_id=#workSpeed_id#] .bt_minus').on('click', function () {
+									let min = 1
+									let step = 1
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
+										#uid#_set_value_workSpeed()
 									}
-								}
-								})
-								jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
-									if (isNaN(_options.display_value)) {
-										reset_#workSpeed_id#()
-									} else {
-										$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " %")
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
+											jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
+										}
 									}
-								});
-							</script>
-						</div>
-						<div>
-							<div class="cmd cmd-widget tooltips smpause" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#pause_id#" data-cmd_uid="cmd#pause_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-xs">
-									<a class="btn btn-sm btn-default action">pause</a>
+									})
+									jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
+										if (isNaN(_options.display_value)) {
+											#uid#_set_value_workSpeed()
+										}
+										else {
+											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " %")
+										}
+									});
+								</script>
+							</div>
+							<div class="isprintrunning"><!--visible si objet en cours d'impression -->
+								<div class="cmd cmd-widget tooltips smpause" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#pause_id#" data-cmd_uid="cmd#pause_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-xs">
+										<a class="btn btn-sm btn-default action">pause</a>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips smresume" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#resume_id#" data-cmd_uid="cmd#resume_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-xs">
+										<a class="btn btn-sm btn-default action">resume</a>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips smstop" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#stop_id#" data-cmd_uid="cmd#stop_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-xs">
+										<a class="btn btn-sm btn-default action">stop</a>
+									</div>
+								</div>
+								<script>
+									$('.cmd[data-cmd_id=#pause_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#pause_id#'})
+										jeedom.cmd.execute({id: '#refresh_id#'})
+									})
+									$('.cmd[data-cmd_id=#resume_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#resume_id#'})
+										jeedom.cmd.execute({id: '#refresh_id#'})
+									})
+									$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#stop_id#'})
+										jeedom.cmd.execute({id: '#refresh_id#'})
+									})
+								</script>
+								<script>
+									function #uid#updateListButton(stats) {
+										if (stats == '0') { // en attente
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
+										}
+										else if (stats == '10') { // en cours
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
+										}
+										else if (stats == '20') { //en pause
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
+										}
+										else {// retirer toutes les commandes
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
+											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
+										}
+									}
+									#uid#updateListButton('#printStatus#');
+									jeedom.cmd.addUpdateFunction('#printStatus_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#printStatus_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										cmd.find('.state').empty().append(_options.display_value)
+										#uid#updateListButton(_options.display_value);
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#printStatus_id#',display_value: '#printStatus#', valueDate: '#printStatus_valueDate#', collectDate: '#printStatus_collectDate#', alertLevel: '#printStatus_alertLevel#'}]);
+								</script>
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#fileName_id#" data-cmd_uid="cmd#fileName_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #fileName_collectDate#">
+									<div class="content-xs">
+										<span   class="cmdName">nom du fichier : </span>
+										<strong class="state">#fileName#</strong>
+									</div>
+									<script>
+										jeedom.cmd.addUpdateFunction('#fileName#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#fileName#]')
+											cmd.attr('title', 'Valeur du: '+_options.collectDate)
+											cmd.find('.state').empty().append(_options.display_value)
+										});
+										jeedom.cmd.refreshValue([{cmd_id :'#fileName_id#',display_value: '#fileName#', valueDate: '#fileName_valueDate#', collectDate: '#fileName_collectDate#', alertLevel: '#fileName_alertLevel#'}]);
+									</script>
+								</div>
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#progress_id#" data-cmd_uid="cmd#progress_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #progress_collectDate#">
+									<div class="content-xs">
+										<span   class="cmdName">avancement : </span>
+										<strong class="state1">#progress#</strong>
+										<strong class="state2"> %</strong>
+									</div>
+									<script>
+										jeedom.cmd.addUpdateFunction('#progress#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#progress#]')
+											cmd.attr('title', 'Valeur du: '+_options.collectDate)
+											cmd.find('.state1').empty().append(_options.display_value)
+										});
+										jeedom.cmd.refreshValue([{cmd_id :'#progress_id#',display_value: '#progress#', valueDate: '#progress_valueDate#', collectDate: '#progress_collectDate#', alertLevel: '#progress_alertLevel#'}]);
+									</script>
+								</div>
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#currentLine#" data-cmd_uid="cmd#currentLine_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #currentLine_collectDate#">
+									<div class="content-xs">
+										<span   class="cmdName">ligne en cours: </span>
+										<strong class="state1">#currentLine#</strong>
+										<strong class="state2"> / </strong>
+										<strong class="state3">#totalLines#</strong>
+									</div>
+									<script>
+										jeedom.cmd.addUpdateFunction('#currentLine#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#currentLine#]')
+											cmd.attr('title', 'Valeur du: '+_options.collectDate)
+											cmd.find('.state1').empty().append(_options.display_value)
+										});
+										jeedom.cmd.refreshValue([{cmd_id :'#currentLine#',display_value: '#currentLine#', valueDate: '#currentLine_valueDate#', collectDate: '#currentLine_collectDate#', alertLevel: '#currentLine_alertLevel#'}]);
+										jeedom.cmd.addUpdateFunction('#totalLines_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#totalLines_id#]')
+											cmd.attr('title', 'Valeur du: '+_options.collectDate)
+											cmd.find('.state3').empty().append(_options.display_value)
+										});
+										jeedom.cmd.refreshValue([{cmd_id :'#totalLines_id#',display_value: '#totalLines#', valueDate: '#totalLines_valueDate#', collectDate: '#totalLines_collectDate#', alertLevel: '#totalLines_alertLevel#'}]);
+									</script>
+								</div>
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#elapsedTime_id#" data-cmd_uid="cmd#elapsedTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #elapsedTime_collectDate#">
+									<div class="content-xs">
+										<span   class="cmdName">démarrer depuis: </span>
+										<strong class="state">#elapsedTime#</strong>
+									</div>
+									<script>
+										jeedom.cmd.addUpdateFunction('#elapsedTime_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#elapsedTime_id#]')
+											cmd.attr('title', 'Valeur du: '+_options.collectDate)
+											cmd.find('.state').empty().append(_options.display_value)
+										});
+										jeedom.cmd.refreshValue([{cmd_id :'#elapsedTime_id#',display_value: '#elapsedTime#', valueDate: '#elapsedTime_valueDate#', collectDate: '#elapsedTime_collectDate#', alertLevel: '#elapsedTime_alertLevel#'}]);
+									</script>
+								</div>
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#remainingTime_id#" data-cmd_uid="cmd#remainingTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #remainingTime_collectDate#">
+									<div class="content-xs">
+										<span   class="cmdName">temps restant: </span>
+										<strong class="state">#remainingTime#</strong>
+									</div>
+									<script>
+										jeedom.cmd.addUpdateFunction('#remainingTime_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#remainingTime_id#]')
+											cmd.attr('title', 'Valeur du: '+_options.collectDate)
+											cmd.find('.state').empty().append(_options.display_value)
+										});
+										jeedom.cmd.refreshValue([{cmd_id :'#remainingTime_id#',display_value: '#remainingTime#', valueDate: '#remainingTime_valueDate#', collectDate: '#remainingTime_collectDate#', alertLevel: '#remainingTime_alertLevel#'}]);
+									</script>
 								</div>
 							</div>
-							<div class="cmd cmd-widget tooltips smresume" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#resume_id#" data-cmd_uid="cmd#resume_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-xs">
-									<a class="btn btn-sm btn-default action">resume</a>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips smstop" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#stop_id#" data-cmd_uid="cmd#stop_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-xs">
-									<a class="btn btn-sm btn-default action">stop</a>
-								</div>
-							</div>
-							<script>
-								$('.cmd[data-cmd_id=#pause_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#pause_id#'})
-									jeedom.cmd.execute({id: '#refresh_id#'})
-								})
-								$('.cmd[data-cmd_id=#resume_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#resume_id#'})
-									jeedom.cmd.execute({id: '#refresh_id#'})
-								})
-								$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#stop_id#'})
-									jeedom.cmd.execute({id: '#refresh_id#'})
-								})
-							</script>
-							<script>
-								function #uid#updateListButton(stats) {
-									if (stats == '0') { // en attente
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
-									}
-									else if (stats == '10') { // en cours
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-									}
-									else if (stats == '20') { //en pause
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-									}
-									else {// retirer toutes les commandes
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
-									}
-								}
-								#uid#updateListButton('#printStatus#');
-								jeedom.cmd.addUpdateFunction('#printStatus_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#printStatus_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-									#uid#updateListButton(_options.display_value);
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#printStatus_id#',display_value: '#printStatus#', valueDate: '#printStatus_valueDate#', collectDate: '#printStatus_collectDate#', alertLevel: '#printStatus_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#fileName_id#" data-cmd_uid="cmd#fileName_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #fileName_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">nom du fichier : </span>
-								<strong class="state">#fileName#</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#fileName#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#fileName#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#fileName_id#',display_value: '#fileName#', valueDate: '#fileName_valueDate#', collectDate: '#fileName_collectDate#', alertLevel: '#fileName_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#progress_id#" data-cmd_uid="cmd#progress_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #progress_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">avancement : </span>
-								<strong class="state1">#progress#</strong>
-								<strong class="state2"> %</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#progress#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#progress#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state1').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#progress_id#',display_value: '#progress#', valueDate: '#progress_valueDate#', collectDate: '#progress_collectDate#', alertLevel: '#progress_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#currentLine#" data-cmd_uid="cmd#currentLine_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #currentLine_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">ligne en cours: </span>
-								<strong class="state1">#currentLine#</strong>
-								<strong class="state2"> / </strong>
-								<strong class="state3">#totalLines#</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#currentLine#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#currentLine#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state1').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#currentLine#',display_value: '#currentLine#', valueDate: '#currentLine_valueDate#', collectDate: '#currentLine_collectDate#', alertLevel: '#currentLine_alertLevel#'}]);
-								jeedom.cmd.addUpdateFunction('#totalLines_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#totalLines_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state3').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#totalLines_id#',display_value: '#totalLines#', valueDate: '#totalLines_valueDate#', collectDate: '#totalLines_collectDate#', alertLevel: '#totalLines_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#elapsedTime_id#" data-cmd_uid="cmd#elapsedTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #elapsedTime_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">démarrer depuis: </span>
-								<strong class="state">#elapsedTime#</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#elapsedTime_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#elapsedTime_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#elapsedTime_id#',display_value: '#elapsedTime#', valueDate: '#elapsedTime_valueDate#', collectDate: '#elapsedTime_collectDate#', alertLevel: '#elapsedTime_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#remainingTime_id#" data-cmd_uid="cmd#remainingTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #remainingTime_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">temps restant: </span>
-								<strong class="state">#remainingTime#</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#remainingTime_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#remainingTime_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#remainingTime_id#',display_value: '#remainingTime#', valueDate: '#remainingTime_valueDate#', collectDate: '#remainingTime_collectDate#', alertLevel: '#remainingTime_alertLevel#'}]);
-							</script>
 						</div>
 					</div>
-					<br/>
 				</div>
+				<br/>
 				<div class="menu-module">
 					<div class="content-xs titre">
 						<strong>MENU MODULE</strong>
@@ -514,10 +578,12 @@
 								<strong class="state">#toolHead#</strong>
 							</div>
 							<script>
-								jeedom.cmd.addUpdateFunction('#toolHead#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#toolHead#]')
+								#uid#change_visibility_toolhead('#toolHead#');
+								jeedom.cmd.addUpdateFunction('#toolHead_id#',function(_options) {
+									let cmd = $('.cmd[data-cmd_id=#toolHead_id#]')
 									cmd.attr('title', 'Valeur du: '+_options.collectDate)
 									cmd.find('.state').empty().append(_options.display_value)
+									#uid#change_visibility_toolhead(_options.display_value);
 								});
 								jeedom.cmd.refreshValue([{cmd_id :'#toolHead_id#',display_value: '#toolHead#', valueDate: '#toolHead_valueDate#', collectDate: '#toolHead_collectDate#', alertLevel: '#toolHead_alertLevel#'}]);
 							</script>
@@ -581,211 +647,219 @@
 					</div>
 					<br/>
 				</div>
-				<div class="menu-outil">
+				<div class="menu-outil isconnected"><!--visible si connecter -->
 					<div class="content-xs titre">
 						<strong>MENU outil</strong>
 					</div>
 					<div class="contenue">
-						<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#heatedBedTemperature_id#" data-cmd_uid="cmd#heatedBedTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #heatedBedTemperature_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">heatedBedTemperature : </span> 
-								<strong class="state">#heatedBedTemperature#</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#heatedBedTemperature_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTemperature_id#',display_value: '#heatedBedTemperature#', valueDate: '#heatedBedTemperature_valueDate#', collectDate: '#heatedBedTemperature_collectDate#', alertLevel: '#heatedBedTemperature_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature_collectDate#">
-							<div class="content-xs">
-								<span   class="cmdName">nozzleTemperature : </span> 
-								<strong class="state">#nozzleTemperature#</strong>
-							</div>
-							<script>
-								jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#nozzleTemperature_id#',display_value: '#nozzleTemperature#', valueDate: '#nozzleTemperature_valueDate#', collectDate: '#nozzleTemperature_collectDate#', alertLevel: '#nozzleTemperature_alertLevel#'}]);
-							</script>
-						</div>
-						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
-							<div class="title ">
-								<div class="cmdName">nozzleTargetTemperature</div>
-							</div>
-							<div class="content-sm ">
-								<div class="input-group buttons">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-								</span>
-								<input type="text" class="input-sm in_value form-control" value="">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-								</span>
+						<div class="is3dprint is3ddoubleprint"><!--visible si outil est imprimante3d -->
+							<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#heatedBedTemperature_id#" data-cmd_uid="cmd#heatedBedTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #heatedBedTemperature_collectDate#">
+								<div class="content-xs">
+									<span   class="cmdName">heatedBedTemperature : </span> 
+									<strong class="state">#heatedBedTemperature#</strong>
 								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#heatedBedTemperature_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTemperature_id#',display_value: '#heatedBedTemperature#', valueDate: '#heatedBedTemperature_valueDate#', collectDate: '#heatedBedTemperature_collectDate#', alertLevel: '#heatedBedTemperature_alertLevel#'}]);
+								</script>
 							</div>
-							<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">set</a>
+							<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature_collectDate#">
+								<div class="content-xs">
+									<span   class="cmdName">nozzleTemperature : </span> 
+									<strong class="state">#nozzleTemperature#</strong>
 								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#nozzleTemperature_id#',display_value: '#nozzleTemperature#', valueDate: '#nozzleTemperature_valueDate#', collectDate: '#nozzleTemperature_collectDate#', alertLevel: '#nozzleTemperature_alertLevel#'}]);
+								</script>
 							</div>
-							<script>
-								function reset_#nozzleTargetTemperature_id#() {
-									if (isNaN(#nozzleTargetTemperature#)) {
-										$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
-									} else {
-										$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
+							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">nozzleTargetTemperature</div>
+								</div>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									function #uid#_set_value_nozzleTargetTemperature() {
+										if (isNaN(#nozzleTargetTemperature#)) {
+											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
+										}
+										else {
+											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
+										}
 									}
-								}
-								reset_#nozzleTargetTemperature_id#()
-								$('.cmd[data-cmd_id=#settempnozzle_id#] .action').off('click').on('click', function () {
+									#uid#_set_value_nozzleTargetTemperature()
+									$('.cmd[data-cmd_id=#settempnozzle_id#] .action').off('click').on('click', function () {
+										if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
+											#uid#_set_value_nozzleTargetTemperature()
+										}
+										jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()).toFixed(0)}});
+									})
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
+									let max = 300
+									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
-										reset_#nozzleTargetTemperature_id#()
+										#uid#_set_value_nozzleTargetTemperature()
 									}
-									jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()).toFixed(0)}});
-								})
-								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
-								let max = 300
-								let step = 1
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
-									reset_#nozzleTargetTemperature_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
-										jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
+											jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
+										}
 									}
-								}
-								})
-								$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
-								let min = 0
-								let step = 1
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
-									reset_#nozzleTargetTemperature_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
-										jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
+									})
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
+									let min = 0
+									let step = 1
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
+										#uid#_set_value_nozzleTargetTemperature()
 									}
-								}
-								})
-								jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
-									if (isNaN(_options.display_value)) {
-										reset_#nozzleTargetTemperature_id#()
-									} else {
-										$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
+											jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
+										}
 									}
-								});
-							</script>
-						</div>
-						<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
-							<div class="title ">
-								<div class="cmdName">heatedBedTargetTemperature</div>
+									})
+									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
+										if (isNaN(_options.display_value)) {
+											#uid#_set_value_nozzleTargetTemperature()
+										}
+										else {
+											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
+										}
+									});
+								</script>
 							</div>
-							<div class="content-sm ">
-								<div class="input-group buttons">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-								</span>
-								<input type="text" class="input-sm in_value form-control" value="">
-								<span class="input-group-btn" style="position: relative;">
-									<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-								</span>
+							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">heatedBedTargetTemperature</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">set</a>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
 								</div>
-							</div>
-							<script>
-								function reset_#heatedBedTargetTemperature_id#() {
-									if (isNaN(#heatedBedTargetTemperature#)) {
-										$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
-									} else {
-										$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
+								<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									function #uid#_set_value_heatedBedTargetTemperature() {
+										if (isNaN(#heatedBedTargetTemperature#)) {
+											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
+										}
+										else {
+											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
+										}
 									}
-								}
-								reset_#heatedBedTargetTemperature_id#()
-								$('.cmd[data-cmd_id=#settempbed_id#] .action').off('click').on('click', function () {
+									#uid#_set_value_heatedBedTargetTemperature()
+									$('.cmd[data-cmd_id=#settempbed_id#] .action').off('click').on('click', function () {
+										if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
+											#uid#_set_value_heatedBedTargetTemperature()
+										}
+										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()).toFixed(0)}});
+									})
+									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
+									let max = 100
+									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
-										reset_#heatedBedTargetTemperature_id#()
+										#uid#_set_value_heatedBedTargetTemperature()
 									}
-									jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()).toFixed(0)}});
-								})
-								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
-								let max = 100
-								let step = 1
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
-									reset_#heatedBedTargetTemperature_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
-										jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
+											jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
+										}
 									}
-								}
-								})
-								$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
-								let min = 0
-								let step = 1
-								if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
-									reset_#heatedBedTargetTemperature_id#()
-								}
-								else {
-									if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
-										jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
+									})
+									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
+									let min = 0
+									let step = 1
+									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
+										#uid#_set_value_heatedBedTargetTemperature()
 									}
-								}
-								})
-								jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
-									if (isNaN(_options.display_value)) {
-										reset_#heatedBedTargetTemperature_id#()
-									} else {
-										$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
+									else {
+										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
+											jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
+										}
 									}
-								});
-							</script>
-						</div>
-						<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-							<div class="content-sm">
-								<a class="btn btn-sm btn-default action">reload</a>
+									})
+									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
+										if (isNaN(_options.display_value)) {
+											#uid#_set_value_heatedBedTargetTemperature()
+										}
+										else {
+											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
+										}
+									});
+								</script>
 							</div>
-						</div>
-						<div class="cmd cmd-widget tooltips unload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unload_id#" data-cmd_uid="cmd#unload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-							<div class="content-sm">
-								<a class="btn btn-sm btn-default action">unload</a>
-							</div>
-						</div>
-						<script>
-							$('.cmd[data-cmd_id=#reload_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#reload_id#'})
-							})
-							$('.cmd[data-cmd_id=#unload_id#]:last .action').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#unload_id#'})
-							})
-						</script>
-						<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric" data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
-							<div class="content-sm">
-								<span class="cmdName">isFilamentOut : </span>
-								<strong class="state">#isFilamentOut#</strong>
+							<div class="is3dprintpauseoridle"><!--visible si print idle ou pause -->
+								<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">reload</a>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips unload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unload_id#" data-cmd_uid="cmd#unload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">unload</a>
+									</div>
+								</div>
 							</div>
 							<script>
-								jeedom.cmd.addUpdateFunction('#isFilamentOut_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#isFilamentOut_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									cmd.find('.state').empty().append(_options.display_value)
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#isFilamentOut_id#',display_value: '#isFilamentOut#', valueDate: '#isFilamentOut_valueDate#', collectDate: '#isFilamentOut_collectDate#', alertLevel: '#isFilamentOut_alertLevel#'}]);
+								$('.cmd[data-cmd_id=#reload_id#]:last .action').off('click').on('click', function () {
+									jeedom.cmd.execute({id: '#reload_id#'})
+								})
+								$('.cmd[data-cmd_id=#unload_id#]:last .action').off('click').on('click', function () {
+									jeedom.cmd.execute({id: '#unload_id#'})
+								})
 							</script>
+							<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric" data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<span class="cmdName">isFilamentOut : </span>
+									<strong class="state">#isFilamentOut#</strong>
+								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#isFilamentOut_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#isFilamentOut_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#isFilamentOut_id#',display_value: '#isFilamentOut#', valueDate: '#isFilamentOut_valueDate#', collectDate: '#isFilamentOut_collectDate#', alertLevel: '#isFilamentOut_alertLevel#'}]);
+								</script>
+							</div>
 						</div>
 					</div>
-					<br/>
 				</div>
-				<div class="menu-caisson">
+				<br/>
+				<div class="menu-caisson isconnected iscaissonon"><!--visible si caisson -->
 					<div class="content-xs titre">
 						<strong>MENU caisson</strong>
 					</div>
@@ -973,9 +1047,9 @@
 							</script>
 						</div>
 					</div>
-					<br/>
 				</div>
-				<div class="menu-alim">
+				<br/>
+				<div class="menu-alim isaliminfo"><!--visible si info alim existe-->
 					<div class="content-xs titre">
 						<strong>MENU alim</strong>
 					</div>
@@ -998,21 +1072,17 @@
 						</div>
 						<script>
 							function #uid#updatealim_but(stats) {
-								if (stats == '0') { // en attente
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').show();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').hide();
-								}
-								else if (stats == '1') { // en cours
+								if (stats == '1') { // active
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').hide();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').show();
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'none');
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'block');
 								}
-								else { // pas de commande
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
+								else { // inactive
+									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
 									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'block');
+									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'none');
 								}
 							}
 							#uid#updatealim_but('#aliminfo#');
@@ -1082,9 +1152,11 @@
 							// active les bouton
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .renamefile').attr('disabled',false);
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .deletefile').attr('disabled',false);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
 
+							// si imprimante connecter active les bouton
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
 						}
 					</script>
 				</div>
@@ -1124,13 +1196,12 @@
 							<div class="cmd cmd-widget fileselectimage" style="position: relative;">
 								<div class="content-xs">
 									<span   class="cmdName">image : </span>
-									<img id="imagetd" class="state" src="" style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease;">
+									<img class="state" src="" style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease;">
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="content-xs">
-						<a class="btn btn-sm btn-default renamefile" disabled>rename</a>
 						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
 						<a class="btn btn-sm btn-default start" disabled>start</a>
 						<a class="btn btn-sm btn-default download" download="" disabled>download</a>
@@ -1139,41 +1210,31 @@
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<script>
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
-							jeedom.cmd.execute({id: '#start_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
-						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').on('click', function() {
-							jeedom.cmd.execute({id: '#deletefile_id#', value: {message: $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text()}});
-							jeedom.cmd.execute({id: '#refresh_id#'});
+							//enpause lance une commande de suppr
 						});
-						$('.cmd[data-cmd_id=#sendfile_id#]:last .uplocal').on('click', function() {
-							// recupere le fichier uploader dans le champ input
-							let fichier = $('.cmd[data-cmd_id=#sendfile_id#]:last .fichierimport').prop('files')[0];
-							let nomfichier = fichier.name;
-							let typefichier = fichier.type;
-							let contenufichier = fichier.text();
-							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: nomfichier}});
-							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: typefichier}});
-							jeedom.cmd.execute({id: '#execcomande_id#', value: {message: contenufichier}});
-							jeedom.cmd.execute({id: '#addfile_id#', value: {nom: nomfichier, typefile: typefichier, content: contenufichier}});
-							jeedom.cmd.execute({id: '#refresh_id#'});
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
+							//enpause envoie le fichier a imprimer
 						});
-						const imageElement = document.getElementById("imagetd");
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
+							//enpause envoie une commande pour telecharger le fichier
+						});
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
+							//enpause envoie une commande pour upload le fichier vers l'imprimante
+						});
+						let imageElement = $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectimage .state')[0];
 						let isZoomed = false;
-
 						imageElement.addEventListener("click", function() {
 						if (isZoomed) {
 							imageElement.style.transform = "scale(1)";
 							isZoomed = false;
-						} else {
+						}
+						else {
 							imageElement.style.transform = "scale(2)";
 							isZoomed = true;
 						}
 						});
 					</script>
-					<div class="tooltips cmd cmd-widget downloadcontent" data-type="action" data-subtype="message" data-cmd_id="#downloadcontent_id#" data-cmd_uid="cmd#downloadcontent_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" hidden>
-						<div class="state"></div>
-					</div>
 				</div>
 			</div>  <!-- Pan_fichier -->
 			<div class="Pan_axes" style="display: none;">
@@ -1188,20 +1249,20 @@
 								<td ><button class="ymax"><i class="fa fa-arrow-up fa-5x"></i></button></td>
 								<td ><button class="" hidden><i class="" ></i></button></td>
 								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
-								<td ><button class="inserte1"><i class="fa fa-plus fa-5x"></i></button></td>
-								<td ><button class="inserte2"><i class="fa fa-plus fa-5x"></i></button></td>
-								<td rowspan="3" style="width:75px;">
-									<div class="range-container">
-										<div style="text-align: center;">vitesse</div>
-										<input type="range" class="vertical-range" min="0" max="100" value="50" oninput="updateRangeValue(this,'rangeValue1')" onmouseup="onRangeRelease()">
-										<div id="rangeValue1" style="text-align: center;">50</div>
+								<td ><button class="inserte1 is3dprint is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td ><button class="inserte2 is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td rowspan="3" style="width:75px;" class="position-relative">
+									<div class="h-80">
+										<div class="text-center">vitesse</div>
+										<input type="range" class="vertical-range sliderspeedValue" min="100" max="12000" value="6400" step="100" oninput="#uid#updateRangeValue(this,'sliderspeedtext','')">
+										<div class="text-center sliderspeedtext">6400</div>
 									</div>
 								</td>
-								<td rowspan="3" style="width:75px;">
-									<div class="range-container">
-										<div style="text-align: center;">puissance</div>
-										<input type="range" class="vertical-range" min="0" max="100" value="50" oninput="updateRangeValue(this,'rangeValue2')" onmouseup="onRangeRelease()">
-										<div id="rangeValue2" style="text-align: center;">50</div>
+								<td rowspan="3" style="width:75px;" class="position-relative islazer iscnc">
+									<div class="h-80">
+										<div class="text-center">puissance</div>
+										<input type="range" class="vertical-range sliderpowerValue" min="0" max="100" value="50" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
+										<div class="text-center sliderpowertext">50 %</div>
 									</div>
 								</td>
 							</tr>
@@ -1210,16 +1271,16 @@
 								<td class="text-center">XY</td>
 								<td ><button class="right"><i class="fa fa-arrow-right fa-5x"></i></button></td>
 								<td class="text-center">Z</td>
-								<td class="text-center">E1</td>
-								<td class="text-center">E2</td>
+								<td class="text-center is3dprint is3ddoubleprint">E1</td>
+								<td class="text-center is3ddoubleprint">E2</td>
 							</tr>
 							<tr>
 								<td ><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
 								<td ><button class="ymin"><i class="fa fa-arrow-down fa-5x"></i></button></td>
 								<td ><button class="" hidden><i class="fa fa-arrow fa-5x"></i></button></td>
 								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
-								<td ><button class="retracte1"><i class="fa fa-minus fa-5x"></i></button></td>
-								<td ><button class="retracte2"><i class="fa fa-minus fa-5x"></i></button></td>
+								<td ><button class="retracte1 is3dprint is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
+								<td ><button class="retracte2 is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
 							</tr>
 						</table>
 						<div style="display: flex; justify-content: space-around;">
@@ -1265,77 +1326,50 @@
 									// vide le champ de saisie du message
 									$('.cmd[data-cmd_id=#execcomande_id#] .message').val('');
 								});
-								function updateRangeValue(input,namedisplay) {
-									document.getElementById(namedisplay).innerText = input.value;
+								function #uid#updateRangeValue(input,namedisplay,unit) {
+									$('.eqLogic[data-eqLogic_uid=#uid#]:last .' + namedisplay).text(input.value + unit);
 								}
-								function onRangeRelease() {
-									// Code à exécuter lorsque le curseur du range est relâché
-									alert("Curseur relâché !");
+								function #uid#onRangeRelease(input) {
+									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G " + input.value}}); // home
 								}
 							</script>
 						</div>
 						<script>
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last').ready(function() {
-								var slider = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderpower');
-								var sliderValue = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderpowerValue');
-								slider.on('input', function() {
-									sliderValue.text(slider.val());
-								});
-							});
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last').ready(function() {
-								var slider = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeed');
-								var sliderValue = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue');
-								slider.on('input', function() {
-									sliderValue.text(slider.val());
-								});
-							});
-
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .home').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .left').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								var sliderValue = $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue');
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " X+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " X+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .right').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " X-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " X-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymax').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Y+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Y+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymin').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Y-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Y-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .up').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Z+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Z+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .down').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + sliderValue + " Z-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Z-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte1').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E1+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E1+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte2').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E2+" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E2+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte1').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E1-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E1-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte2').off('click').on('click', function () {
-								var vitesse = $('input[name=Radiosdistance#id#]:checked').val();
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + sliderValue + " E2-" + vitesse}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E2-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 						</script>
 					</div>
@@ -1343,7 +1377,7 @@
 			</div> <!-- Pan_axes -->
 		</center>
 	</div>
-	<div class="table_bottom" style="">
+	<div class="table_bottom">
 		<table style="position:absolute; right:0px; bottom:0px; width: 100%; height:;border-radius:#border-radius#;" cellspacing="0" cellpadding="0" border="0">	
 			<tr style="height: 22px;">
 				<td class="td_bot1" style="width: 18px; text-align: left;">
