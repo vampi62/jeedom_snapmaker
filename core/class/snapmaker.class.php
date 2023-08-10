@@ -374,6 +374,10 @@ class snapmakerCmd extends cmd {
     $eqlogic = $this->getEqLogic(); //récupère l'éqlogic de la commande $this
     switch ($this->getLogicalId()) { //vérifie le logicalid de la commande
       case 'refresh':
+        function convert($size) {
+          $unit = array('o', 'Ko', 'Mo', 'Go', 'To', 'Po');
+          return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+        }
         $filelist = array();
         $files = array_diff(scandir(dirname(__FILE__) . '/../../data/' . $eqlogic->getId()), array('.', '..'));
         foreach ($files as $file) {
@@ -399,7 +403,7 @@ class snapmakerCmd extends cmd {
             }
           }
           fclose($filecont);
-          $filelist[] = $file . '-:-' . filesize($filedir) . '-:-' . date("Y-m-d H:i:s", filemtime($filedir)) . '-:-' . $file_total_lines . '-:-' . $estimated_time . '-:-' . $thumbnail;
+          $filelist[] = $file . '-:-' . convert(filesize($filedir)) . '-:-' . date("Y-m-d H:i:s", filemtime($filedir)) . '-:-' . $file_total_lines . '-:-' . $estimated_time . '-:-' . $thumbnail;
         }
         $filelist = implode("-!-", $filelist);
         $eqlogic->checkAndUpdateCmd('filelist', $filelist);

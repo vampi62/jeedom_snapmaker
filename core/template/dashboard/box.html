@@ -14,7 +14,8 @@
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
 				jeedom.cmd.execute({id: '#refresh_id#'});
 			});
-		}else{
+		}
+		else {
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove();
 		}
 		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
@@ -100,19 +101,151 @@
 			if (local_value == "pause") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
-			}
-			else if (local_value == "idle") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
 			}
 			else if (local_value == "printing") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'none');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
 			}
 			else if (local_value == "ready") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
 			}
+			else {// retirer toutes les commandes
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
+			}
+		}
+		function #uid#switch_connect(stats) {
+			if (stats == '1') { // connecter
+				#uid#change_visibility_connect(true);
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'inline');
+			}
+			else { // pas de connexion
+				#uid#change_visibility_connect(false);
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'inline');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'none');
+			}
+		}
+		function #uid#switch_caisson(stats) {
+			if (stats == true) {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').show();
+			}
+			else {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').hide();
+			}
+		}
+		function #uid#switch_reconnect(stats) {
+			if (stats == '1') { // autoconnect actif
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'inline');
+			}
+			else { // pas de valuer ou pas d'autoconnect
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'inline');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'none');
+			}
+		}
+		function #uid#switch_alim(stats) {
+			if (stats == '1') { // active
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'auto');
+				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
+				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
+				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'none');
+				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'block');
+			}
+			else if (stats == '0') {// inactive
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'auto');
+				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
+				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
+				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'block');
+				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'none');
+			}
+			else { // pas de commande
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'none');
+			}
+		}
+		function #uid#_set_value_workSpeed() {
+			if (isNaN(#workSpeed#)) {
+				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
+			}
+			else {
+				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
+			}
+		}
+		function #uid#_set_value_zoffset() {
+			if (isNaN(#zoffset#)) {
+				$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+			}
+			else {
+				$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
+			}
+		}
+		function #uid#_set_value_nozzleTargetTemperature() {
+			if (isNaN(#nozzleTargetTemperature#)) {
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
+			}
+			else {
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
+			}
+		}
+		function #uid#_set_value_heatedBedTargetTemperature() {
+			if (isNaN(#heatedBedTargetTemperature#)) {
+				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
+			}
+			else {
+				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
+			}
+		}
+		function #uid#js_snapmaker_selectfichier(postion_tableau) {
+			// ajoute l'atribut selected sur la ligne selectionner
+			$('.cmd[data-eqlogic_id=#filelist_id#] .state tr').removeClass('highlight');
+			$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
+			// recupere le nom du fichier
+			let nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
+			// recupere la taille du fichier
+			let taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
+			// recupere la date du fichier
+			let datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
+			// recupere le nombre de ligne du fichier
+			let nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
+			// recupere le temps d'impression du fichier
+			let temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
+			// recupere l'image en base64 du fichier
+			let img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
+			// affiche les info du fichier
+			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text(nomfichier);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectdate .state').text(datefichier);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttaille .state').text(taillefichier);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectligne .state').text(nbrligne);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttemps .state').text(temps_impr);
+			// insert l'image en base64 dans le src de l'image
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectimage .state').attr('src',img64);
+			// active les bouton
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .renamefile').attr('disabled',false);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .deletefile').attr('disabled',false);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
+
+			// si imprimante connecter active les bouton
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
 		}
 	</script>
 	<style>
@@ -185,23 +318,7 @@
 								</div>
 							</div>
 							<script>
-								function #uid#updatestatus_but(stats) {
-									if (stats == '1') { // connecter
-										#uid#change_visibility_connect(true);
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'none');
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'inline');
-									}
-									else { // pas de connexion
-										#uid#change_visibility_connect(false);
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'inline');
-										$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'none');
-									}
-								}
-								#uid#updatestatus_but('#status#');
+								#uid#switch_connect('#status#');
 								$('.cmd[data-cmd_id=#connect_id#]:last .action').off('click').on('click', function () {
 									jeedom.cmd.execute({id: '#connect_id#'})
 								})
@@ -211,7 +328,7 @@
 								jeedom.cmd.addUpdateFunction('#status_id#',function(_options) {
 									let cmd = $('.cmd[data-cmd_id=#status_id#]')
 									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									#uid#updatestatus_but(_options.display_value);
+									#uid#switch_connect(_options.display_value);
 								});
 								jeedom.cmd.refreshValue([{cmd_id :'#status#',display_value: '#status#', valueDate: '#status_valueDate#', collectDate: '#status_collectDate#', alertLevel: '#status_alertLevel#'}]);
 							</script>
@@ -235,21 +352,7 @@
 								</div>
 							</div>
 							<script>
-								function #uid#updatereco_but(stats) {
-									if (stats == '1') { // autoconnect actif
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').show();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'none');
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'inline');
-									}
-									else { // pas de valuer ou pas d'autoconnect
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').show();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').hide();
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'inline');
-										$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'none');
-									}
-								}
-								#uid#updatereco_but('#autoconnect#');
+								#uid#switch_reconnect('#autoconnect#');
 								$('.cmd[data-cmd_id=#setautoconnect_id#]:last .action').off('click').on('click', function () {
 									jeedom.cmd.execute({id: '#setautoconnect_id#'})
 								})
@@ -259,7 +362,7 @@
 								jeedom.cmd.addUpdateFunction('#autoconnect_id#',function(_options) {
 									let cmd = $('.cmd[data-cmd_id=#autoconnect_id#]')
 									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									#uid#updatereco_but(_options.display_value);
+									#uid#switch_reconnect(_options.display_value);
 								});
 								jeedom.cmd.refreshValue([{cmd_id :'#autoconnect#',display_value: '#autoconnect#', valueDate: '#autoconnect_valueDate#', collectDate: '#autoconnect_collectDate#', alertLevel: '#autoconnect_alertLevel#'}]);
 							</script>
@@ -302,14 +405,6 @@
 									</div>
 								</div>
 								<script>
-									function #uid#_set_value_zoffset() {
-										if (isNaN(#zoffset#)) {
-											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
-										}
-										else {
-											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
-										}
-									}
 									#uid#_set_value_zoffset()
 									$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
 										if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
@@ -372,14 +467,6 @@
 									</div>
 								</div>
 								<script>
-									function #uid#_set_value_workSpeed() {
-										if (isNaN(#workSpeed#)) {
-											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
-										}
-										else {
-											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
-										}
-									}
 									#uid#_set_value_workSpeed()
 									$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
 										if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
@@ -450,38 +537,6 @@
 										jeedom.cmd.execute({id: '#stop_id#'})
 										jeedom.cmd.execute({id: '#refresh_id#'})
 									})
-								</script>
-								<script>
-									function #uid#updateListButton(stats) {
-										if (stats == '0') { // en attente
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
-										}
-										else if (stats == '10') { // en cours
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-										}
-										else if (stats == '20') { //en pause
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-										}
-										else {// retirer toutes les commandes
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-											$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
-										}
-									}
-									#uid#updateListButton('#printStatus#');
-									jeedom.cmd.addUpdateFunction('#printStatus_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#printStatus_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.collectDate)
-										cmd.find('.state').empty().append(_options.display_value)
-										#uid#updateListButton(_options.display_value);
-									});
-									jeedom.cmd.refreshValue([{cmd_id :'#printStatus_id#',display_value: '#printStatus#', valueDate: '#printStatus_valueDate#', collectDate: '#printStatus_collectDate#', alertLevel: '#printStatus_alertLevel#'}]);
 								</script>
 								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#fileName_id#" data-cmd_uid="cmd#fileName_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #fileName_collectDate#">
 									<div class="content-xs">
@@ -594,10 +649,12 @@
 								<strong class="state">#enclosure#</strong>
 							</div>
 							<script>
+								#uid#switch_caisson('#enclosure#')
 								jeedom.cmd.addUpdateFunction('#enclosure_id#',function(_options) {
 									let cmd = $('.cmd[data-cmd_id=#enclosure_id#]')
 									cmd.attr('title', 'Valeur du: '+_options.collectDate)
 									cmd.find('.state').empty().append(_options.display_value)
+									#uid#switch_caisson(_options.display_value)
 								});
 								jeedom.cmd.refreshValue([{cmd_id :'#enclosure_id#',display_value: '#enclosure#', valueDate: '#enclosure_valueDate#', collectDate: '#enclosure_collectDate#', alertLevel: '#enclosure_alertLevel#'}]);
 							</script>
@@ -702,14 +759,6 @@
 									</div>
 								</div>
 								<script>
-									function #uid#_set_value_nozzleTargetTemperature() {
-										if (isNaN(#nozzleTargetTemperature#)) {
-											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
-										}
-										else {
-											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
-										}
-									}
 									#uid#_set_value_nozzleTargetTemperature()
 									$('.cmd[data-cmd_id=#settempnozzle_id#] .action').off('click').on('click', function () {
 										if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
@@ -772,14 +821,6 @@
 									</div>
 								</div>
 								<script>
-									function #uid#_set_value_heatedBedTargetTemperature() {
-										if (isNaN(#heatedBedTargetTemperature#)) {
-											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
-										}
-										else {
-											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
-										}
-									}
 									#uid#_set_value_heatedBedTargetTemperature()
 									$('.cmd[data-cmd_id=#settempbed_id#] .action').off('click').on('click', function () {
 										if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
@@ -859,7 +900,7 @@
 					</div>
 				</div>
 				<br/>
-				<div class="menu-caisson isconnected iscaissonon"><!--visible si caisson -->
+				<div class="menu-caisson iscaissonon"><!--visible si caisson -->
 					<div class="content-xs titre">
 						<strong>MENU caisson</strong>
 					</div>
@@ -1071,21 +1112,7 @@
 							</div>
 						</div>
 						<script>
-							function #uid#updatealim_but(stats) {
-								if (stats == '1') { // active
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'none');
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'block');
-								}
-								else { // inactive
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'block');
-									$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'none');
-								}
-							}
-							#uid#updatealim_but('#aliminfo#');
+							#uid#switch_alim('#aliminfo#');
 							$('.cmd[data-cmd_id=#onalim_id#]:last .action').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
@@ -1100,7 +1127,7 @@
 							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
 								let cmd = $('.cmd[data-cmd_id=#aliminfo_id#]')
 								cmd.attr('title', 'Valeur du: '+_options.collectDate)
-								#uid#updatealim_but(_options.display_value);
+								#uid#switch_alim(_options.display_value);
 							});
 							jeedom.cmd.refreshValue([{cmd_id :'#aliminfo#',display_value: '#aliminfo#', valueDate: '#aliminfo_valueDate#', collectDate: '#aliminfo_collectDate#', alertLevel: '#aliminfo_alertLevel#'}]);
 						</script>
@@ -1125,39 +1152,7 @@
 							let player = #uid#js_snapmaker_printhtmltable(_options.display_value,'#filelist_id#',headtable,commande);
 						});
 						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
-						function #uid#js_snapmaker_selectfichier(postion_tableau) {
-							// ajoute l'atribut selected sur la ligne selectionner
-							$('.cmd[data-eqlogic_id=#filelist_id#] .state tr').removeClass('highlight');
-							$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
-							// recupere le nom du fichier
-							let nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
-							// recupere la taille du fichier
-							let taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
-							// recupere la date du fichier
-							let datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
-							// recupere le nombre de ligne du fichier
-							let nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
-							// recupere le temps d'impression du fichier
-							let temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
-							// recupere l'image en base64 du fichier
-							let img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
-							// affiche les info du fichier
-							$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text(nomfichier);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectdate .state').text(datefichier);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttaille .state').text(taillefichier);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectligne .state').text(nbrligne);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttemps .state').text(temps_impr);
-							// insert l'image en base64 dans le src de l'image
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectimage .state').attr('src',img64);
-							// active les bouton
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .renamefile').attr('disabled',false);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .deletefile').attr('disabled',false);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
-
-							// si imprimante connecter active les bouton
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
-						}
+						
 					</script>
 				</div>
 				<div class="tooltips cmd cmd-widget fileselect" style="display: block;">
@@ -1206,32 +1201,82 @@
 						<a class="btn btn-sm btn-default start" disabled>start</a>
 						<a class="btn btn-sm btn-default download" download="" disabled>download</a>
 						<a class="btn btn-sm btn-default upsnap" disabled>upload snap</a>
+						<span class="btn btn-default btn-file" style="width:100%;">
+							<i class="fas fa-cloud-upload-alt"></i>Ajouter un fichier<input id="bt_uploadgcode" type="file" name="file" data-url="plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#">
+						</span>
 					</div>
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<script>
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').on('click', function() {
-							//enpause lance une commande de suppr
+							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							$.ajax({
+								type: "POST",
+								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+								data: { action:'delete', id: '#id#', file: fileName },
+								success: function(response) {
+									jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
+								},
+								error: function (request, status, error) {
+									handleAjaxError(request, status, error);
+								}
+							});
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
-							//enpause envoie le fichier a imprimer
+							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
-							//enpause envoie une commande pour telecharger le fichier
+							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							$.ajax({
+								type: "GET",
+								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+								data: { action:'download', id: '#id#', file: fileName },
+								contentType: "application/json",
+								complete: function(response) {
+									var link = document.createElement("a");
+									// retire les caractere après "GCode end"
+									link.href = "data:application/octet-stream," + encodeURIComponent(response.responseText.split("{\"state\":\"")[0]);
+									link.download = fileName;
+									link.style.display = "none";
+									document.body.appendChild(link);
+									link.click();
+									document.body.removeChild(link);
+								}
+							});
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
-							//enpause envoie une commande pour upload le fichier vers l'imprimante
+							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							jeedom.cmd.execute({id: '#sendgcode_id#', value: {message: fileName}});
 						});
-						let imageElement = $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectimage .state')[0];
-						let isZoomed = false;
-						imageElement.addEventListener("click", function() {
-						if (isZoomed) {
-							imageElement.style.transform = "scale(1)";
-							isZoomed = false;
+						$('#bt_uploadgcode').fileupload({
+							dataType: 'json',
+							replaceFileInput: false,
+							done: function(e, data) {
+								if (data.result.state != 'ok') {
+									$.fn.showAlert({
+										message: data.result.result,
+										level: 'danger'
+									})
+									return
+								}
+								jeedom.cmd.execute({id: '#refresh_id#'});
+								$.fn.showAlert({
+									message: 'Fichier(s) ajouté(s) avec succès',
+									level: 'success'
+								})
+							}
+						});
+						let imageElement#uid# = $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectimage .state')[0];
+						let isZoomed#uid# = false;
+						imageElement#uid#.addEventListener("click", function() {
+						if (isZoomed#uid#) {
+							imageElement#uid#.style.transform = "scale(1)";
+							isZoomed#uid# = false;
 						}
 						else {
-							imageElement.style.transform = "scale(2)";
-							isZoomed = true;
+							imageElement#uid#.style.transform = "scale(2)";
+							isZoomed#uid# = true;
 						}
 						});
 					</script>
@@ -1409,7 +1454,7 @@
 			<script>
 				if ('#numberTryWithoutSuccess#' >= 3) {
 					$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').css('color', 'red');
-				} 
+				}
 				//**************************************//	
 				$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').off('click').on('click', function () {
 					$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover({
@@ -1464,9 +1509,6 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-alim .titre').on('click',function () { // fichier
 					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-alim .contenue').toggle();
 				});
-				if ('#enclosure#' == false || '#enclosure#' == "") {
-					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-caisson').hide();
-				}
 			</script>
 		</table>
 	</div>
