@@ -21,3 +21,17 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 * Fichier d’inclusion si vous avez plusieurs fichiers de class ou 3rdParty à inclure
 *
 */
+if (!jeedom::apiAccess(init('apikey'), 'snapmaker')) {
+	echo __('Vous n\'etes pas autorisé à effectuer cette action', __FILE__);
+	die();
+}
+if (isset($_GET['test'])) {
+	echo 'OK';
+	die();
+}
+$result = json_decode(file_get_contents("php://input"), true);
+
+log::add('snapmaker', 'debug', json_encode($result));
+if (!is_array($result)) {
+	die();
+}

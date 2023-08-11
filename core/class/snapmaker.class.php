@@ -252,6 +252,152 @@ class snapmaker extends eqLogic {
   public function sendmessage($message,$value){
     log::add('snapmaker','debug','sendmessage : '.$message . ' : ' . $value);
   }
+  public static function request($_instance, $_request = '', $_data = null, $_type = 'GET', $_noError = false) {
+    $url = 'http://127.0.0.1:' . config::byKey('socketport_' . $_instance, 'snapmaker') . $_request;
+    if ($_type == 'GET' && is_array($_data) && count($_data) > 0) {
+      $url .= '?';
+      foreach ($_data as $key => $value) {
+        $url .= $key . '=' . urlencode($value) . '&';
+      }
+      $url = trim($url, '&');
+    }
+    log::add('snapmaker', 'debug', $url . ' type : ' . $_type);
+    log::add('snapmaker', 'debug', json_encode($_data));
+    $request_http = new com_http($url);
+    $request_http->setHeader(array(
+      'Autorization: ' . jeedom::getApiKey('snapmaker'),
+      'Content-Type: application/json'
+    ));
+    if ($_data !== null) {
+      if ($_type == 'POST') {
+        $request_http->setPost(json_encode($_data));
+      } elseif ($_type == 'PUT') {
+        $request_http->setPut(json_encode($_data));
+      } elseif ($_type == 'DELETE') {
+        $request_http->setDelete(json_encode($_data));
+      }
+    }
+    $result = $request_http->exec(60, 1);
+    $result = is_json($result, $result);
+    if (!$_noError && (!isset($result['state']) || $result['state'] != 'ok')) {
+      throw new \Exception(__('Erreur lors de la requete : ', __FILE__) . $url . '(' . $_type . '), data : ' . json_encode($_data) . ' erreur : ' . json_encode($result));
+    }
+    return isset($result['result']) ? $result['result'] : $result;
+  }
+
+
+  public static function deamon_info() {
+    $return = array();
+    $return['log'] = 'snapmaker';
+    $return['state'] = 'ok';
+    $return['launchable'] = 'ok';
+    for ($i = 1; $i <= config::byKey('max_instance_number', "snapmaker"); $i++) {
+      if (config::byKey('enable_deamon_' . $i, 'snapmaker') != 1) {
+        continue;
+      }
+      $info = self::deamon_info_instance($i);
+      if ($info['state'] != 'ok') {
+        $return['state'] = $info['state'];
+      }
+      if ($info['launchable'] != 'ok') {
+        $return['launchable'] = $info['launchable'];
+        $return['launchable_message'] = $info['launchable_message'];
+      }
+    }
+    return $return;
+  }
+
+  public static function deamon_info_instance($_instance) {
+    $return = array();
+    $return['log'] = 'snapmaker';
+    $return['state'] = 'nok';
+    $pid_file = jeedom::getTmpFolder('snapmaker') . '/deamon_' . $_instance . '.pid';
+    if (file_exists($pid_file)) {
+      $pid = trim(file_get_contents($pid_file));
+      if (is_numeric($pid) && posix_getsid($pid)) {
+        $return['state'] = 'ok';
+      } else {
+        shell_exec(system::getCmdSudo() . 'rm -rf ' . $pid_file . ' 2>&1 > /dev/null;rm -rf ' . $pid_file . ' 2>&1 > /dev/null;');
+      }
+    }
+    $return['launchable'] = 'ok';
+    $port = config::byKey('port_' . $_instance, 'snapmaker');
+    if ($port == 'none') {
+      $return['launchable'] = 'nok';
+      $return['launchable_message'] = __('Le port n\'est pas configuré', __FILE__);
+    }
+    return $return;
+  }
+
+  public static function deamon_start($_auto = false) {
+    for ($i = 1; $i <= config::byKey('max_instance_number', "snapmaker"); $i++) {
+      if (config::byKey('enable_deamon_' . $i, 'snapmaker') != 1) {
+        continue;
+      }
+      if ($_auto) {
+        $infos = self::deamon_info_instance($i);
+        if ($infos['state'] == 'ok') {
+          continue;
+        }
+      }
+      self::deamon_start_instance($i);
+    }
+    return true;
+  }
+
+  public static function deamon_start_instance($_instance) {
+    self::deamon_stop_instance($_instance);
+    $deamon_info = self::deamon_info_instance($_instance);
+    if ($deamon_info['launchable'] != 'ok') {
+      throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+    }
+    $port = config::byKey('port_' . $_instance, 'snapmaker');
+    if (!file_exists(__DIR__ . '/../../data/' . $_instance)) {
+      mkdir(__DIR__ . '/../../data/' . $_instance, 0777, true);
+    }
+    if (!file_exists(__DIR__ . '/../../data/device')) {
+      mkdir(__DIR__ . '/../../data/device');
+    }
+    $snapmaker_path = realpath(__DIR__ . '/../../resources/snapmakerd');
+    $cmd = '/usr/bin/python3 ' . $snapmaker_path . '/snapmakerd.py';
+    $cmd .= ' --device ' . $port;
+    $cmd .= ' --token ' . $token;
+    $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('snapmaker'));
+    $cmd .= ' --socketport ' . config::byKey('socketport_' . $_instance, 'snapmaker');
+    $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/snapmaker/core/php/snapmaker.inc.php';
+    $cmd .= ' --cycle ' . config::byKey('cycle_' . $_instance, 'snapmaker');
+    $cmd .= ' --apikey ' . jeedom::getApiKey('snapmaker');
+    $cmd .= ' --pid ' . jeedom::getTmpFolder('snapmaker') . '/deamon_' . $_instance . '.pid';
+    log::add('snapmaker', 'info', 'Lancement démon snapmakerd : ' . $cmd);
+    exec($cmd . ' >> ' . log::getPathToLog('snapmakerd_' . $_instance) . ' 2>&1 &');
+    config::save('lastDeamonLaunchTime_' . $_instance, date('Y-m-d H:i:s'), 'snapmaker');
+    return true;
+  }
+
+  public static function deamon_stop() {
+    for ($i = 1; $i <= config::byKey('max_instance_number', "snapmaker"); $i++) {
+      self::deamon_stop_instance($i);
+    }
+    system::kill('snapmakerd.py');
+  }
+
+  public static function deamon_stop_instance($_instance) {
+    $pid_file = jeedom::getTmpFolder('snapmaker') . '/deamon' . $_instance . '.pid';
+    if (file_exists($pid_file)) {
+      $pid = intval(trim(file_get_contents($pid_file)));
+      system::kill($pid);
+    }
+    if (config::byKey('enable_deamon_' . $_instance, 'snapmaker') != 1) {
+      return;
+    }
+    system::fuserk(config::byKey('socketport_' . $_instance, 'snapmaker'));
+    $port = config::byKey('port_' . $_instance, 'snapmaker');
+    if ($port != 'auto') {
+      system::fuserk(jeedom::getUsbMapping($port));
+    }
+    sleep(1);
+  }
+
   /*     * **********************Getteur Setteur*************************** */
   public function toHtml($_version = 'dashboard') {
     $replace = $this->preToHtml($_version);
@@ -315,15 +461,13 @@ class snapmaker extends eqLogic {
     $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('onalim')));
     if (is_object($cmd)) {
       $replace['#onalim_id#'] = $cmd->getId();
-    }
-    else {
+    } else {
       $replace['#onalim_id#'] = "-1";
     }
     $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('offalim')));
     if (is_object($cmd)) {
       $replace['#offalim_id#'] = $cmd->getId();
-    }
-    else {
+    } else {
       $replace['#offalim_id#'] = "-1";
     }
     $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('statusalim')));
@@ -333,8 +477,7 @@ class snapmaker extends eqLogic {
       $replace['#aliminfo_valueDate#'] = date('d-m-Y H:i:s',strtotime($cmd->getValueDate()));
       $replace['#aliminfo_collectDate#'] = date('d-m-Y H:i:s',strtotime($cmd->getCollectDate()));
       $replace['#aliminfo_updatetime#'] = date('d-m-Y H:i:s',strtotime( $this->getConfiguration('updatetime')));
-    }
-    else {
+    } else {
       $replace['#aliminfo#'] = "-1";
       $replace['#aliminfo_id#'] = "-1";
       $replace['#aliminfo_valueDate#'] = date('d-m-Y H:i:s',strtotime($this->getConfiguration('updatetime')));
@@ -494,16 +637,14 @@ class snapmakerCmd extends cmd {
     foreach ($liste as $key => $value) {
       if (is_array($value)) {
         $this->getallvaluearray($value,$keyorigin . "/" .$key);
-      }
-      else {
+      } else {
         if (in_array($key, $value_iniore)) {
           continue;
         }
         $element = $this->getCmd(null, $keyorigin . $key);
         if (is_object($element)) {
           $eqlogic->checkAndUpdateCmd($keyorigin . $key, $value);
-        }
-        else {
+        } else {
           log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqlogic " . $eqlogic->getName());
         }
       }

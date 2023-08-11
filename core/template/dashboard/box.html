@@ -14,8 +14,7 @@
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
 				jeedom.cmd.execute({id: '#refresh_id#'});
 			});
-		}
-		else {
+		} else {
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove();
 		}
 		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
@@ -28,8 +27,7 @@
 				local_th.setAttribute("style","padding: 5px;");
 				if (headtable[j] == null) {
 					local_th.style.display = "none";
-				}
-				else {
+				} else {
 					local_th.innerHTML = headtable[j];
 				}
 
@@ -78,22 +76,18 @@
 		function #uid#change_visibility_toolhead(local_value) {
 			if (local_value == "3dprint") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprint').css('display', 'auto');
-			}
-			else if (local_value == "3ddoubleprint") {
+			} else if (local_value == "3ddoubleprint") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3ddoubleprint').css('display', 'auto');
-			}
-			else if (local_value == "cnc") {
+			} else if (local_value == "cnc") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .iscnc').css('display', 'auto');
-			}
-			else if (local_value == "laser") {
+			} else if (local_value == "laser") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .islaser').css('display', 'auto');
 			}
 		}
 		function #uid#change_visibility_connect(local_value) {
 			if (local_value) {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').css('display', 'auto');
-			}
-			else {
+			} else {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').css('display', 'none');
 			}
 		}
@@ -104,22 +98,19 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-			}
-			else if (local_value == "printing") {
+			} else if (local_value == "printing") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'none');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'auto');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-			}
-			else if (local_value == "ready") {
+			} else if (local_value == "ready") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
-			}
-			else {// retirer toutes les commandes
+			} else {// retirer toutes les commandes
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
@@ -132,8 +123,7 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'none');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'inline');
-			}
-			else { // pas de connexion
+			} else { // pas de connexion
 				#uid#change_visibility_connect(false);
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
@@ -144,8 +134,7 @@
 		function #uid#switch_caisson(stats) {
 			if (stats == true) {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').show();
-			}
-			else {
+			} else {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').hide();
 			}
 		}
@@ -155,8 +144,7 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'none');
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'inline');
-			}
-			else { // pas de valuer ou pas d'autoconnect
+			} else { // pas de valuer ou pas d'autoconnect
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'inline');
@@ -170,47 +158,41 @@
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'none');
 				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'block');
-			}
-			else if (stats == '0') {// inactive
+			} else if (stats == '0') {// inactive
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'auto');
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'block');
 				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'none');
-			}
-			else { // pas de commande
+			} else { // pas de commande
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'none');
 			}
 		}
 		function #uid#_set_value_workSpeed() {
 			if (isNaN(#workSpeed#)) {
 				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
-			}
-			else {
+			} else {
 				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
 			}
 		}
 		function #uid#_set_value_zoffset() {
 			if (isNaN(#zoffset#)) {
 				$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
-			}
-			else {
+			} else {
 				$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
 			}
 		}
 		function #uid#_set_value_nozzleTargetTemperature() {
 			if (isNaN(#nozzleTargetTemperature#)) {
 				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
-			}
-			else {
+			} else {
 				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
 			}
 		}
 		function #uid#_set_value_heatedBedTargetTemperature() {
 			if (isNaN(#heatedBedTargetTemperature#)) {
 				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
-			}
-			else {
+			} else {
 				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
 			}
 		}
@@ -417,8 +399,7 @@
 									let step = 0.05
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
 										#uid#_set_value_zoffset()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
 											jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
 										}
@@ -429,8 +410,7 @@
 									let step = 0.05
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
 										#uid#_set_value_zoffset()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
 											jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
 										}
@@ -439,8 +419,7 @@
 									jeedom.cmd.addUpdateFunction('#zoffset_id#',function(_options) {
 										if (isNaN(_options.display_value)) {
 											#uid#_set_value_zoffset()
-										}
-										else {
+										} else {
 											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(parseFloat(_options.display_value).toFixed(2) + " mm")
 										}
 									});
@@ -479,8 +458,7 @@
 									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
 										#uid#_set_value_workSpeed()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
 											jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
 										}
@@ -491,8 +469,7 @@
 									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
 										#uid#_set_value_workSpeed()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
 											jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
 										}
@@ -501,8 +478,7 @@
 									jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
 										if (isNaN(_options.display_value)) {
 											#uid#_set_value_workSpeed()
-										}
-										else {
+										} else {
 											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " %")
 										}
 									});
@@ -771,8 +747,7 @@
 									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
 										#uid#_set_value_nozzleTargetTemperature()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
 											jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
 										}
@@ -783,8 +758,7 @@
 									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
 										#uid#_set_value_nozzleTargetTemperature()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
 											jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
 										}
@@ -793,8 +767,7 @@
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
 										if (isNaN(_options.display_value)) {
 											#uid#_set_value_nozzleTargetTemperature()
-										}
-										else {
+										} else {
 											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
 										}
 									});
@@ -833,8 +806,7 @@
 									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
 										#uid#_set_value_heatedBedTargetTemperature()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
 											jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
 										}
@@ -845,8 +817,7 @@
 									let step = 1
 									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
 										#uid#_set_value_heatedBedTargetTemperature()
-									}
-									else {
+									} else {
 										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
 											jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
 										}
@@ -855,8 +826,7 @@
 									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
 										if (isNaN(_options.display_value)) {
 											#uid#_set_value_heatedBedTargetTemperature()
-										}
-										else {
+										} else {
 											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
 										}
 									});
@@ -930,14 +900,12 @@
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').hide();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .setlight').show();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .unsetlight').hide();
-									}
-									else if (stats == '1') { // en cours
+									} else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').show();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .setlight').hide();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .unsetlight').show();
-									}
-									else { // pas de commande
+									} else { // pas de commande
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').hide();
 									}
@@ -982,14 +950,12 @@
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').hide();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .setfan').show();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .unsetfan').hide();
-									}
-									else if (stats == '1') { // en cours
+									} else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').show();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .setfan').hide();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .unsetfan').show();
-									}
-									else { // pas de commande
+									} else { // pas de commande
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').hide();
 									}
@@ -1039,12 +1005,10 @@
 									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
-									}
-									else if (stats == '1') { // en cours
+									} else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').show();
-									}
-									else { // pas de commande
+									} else { // pas de commande
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
 									}
@@ -1068,12 +1032,10 @@
 									if (stats == '0') { // en attente
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').show();
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
-									}
-									else if (stats == '1') { // en cours
+									} else if (stats == '1') { // en cours
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').show();
-									}
-									else { // pas de commande
+									} else { // pas de commande
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
 										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
 									}
@@ -1119,8 +1081,7 @@
 							$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
 								if ($('.cmd[data-cmd_id=#printStatus_id#] .state').val() == '0') { // ne permetre d'eteindre que si l'imprimante n'est pas en cours d'impression
 									jeedom.cmd.execute({id: '#offalim_id#'})
-								}
-								else {
+								} else {
 									jeedom.cmd.error('Impossible d\'éteindre l\'alimentation, l\'imprimante est en cours d\'impression')
 								}
 							})
@@ -1273,8 +1234,7 @@
 						if (isZoomed#uid#) {
 							imageElement#uid#.style.transform = "scale(1)";
 							isZoomed#uid# = false;
-						}
-						else {
+						} else {
 							imageElement#uid#.style.transform = "scale(2)";
 							isZoomed#uid# = true;
 						}
