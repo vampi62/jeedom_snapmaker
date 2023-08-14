@@ -136,6 +136,22 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
+								<label class="col-sm-4 control-label">{{port daemon}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez un port libre pour le deamon}}"></i></sup>
+								</label>
+								<div class="col-sm-6">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="socketport" placeholder="{{12100 ne pas utiliser le même pour pour plusieurs machines}}">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{cycle}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez un cycle}}"></i></sup>
+								</label>
+								<div class="col-sm-6">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="cycle" placeholder="{{0.3 a 1}}">
+								</div>
+							</div>
+							<div class="form-group">
 								<label class="col-sm-4 control-label">{{token}}
 									<sup><i class="fas fa-question-circle tooltips" title="{{token utiliser pour se connecter a la snapmaker}}"></i></sup>
 								</label>

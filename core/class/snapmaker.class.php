@@ -37,7 +37,6 @@ class snapmaker extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement toutes les minutes par Jeedom
-  public static function cron() {}
   */
 
   /*
@@ -177,6 +176,7 @@ class snapmaker extends eqLogic {
     if (!is_object($cmd)) {
       $this->setConfiguration('offalim', '');
     }
+    deamon_start_instance($this);
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -185,6 +185,7 @@ class snapmaker extends eqLogic {
     if (file_exists($path)) {
       rmdir($path);
     }
+    deamon_stop_instance($this);
   }
 
   // Fonction exécutée automatiquement après la suppression de l'équipement
@@ -251,9 +252,10 @@ class snapmaker extends eqLogic {
   */
   public function sendmessage($message,$value){
     log::add('snapmaker','debug','sendmessage : '.$message . ' : ' . $value);
+    $this->request('/api',array('command' => $message),'POST');
   }
-  public static function request($_instance, $_request = '', $_data = null, $_type = 'GET', $_noError = false) {
-    $url = 'http://127.0.0.1:' . config::byKey('socketport_' . $_instance, 'snapmaker') . $_request;
+  public function request($_request = '', $_data = null, $_type = 'GET', $_noError = false) {
+    $url = 'http://127.0.0.1:' . $this->getConfiguration("socketport", "12100") . $_request;
     if ($_type == 'GET' && is_array($_data) && count($_data) > 0) {
       $url .= '?';
       foreach ($_data as $key => $value) {
@@ -291,11 +293,9 @@ class snapmaker extends eqLogic {
     $return['log'] = 'snapmaker';
     $return['state'] = 'ok';
     $return['launchable'] = 'ok';
-    for ($i = 1; $i <= config::byKey('max_instance_number', "snapmaker"); $i++) {
-      if (config::byKey('enable_deamon_' . $i, 'snapmaker') != 1) {
-        continue;
-      }
-      $info = self::deamon_info_instance($i);
+    $elements = self::byType('snapmaker', true);
+    for ($i = 0; $i < count($elements); $i++) {
+      $info = self::deamon_info_instance($elements[$i]);
       if ($info['state'] != 'ok') {
         $return['state'] = $info['state'];
       }
@@ -311,7 +311,8 @@ class snapmaker extends eqLogic {
     $return = array();
     $return['log'] = 'snapmaker';
     $return['state'] = 'nok';
-    $pid_file = jeedom::getTmpFolder('snapmaker') . '/deamon_' . $_instance . '.pid';
+    $id_objet = $_instance->getId();
+    $pid_file = jeedom::getTmpFolder('snapmaker') . '/deamon_' . $id_objet . '.pid';
     if (file_exists($pid_file)) {
       $pid = trim(file_get_contents($pid_file));
       if (is_numeric($pid) && posix_getsid($pid)) {
@@ -321,80 +322,72 @@ class snapmaker extends eqLogic {
       }
     }
     $return['launchable'] = 'ok';
-    $port = config::byKey('port_' . $_instance, 'snapmaker');
-    if ($port == 'none') {
+    $ipsnapmaker = $_instance->getConfiguration("adresseip", "none");
+    if ($ipsnapmaker == 'none') {
       $return['launchable'] = 'nok';
-      $return['launchable_message'] = __('Le port n\'est pas configuré', __FILE__);
+      $return['launchable_message'] = __('L\'ip de la snapmaker n\'est pas configuré', __FILE__);
     }
     return $return;
   }
 
   public static function deamon_start($_auto = false) {
-    for ($i = 1; $i <= config::byKey('max_instance_number', "snapmaker"); $i++) {
-      if (config::byKey('enable_deamon_' . $i, 'snapmaker') != 1) {
-        continue;
-      }
+    $elements = self::byType('snapmaker', true);
+    for ($i = 0; $i < count($elements); $i++) {
       if ($_auto) {
-        $infos = self::deamon_info_instance($i);
+        $infos = self::deamon_info_instance($elements[$i]);
         if ($infos['state'] == 'ok') {
           continue;
         }
       }
-      self::deamon_start_instance($i);
+      self::deamon_start_instance($elements[$i]);
     }
     return true;
   }
 
   public static function deamon_start_instance($_instance) {
+    $id_objet = $_instance->getId();
     self::deamon_stop_instance($_instance);
     $deamon_info = self::deamon_info_instance($_instance);
     if ($deamon_info['launchable'] != 'ok') {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
     }
-    $port = config::byKey('port_' . $_instance, 'snapmaker');
-    if (!file_exists(__DIR__ . '/../../data/' . $_instance)) {
-      mkdir(__DIR__ . '/../../data/' . $_instance, 0777, true);
-    }
-    if (!file_exists(__DIR__ . '/../../data/device')) {
-      mkdir(__DIR__ . '/../../data/device');
-    }
+    $ipsnapmaker = $_instance->getConfiguration("adresseip", "none");
+    $token = $_instance->getConfiguration("tokenapihttp", "none");
     $snapmaker_path = realpath(__DIR__ . '/../../resources/snapmakerd');
     $cmd = '/usr/bin/python3 ' . $snapmaker_path . '/snapmakerd.py';
-    $cmd .= ' --device ' . $port;
+    $cmd .= ' --device ' . $ipsnapmaker;
     $cmd .= ' --token ' . $token;
     $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('snapmaker'));
-    $cmd .= ' --socketport ' . config::byKey('socketport_' . $_instance, 'snapmaker');
+    $cmd .= ' --socketport ' . $_instance->getConfiguration("socketport", "12100");
     $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/snapmaker/core/php/snapmaker.inc.php';
-    $cmd .= ' --cycle ' . config::byKey('cycle_' . $_instance, 'snapmaker');
+    $cmd .= ' --cycle ' . $_instance->getConfiguration("cycle", "0.3");
     $cmd .= ' --apikey ' . jeedom::getApiKey('snapmaker');
-    $cmd .= ' --pid ' . jeedom::getTmpFolder('snapmaker') . '/deamon_' . $_instance . '.pid';
+    $cmd .= ' --pid ' . jeedom::getTmpFolder('snapmaker') . '/deamon_' . $id_objet . '.pid';
     log::add('snapmaker', 'info', 'Lancement démon snapmakerd : ' . $cmd);
-    exec($cmd . ' >> ' . log::getPathToLog('snapmakerd_' . $_instance) . ' 2>&1 &');
-    config::save('lastDeamonLaunchTime_' . $_instance, date('Y-m-d H:i:s'), 'snapmaker');
+    exec($cmd . ' >> ' . log::getPathToLog('snapmakerd_' . $id_objet) . ' 2>&1 &');
+    config::save('lastDeamonLaunchTime_' . $id_objet, date('Y-m-d H:i:s'), 'snapmaker');
     return true;
   }
 
   public static function deamon_stop() {
-    for ($i = 1; $i <= config::byKey('max_instance_number', "snapmaker"); $i++) {
-      self::deamon_stop_instance($i);
+    $elements = self::byType('snapmaker', true);
+    for ($i = 0; $i < count($elements); $i++) {
+      $infos = self::deamon_info_instance($elements[$i]);
+      if ($infos['launchable'] == 'ok') {
+        self::deamon_stop_instance($elements[$i]);
+      }
     }
     system::kill('snapmakerd.py');
   }
 
   public static function deamon_stop_instance($_instance) {
-    $pid_file = jeedom::getTmpFolder('snapmaker') . '/deamon' . $_instance . '.pid';
+    $id_objet = $_instance->getId();
+    $pid_file = jeedom::getTmpFolder('snapmaker') . '/deamon' . $id_objet . '.pid';
     if (file_exists($pid_file)) {
       $pid = intval(trim(file_get_contents($pid_file)));
       system::kill($pid);
     }
-    if (config::byKey('enable_deamon_' . $_instance, 'snapmaker') != 1) {
-      return;
-    }
-    system::fuserk(config::byKey('socketport_' . $_instance, 'snapmaker'));
-    $port = config::byKey('port_' . $_instance, 'snapmaker');
-    if ($port != 'auto') {
-      system::fuserk(jeedom::getUsbMapping($port));
-    }
+    system::fuserk($_instance->getConfiguration("socketport", "12100"));
     sleep(1);
   }
 

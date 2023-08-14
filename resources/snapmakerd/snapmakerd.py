@@ -43,7 +43,8 @@ def read_socket():
 			return
 		try:
 			print ('read')
-		except Exception, e:
+			print (message)
+		except Exception as e:
 			logging.error('Send command to demon error : '+str(e))
 
 def listen():
@@ -86,7 +87,8 @@ _log_level = "error"
 _socket_port = 55009
 _socket_host = 'localhost'
 _device = 'auto'
-_pidfile = '/tmp/demond.pid'
+_token = ''
+_pidfile = '/tmp/snapmakerd.pid'
 _apikey = ''
 _callback = ''
 _cycle = 0.3
@@ -94,6 +96,7 @@ _cycle = 0.3
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
 parser.add_argument("--device", help="Device", type=str)
+parser.add_argument("--token", help="Token", type=str)
 parser.add_argument("--loglevel", help="Log Level for the daemon", type=str)
 parser.add_argument("--callback", help="Callback", type=str)
 parser.add_argument("--apikey", help="Apikey", type=str)
@@ -104,6 +107,8 @@ args = parser.parse_args()
 
 if args.device:
 	_device = args.device
+if args.token:
+	_token = args.token
 if args.loglevel:
     _log_level = args.loglevel
 if args.callback:
@@ -115,7 +120,7 @@ if args.pid:
 if args.cycle:
     _cycle = float(args.cycle)
 if args.socketport:
-	_socketport = args.socketport
+	_socket_port = args.socketport
 		
 _socket_port = int(_socket_port)
 
@@ -128,6 +133,9 @@ logging.info('Socket host : '+str(_socket_host))
 logging.info('PID file : '+str(_pidfile))
 logging.info('Apikey : '+str(_apikey))
 logging.info('Device : '+str(_device))
+logging.info('Token : '+str(_token))
+logging.info('Callback : '+str(_callback))
+logging.info('Cycle : '+str(_cycle))
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)	
