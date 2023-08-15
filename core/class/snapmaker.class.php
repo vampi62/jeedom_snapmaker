@@ -252,39 +252,19 @@ class snapmaker extends eqLogic {
   */
   public function sendmessage($message,$value){
     log::add('snapmaker','debug','sendmessage : '.$message . ' : ' . $value);
-    $this->request('/api',array('command' => $message),'POST');
+    $this->sendDaemon($message,$value);
   }
-  public function request($_request = '', $_data = null, $_type = 'GET', $_noError = false) {
-    $url = 'http://127.0.0.1:' . $this->getConfiguration("socketport", "12100") . $_request;
-    if ($_type == 'GET' && is_array($_data) && count($_data) > 0) {
-      $url .= '?';
-      foreach ($_data as $key => $value) {
-        $url .= $key . '=' . urlencode($value) . '&';
-      }
-      $url = trim($url, '&');
+  public function sendDaemon($cmdsend,$valuesend) {
+    $value = json_encode(array('apikey' => jeedom::getApiKey('snapmaker'), 'cmd' => $cmdsend, 'value' => $valuesend));
+    log::add('snapmaker', 'debug', 'Envoi : ' . $value);
+    $deamon_info = self::deamon_info();
+    if ($deamon_info['state'] != 'ok') {
+      return;
     }
-    log::add('snapmaker', 'debug', $url . ' type : ' . $_type);
-    log::add('snapmaker', 'debug', json_encode($_data));
-    $request_http = new com_http($url);
-    $request_http->setHeader(array(
-      'Autorization: ' . jeedom::getApiKey('snapmaker'),
-      'Content-Type: application/json'
-    ));
-    if ($_data !== null) {
-      if ($_type == 'POST') {
-        $request_http->setPost(json_encode($_data));
-      } elseif ($_type == 'PUT') {
-        $request_http->setPut(json_encode($_data));
-      } elseif ($_type == 'DELETE') {
-        $request_http->setDelete(json_encode($_data));
-      }
-    }
-    $result = $request_http->exec(60, 1);
-    $result = is_json($result, $result);
-    if (!$_noError && (!isset($result['state']) || $result['state'] != 'ok')) {
-      throw new \Exception(__('Erreur lors de la requete : ', __FILE__) . $url . '(' . $_type . '), data : ' . json_encode($_data) . ' erreur : ' . json_encode($result));
-    }
-    return isset($result['result']) ? $result['result'] : $result;
+    $socket = socket_create(AF_INET, SOCK_STREAM, 0);
+    socket_connect($socket, '127.0.0.1', $this->getConfiguration("socketport", "12100"));
+    socket_write($socket, $value, strlen($value));
+    socket_close($socket);
   }
 
 
