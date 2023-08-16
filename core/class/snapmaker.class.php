@@ -38,6 +38,19 @@ class snapmaker extends eqLogic {
   /*
   * Fonction exécutée automatiquement toutes les minutes par Jeedom
   */
+  public static function cron() {
+    foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
+      if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "true") {
+        if ($snapmaker->getCmd(null, 'status')->execCmd() == "disconnected") {
+          $cmd = $snapmaker->getCmd(null, 'connect');
+          if (!is_object($cmd)) {
+            continue;
+          }
+          $cmd->execCmd();
+        }
+      }
+    }
+  }
 
   /*
   * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
@@ -523,15 +536,6 @@ class snapmakerCmd extends cmd {
         }
         $filelist = implode("-!-", $filelist);
         $eqlogic->checkAndUpdateCmd('filelist', $filelist);
-        
-      break;
-      case 'status':
-        $eqlogic->sendmessage('status',1);
-        $this->getallvaluearray($info);
-      break;
-      case 'enclosure':
-        $eqlogic->sendmessage('enclosure',1);
-        $this->getallvaluearray($info);
       break;
       case 'connect':
         $eqlogic->sendmessage('connect',1);
@@ -604,25 +608,5 @@ class snapmakerCmd extends cmd {
       break;
     }
   }
-  private function getallvaluearray($liste, $keyorigin = "") {
-    $value_iniore = array("x","y","z","status"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
-    $eqlogic = $this->getEqLogic();
-    foreach ($liste as $key => $value) {
-      if (is_array($value)) {
-        $this->getallvaluearray($value,$keyorigin . "/" .$key);
-      } else {
-        if (in_array($key, $value_iniore)) {
-          continue;
-        }
-        $element = $this->getCmd(null, $keyorigin . $key);
-        if (is_object($element)) {
-          $eqlogic->checkAndUpdateCmd($keyorigin . $key, $value);
-        } else {
-          log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqlogic " . $eqlogic->getName());
-        }
-      }
-    }
-  }
   /*     * **********************Getteur Setteur*************************** */
-
 }
