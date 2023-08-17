@@ -30,36 +30,27 @@ if (isset($_GET['test'])) {
 	die();
 }
 $result = json_decode(file_get_contents("php://input"), true);
-
 log::add('snapmaker', 'debug', json_encode($result));
 if (!is_array($result)) {
 	die();
 }
-
-case 'status':
-	$eqlogic->sendmessage('status',1);
-	$this->getallvaluearray($info);
-  break;
-  case 'enclosure':
-	$eqlogic->sendmessage('enclosure',1);
-	$this->getallvaluearray($info);
-  break;
-  private function getallvaluearray($liste, $keyorigin = "") {
-	$value_iniore = array("x","y","z","status"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
-	$eqlogic = $this->getEqLogic();
+$snapmakerid = snapmaker::byLogicalId($result['device'], 'snapmaker');
+function getallvaluearray($liste, $keyorigin = "") {
+	$value_iniore = array("x","y","z","status","device","token","apikey"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
 	foreach ($liste as $key => $value) {
-	  if (is_array($value)) {
-		$this->getallvaluearray($value,$keyorigin . "/" .$key);
-	  } else {
-		if (in_array($key, $value_iniore)) {
-		  continue;
-		}
-		$element = $this->getCmd(null, $keyorigin . $key);
-		if (is_object($element)) {
-		  $eqlogic->checkAndUpdateCmd($keyorigin . $key, $value);
+		if (is_array($value)) {
+		getallvaluearray($value,$keyorigin . "/" .$key);
 		} else {
-		  log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqlogic " . $eqlogic->getName());
+		if (in_array($key, $value_iniore)) {
+			continue;
 		}
-	  }
+		$element = $snapmakerid->getCmd(null, $keyorigin . $key);
+		if (is_object($element)) {
+			$snapmakerid->checkAndUpdateCmd($keyorigin . $key, $value);
+		} else {
+			log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqlogic " . $snapmakerid->getName());
+		}
+		}
 	}
-  }
+}
+getallvaluearray($result);

@@ -14,13 +14,15 @@
 # along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 
 JEEDOM_COM = ''
-ZIGPY = None
-APIKEY=''
-ZIGBEE_CONFIG=None
-CONTROLLER='ezsp'
-SUB_CONTROLLER=None
-DEVICES_DATA={}
-ZQUEUE=[]
-JEEDOM_SPECIFIC = []
-DEVICE_FOLDER=None
-DEVICE_SPECIFIC={}
+connect_to_printer = False
+cycle = 0.3
+callback = ''
+apikey = ''
+socket_port = 55009
+token = ''
+device = ''
+printer = '127.0.0.1'
+pidfile = '/tmp/snapmakerd.pid'
+socket_host = 'localhost'
+log_level = "error"
+

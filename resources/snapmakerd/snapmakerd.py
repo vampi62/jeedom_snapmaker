@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 
+import shared
 import logging
 import string
 import sys
@@ -41,7 +42,7 @@ def read_socket(name):
 		if not JEEDOM_SOCKET_MESSAGE.empty():
 			logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
 			message = json.loads(JEEDOM_SOCKET_MESSAGE.get())
-			if message['apikey'] != _apikey:
+			if message['apikey'] != shared.apikey:
 				logging.error("Invalid apikey from socket : " + str(message))
 				return
 			try:
@@ -49,7 +50,7 @@ def read_socket(name):
 				logging.debug("Message received in socket : " + str(message['value']))
 			except Exception as e:
 				logging.error('Send command to demon error : '+str(e))
-		time.sleep(_cycle)
+		time.sleep(shared.cycle)
 
 payload={}
 headers = {
@@ -60,41 +61,43 @@ saved_token = "cbd3c2c7-fe60-4d6f-8366-7fd438d54e57"
 def printer_connexion(name):
 	while 1:
 		time.sleep(1)
-		if connect_to_printer:
+		if shared.connect_to_printer:
 			# ping printer device IP
-			response = os.system("ping -c 1 " + _device)
+			response = os.system("ping -c 1 " + shared.printer)
 			if response == 0:
 				logging.debug("Printer is connected")
-				jeedom_socket.send({'apikey':_apikey,'cmd':'printer_connected','value':'1'})
-				printerconnect = requests.request("POST",'http://'+_device+':8080/api/v1/connect?token=' + _token, headers=headers, data=payload)
-				logging.debug("Printer connect status code: " + str(printerconnect.status_code))
-				printerconnect = json.loads(printerconnect.text)
-				if _token == "":
-					_token = printerconnect['token']
-					jeedom_socket.send({'apikey':_apikey,'token': _token})
-				logging.debug("Token : " + _token)
-				logging.debug("Printer connect : " + str(printerconnect))
-				while connect_to_printer:
+				jeedom_socket.send({'apikey':shared.apikey,'cmd':'printer_connected','value':'1'})
+				printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload)
+				logging.debug("Printer connect status code: " + str(printerconnecthttp.status_code))
+				printerconnectjson = json.loads(printerconnecthttp.text)
+				if shared.token == "":
+					shared.token = printerconnectjson['token']
+				printerconnectjson["apikey"] = shared.apikey
+				printerconnectjson['device'] = shared.device
+				jeedom_socket.send_change_immediate(printerconnectjson)
+				logging.debug("Token : " + shared.token)
+				logging.debug("Printer connect : " + str(printerconnectjson))
+				while shared.connect_to_printer:
 					time.sleep(1)
-					printerstatus = requests.request("GET",'http://'+_device+':8080/api/v1/status?token=' + _token, headers=headers, data=payload)
-					logging.debug("Printer connect status code: " + str(printerstatus.status_code))
-					printerstatus = json.loads(printerstatus.text)
+					printerstatushttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/status?token=' + shared.token, headers=headers, data=payload)
+					logging.debug("Printer connect status code: " + str(printerstatushttp.status_code))
+					printerstatusjson = json.loads(printerstatushttp.text)
 					time.sleep(2.5)
-					if printerstatus['module']["enclosure"]:
-						printerenclosure = requests.request("GET",'http://'+_device+':8080/api/v1/enclosure?token=' + _token, headers=headers, data=payload)
-						logging.debug("Printer connect status code: " + str(printerenclosure.status_code))
-						printerenclosure = json.loads(printerenclosure.text)
+					if printerstatusjson['module']["enclosure"]:
+						printerenclosurehttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/enclosure?token=' + shared.token, headers=headers, data=payload)
+						logging.debug("Printer connect status code: " + str(printerenclosurehttp.status_code))
+						printerenclosurejson = json.loads(printerenclosurehttp.text)
+						printerstatusjson["enclosure"] = printerenclosurejson
 					time.sleep(1.5)
-					#JEEDOM_COM.send_change_immediate({'devices':{'wifi':default}})
-					#if status.status_code == 200:
+					printerstatusjson["apikey"] = shared.apikey
+					printerstatusjson['device'] = shared.device
+					shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
+					#if printerstatushttp.status_code != 200:
 					#	break
-
-
-
 			else:
 				logging.debug("Printer is not connected")
-				connect_to_printer = False
-				jeedom_socket.send({'apikey':_apikey,'cmd':'printer_disconnected','value':'1'})
+				shared.connect_to_printer = False
+				jeedom_socket.send({'apikey':shared.apikey,'cmd':'printer_disconnected','value':'1'})
 
 
 
@@ -116,9 +119,9 @@ def handler(signum=None, frame=None):
 
 def shutdown():
 	logging.debug("Shutdown")
-	logging.debug("Removing PID file " + str(_pidfile))
+	logging.debug("Removing PID file " + str(shared.pidfile))
 	try:
-		os.remove(_pidfile)
+		os.remove(shared.pidfile)
 	except:
 		pass
 	try:
@@ -135,23 +138,10 @@ def shutdown():
 
 # ----------------------------------------------------------------------------
 
-JEEDOM_COM = ''
-_log_level = "error"
-_socket_port = 55009
-_socket_host = 'localhost'
-_device = 'auto'
-_token = ''
-_pidfile = '/tmp/snapmakerd.pid'
-_apikey = ''
-_callback = ''
-_cycle = 0.3
-
-connect_to_printer = False
-
-
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
-parser.add_argument("--device", help="Device", type=str)
+parser.add_argument("--device", help="jeedomID", type=str)
+parser.add_argument("--printer", help="IPprinter", type=str)
 parser.add_argument("--token", help="Token", type=str)
 parser.add_argument("--loglevel", help="Log Level for the daemon", type=str)
 parser.add_argument("--callback", help="Callback", type=str)
@@ -162,47 +152,50 @@ parser.add_argument("--socketport", help="Port for Zigbee server", type=str)
 args = parser.parse_args()
 
 if args.device:
-	_device = args.device
+	shared.device = args.device
+if args.printer:
+	shared.printer = args.printer
 if args.token:
-	_token = args.token
+	shared.token = args.token
 if args.loglevel:
-    _log_level = args.loglevel
+    shared.log_level = args.loglevel
 if args.callback:
-    _callback = args.callback
+    shared.callback = args.callback
 if args.apikey:
-    _apikey = args.apikey
+    shared.apikey = args.apikey
 if args.pid:
-    _pidfile = args.pid
+    shared.pidfile = args.pid
 if args.cycle:
-    _cycle = float(args.cycle)
+    shared.cycle = float(args.cycle)
 if args.socketport:
-	_socket_port = args.socketport
+	shared.socket_port = args.socketport
 		
-_socket_port = int(_socket_port)
+shared.socket_port = int(shared.socket_port)
 
-jeedom_utils.set_log_level(_log_level)
+jeedom_utils.setshared.log_level(shared.log_level)
 
 logging.info('Start demond')
-logging.info('Log level : '+str(_log_level))
-logging.info('Socket port : '+str(_socket_port))
-logging.info('Socket host : '+str(_socket_host))
-logging.info('PID file : '+str(_pidfile))
-logging.info('Apikey : '+str(_apikey))
-logging.info('Device : '+str(_device))
-logging.info('Token : '+str(_token))
-logging.info('Callback : '+str(_callback))
-logging.info('Cycle : '+str(_cycle))
+logging.info('Log level : '+str(shared.log_level))
+logging.info('Socket port : '+str(shared.socket_port))
+logging.info('Socket host : '+str(shared.socket_host))
+logging.info('PID file : '+str(shared.pidfile))
+logging.info('Apikey : '+str(shared.apikey))
+logging.info('Device : '+str(shared.device))
+logging.info('Printer : '+str(shared.printer))
+logging.info('Token : '+str(shared.token))
+logging.info('Callback : '+str(shared.callback))
+logging.info('Cycle : '+str(shared.cycle))
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)	
 
 try:
-	jeedom_utils.write_pid(str(_pidfile))
-	JEEDOM_COM = jeedom_com(apikey = _apikey,url = _callback,cycle=_cycle)
-	if not JEEDOM_COM.test():
+	jeedom_utils.write_pid(str(shared.pidfile))
+	shared.JEEDOM_COM = jeedom_com(apikey = shared.apikey,url = shared.callback,cycle=shared.cycle)
+	if not shared.JEEDOM_COM.test():
 		logging.error('Network communication issues. Please fix your Jeedom network configuration.')
 		shutdown()
-	jeedom_socket = jeedom_socket(port=_socket_port,address=_socket_host)
+	jeedom_socket = jeedom_socket(port=shared.socket_port,address=shared.socket_host)
 	listen()
 except Exception as e:
 	logging.error('Fatal error : '+str(e))

@@ -40,7 +40,7 @@ class snapmaker extends eqLogic {
   */
   public static function cron() {
     foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
-      if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "true") {
+      if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "1") {
         if ($snapmaker->getCmd(null, 'status')->execCmd() == "disconnected") {
           $cmd = $snapmaker->getCmd(null, 'connect');
           if (!is_object($cmd)) {
@@ -348,7 +348,8 @@ class snapmaker extends eqLogic {
     $token = $_instance->getConfiguration("tokenapihttp", "none");
     $snapmaker_path = realpath(__DIR__ . '/../../resources/snapmakerd');
     $cmd = '/usr/bin/python3 ' . $snapmaker_path . '/snapmakerd.py';
-    $cmd .= ' --device ' . $ipsnapmaker;
+    $cmd .= ' --device ' . $id_objet;
+    $cmd .= ' --printer ' . $ipsnapmaker;
     $cmd .= ' --token ' . $token;
     $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('snapmaker'));
     $cmd .= ' --socketport ' . $_instance->getConfiguration("socketport", "12100");
@@ -559,9 +560,9 @@ class snapmakerCmd extends cmd {
         if (!isset($_options['message']) || empty($_options['message'])) {
           return;
         }
-        $name = str_replace('/', '_', $_options['message']);
-        if (file_exists(dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . $name)) {
-          $eqlogic->sendmessage('startprintfile',$_options['message']);
+        $filename = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . str_replace('/', '_', $_options['message']);
+        if (file_exists($filename)) {
+          $eqlogic->sendmessage('startprintfile',$filename);
         }
       break;
       case 'stop':
