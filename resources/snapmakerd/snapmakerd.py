@@ -46,6 +46,66 @@ def read_socket(name):
 				logging.error("Invalid apikey from socket : " + str(message))
 				return
 			try:
+				if message['cmd'] == 'connect':
+					shared.connect_to_printer = True
+				if message['cmd'] == 'disconnect':
+					shared.connect_to_printer = False
+				if shared.printerconnected:
+					payload = {'value': message['value']}
+					commandnotfound = False
+					if message['cmd'] == 'settempnozzle':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/settempnozzle?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'settempbed':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/settempbed?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setspeed':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setspeed?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setflow':# a test
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setflow?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setlayerheight':# a test
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setlayerheight?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'pause':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/pause?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'startprintfile':
+						payload = {}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/startprint?token=' + shared.token, files={'file': open(message["value"], 'rb')})
+					elif message['cmd'] == 'sendfile':
+						payload = {}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/sendfile?token=' + shared.token, files={'file': open(message["value"], 'rb')})
+					elif message['cmd'] == 'stop':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/stop?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'resume':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/resume?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'reload':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/reload?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'unload':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/unload?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setpauseifopen':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setpauseifopen?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'unsetpauseifopen':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/unsetpauseifopen?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setzoffset':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setzoffset?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setlight':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setlight?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'setfan':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/setfan?token=' + shared.token, headers=headers, data=payload)
+					elif message['cmd'] == 'execcomande':
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/printer/execcomande?token=' + shared.token, headers=headers, data=payload)
+					else:
+						logging.error("Invalid command from socket : " + str(message))
+						commandnotfound = True
+					if commandnotfound:
+						logging.error("Invalid command from socket : " + str(message))
+						printerreturnjson = {}
+						printerreturnjson['returncmd'] = message['cmd']
+						printerreturnjson['returnvalue'] = message['value']
+					else:
+						logging.debug("Printer connect status code: " + str(printerreturn.status_code))
+						printerreturnjson = json.loads(printerreturn.text)
+					printerreturnjson['returnstatus'] = not commandnotfound
+					printerreturnjson["apikey"] = shared.apikey
+					printerreturnjson['device'] = shared.device
+					shared.JEEDOM_COM.send_change_immediate(printerreturnjson)
 				logging.debug("Message received in socket : " + str(message['cmd']))
 				logging.debug("Message received in socket : " + str(message['value']))
 			except Exception as e:
@@ -65,8 +125,7 @@ def printer_connexion(name):
 			# ping printer device IP
 			response = os.system("ping -c 1 " + shared.printer)
 			if response == 0:
-				logging.debug("Printer is connected")
-				jeedom_socket.send({'apikey':shared.apikey,'cmd':'printer_connected','value':'1'})
+				logging.debug("Printer is online")
 				printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload)
 				logging.debug("Printer connect status code: " + str(printerconnecthttp.status_code))
 				printerconnectjson = json.loads(printerconnecthttp.text)
@@ -74,10 +133,16 @@ def printer_connexion(name):
 					shared.token = printerconnectjson['token']
 				printerconnectjson["apikey"] = shared.apikey
 				printerconnectjson['device'] = shared.device
+				if printerconnecthttp.status_code == 200:
+					printerconnectjson['status'] = "connected"
+					shared.printerconnected = True
+				else:
+					printerconnectjson['status'] = "disconnected"
+					shared.printerconnected = False
 				jeedom_socket.send_change_immediate(printerconnectjson)
 				logging.debug("Token : " + shared.token)
 				logging.debug("Printer connect : " + str(printerconnectjson))
-				while shared.connect_to_printer:
+				while shared.printerconnected and shared.connect_to_printer:
 					time.sleep(1)
 					printerstatushttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/status?token=' + shared.token, headers=headers, data=payload)
 					logging.debug("Printer connect status code: " + str(printerstatushttp.status_code))
@@ -92,14 +157,13 @@ def printer_connexion(name):
 					printerstatusjson["apikey"] = shared.apikey
 					printerstatusjson['device'] = shared.device
 					shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
-					#if printerstatushttp.status_code != 200:
-					#	break
+					if printerstatushttp.status_code != 200:
+						logging.debug("Printer is not connected")
+						shared.printerconnected = False
 			else:
 				logging.debug("Printer is not connected")
-				shared.connect_to_printer = False
-				jeedom_socket.send({'apikey':shared.apikey,'cmd':'printer_disconnected','value':'1'})
-
-
+			shared.connect_to_printer = False
+			jeedom_socket.send_change_immediate({'apikey':shared.apikey,'device':shared.device,'status':'disconnected'})
 
 
 def listen():
@@ -120,6 +184,7 @@ def handler(signum=None, frame=None):
 def shutdown():
 	logging.debug("Shutdown")
 	logging.debug("Removing PID file " + str(shared.pidfile))
+	jeedom_socket.send_change_immediate({'apikey':shared.apikey,'status':'disconnected'})
 	try:
 		os.remove(shared.pidfile)
 	except:

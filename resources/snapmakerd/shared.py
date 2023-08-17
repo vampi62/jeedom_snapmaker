@@ -25,4 +25,4 @@ printer = '127.0.0.1'
 pidfile = '/tmp/snapmakerd.pid'
 socket_host = 'localhost'
 log_level = "error"
-
+printerconnected = False

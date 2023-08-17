@@ -263,11 +263,7 @@ class snapmaker extends eqLogic {
     // no return value
   }
   */
-  public function sendmessage($message,$value){
-    log::add('snapmaker','debug','sendmessage : '.$message . ' : ' . $value);
-    $this->sendDaemon($message,$value);
-  }
-  public function sendDaemon($cmdsend,$valuesend) {
+  public function sendmessage($cmdsend,$valuesend) {
     $value = json_encode(array('apikey' => jeedom::getApiKey('snapmaker'), 'cmd' => $cmdsend, 'value' => $valuesend));
     log::add('snapmaker', 'debug', 'Envoi : ' . $value);
     $deamon_info = self::deamon_info();
