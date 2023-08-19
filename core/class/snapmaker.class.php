@@ -128,6 +128,7 @@ class snapmaker extends eqLogic {
 
     $this->create_element('sendgcode'  ,'sendgcode'  ,'action','other');
     $this->create_element('execcomande','execcomande','action','message');
+    $this->create_element('sendfile'   ,'sendfile'   ,'action','other');
 
     $this->create_element('reload','reload','action','other');
     $this->create_element('unload','unload','action','other');
@@ -169,10 +170,13 @@ class snapmaker extends eqLogic {
     $this->create_element('emergencyStopButton'       ,'emergencyStopButton'       ,'info','string');
     $this->create_element('airPurifier'               ,'airPurifier'               ,'info','string');
     $this->create_element('isEnclosureDoorOpen'       ,'isEnclosureDoorOpen'       ,'info','string');
+    $this->create_element('doorSwitchCount'           ,'doorSwitchCount'           ,'info','string');
     $this->create_element('stopIfEnclosureDoorOpen'   ,'stopIfEnclosureDoorOpen'   ,'info','string');
-    $this->create_element('EnclosureLight'            ,'EnclosureLight'            ,'info','string');
-    $this->create_element('EnclosureFan'              ,'EnclosureFan'              ,'info','string');
-    $this->create_element('zoffset'                   ,'zoffset'                   ,'info','string');
+    $this->create_element('isReady'                   ,'isReady'                   ,'info','string');
+    $this->create_element('isDoorEnabled'             ,'isDoorEnabled'             ,'info','string');
+    $this->create_element('led'                       ,'led'                       ,'info','string');
+    $this->create_element('fan'                       ,'fan'                       ,'info','string');
+    $this->create_element('offsetZ'                   ,'offsetZ'                   ,'info','string');
     $path = dirname(__FILE__) . '/../../data/' . $this->getId();
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
@@ -189,7 +193,7 @@ class snapmaker extends eqLogic {
     if (!is_object($cmd)) {
       $this->setConfiguration('offalim', '');
     }
-    deamon_start_instance($this);
+    //deamon_start_instance($this);
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -561,6 +565,15 @@ class snapmakerCmd extends cmd {
           $eqlogic->sendmessage('startprintfile',$filename);
         }
       break;
+      case 'sendfile':
+        if (!isset($_options['message']) || empty($_options['message'])) {
+          return;
+        }
+        $filename = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . str_replace('/', '_', $_options['message']);
+        if (file_exists($filename)) {
+          $eqlogic->sendmessage('sendfile',$filename);
+        }
+      break;
       case 'stop':
         $eqlogic->sendmessage('stop',1);
       break;
@@ -583,7 +596,7 @@ class snapmakerCmd extends cmd {
         $eqlogic->sendmessage('setzoffset',$_options['message']);
       break;
       case 'setlight':
-        $eqlogic->sendmessage('setlight',1);
+        $eqlogic->sendmessage('setlight',100);
       break;
       case 'setfan':
         $eqlogic->sendmessage('setfan',1);

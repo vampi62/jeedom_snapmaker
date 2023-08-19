@@ -34,23 +34,74 @@ log::add('snapmaker', 'debug', json_encode($result));
 if (!is_array($result)) {
 	die();
 }
-$snapmakerid = snapmaker::byLogicalId($result['device'], 'snapmaker');
-function getallvaluearray($liste, $keyorigin = "") {
-	$value_iniore = array("x","y","z","status","device","token","apikey"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
+
+$elements = snapmaker::byType('snapmaker', true);
+$snapmakerid = null;
+for ($i = 0; $i < count($elements); $i++) {
+	$id_objet = $elements[$i]->getId();
+	if ($id_objet == $result['device']) {
+		$snapmakerid = $elements[$i];
+		break;
+	}
+}
+if (!is_object($snapmakerid)) {
+	log::add('snapmaker', 'debug', "Aucun snapmaker avec l'id " . $result['device']);
+	die();
+}
+if (isset($result['token'])) {
+	log::add('snapmaker', 'debug', "mise a jour du token pour " . $snapmakerid->getName());
+	$oldtoken = $snapmakerid->getConfiguration('tokenapihttp', "none");
+	log::add('snapmaker', 'debug', "oldtoken " . $oldtoken);
+	log::add('snapmaker', 'debug', "newtoken " . $result['token']);
+	if ($result['token'] != $oldtoken) {
+		log::add('snapmaker', 'debug', "mise a jour du token pour " . $snapmakerid->getName());
+		$snapmakerid->setConfiguration('tokenapihttp', $result['token']);
+	}
+	unset($result['token']);
+}
+unset($result['device']);
+unset($result['apikey']);
+
+if (isset($result['status'])) {
+	$snapmakerid->checkAndUpdateCmd('printStatus', strval($result['status']));
+	unset($result['status']);
+}
+if (isset($result['statusconnect'])) {
+	$snapmakerid->checkAndUpdateCmd('status', strval($result['statusconnect']));
+	unset($result['statusconnect']);
+}
+if (isset($result['returnstatus'])) {
+	log::add('snapmaker', 'debug', "mise a jour du status pour " . $snapmakerid->getName() . " - " . $result['returnstatus']);
+	unset($result['returnstatus']);
+}
+if (isset($result['returncmd'])) {
+	log::add('snapmaker', 'debug', "mise a jour du cmd pour " . $snapmakerid->getName() . " - " . $result['returncmd']);
+	unset($result['returncmd']);
+}
+if (isset($result['returnvalue'])) {
+	log::add('snapmaker', 'debug', "mise a jour du value pour " . $snapmakerid->getName() . " - " . $result['returnvalue']);
+	unset($result['returnvalue']);
+}
+
+function getallvaluearray($snapmakerid,$liste, $keyorigin = "") {
+	$value_iniore = array("x","y","z","offsetX","offsetY"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
 	foreach ($liste as $key => $value) {
 		if (is_array($value)) {
-		getallvaluearray($value,$keyorigin . "/" .$key);
+			getallvaluearray($snapmakerid,$value,$keyorigin . "/" .$key);
 		} else {
-		if (in_array($key, $value_iniore)) {
-			continue;
-		}
-		$element = $snapmakerid->getCmd(null, $keyorigin . $key);
-		if (is_object($element)) {
-			$snapmakerid->checkAndUpdateCmd($keyorigin . $key, $value);
-		} else {
-			log::add('snapmaker','debug',$keyorigin . $key . " - n'existe pas pour l'eqlogic " . $snapmakerid->getName());
-		}
+			if (in_array($key, $value_iniore)) {
+				continue;
+			}
+			$element = $snapmakerid->getCmd(null, $key);
+			if (is_object($element)) {
+				if (is_bool($value)) {
+					$value = $value ? 'true' : 'false';
+				}
+				$snapmakerid->checkAndUpdateCmd($key, strval($value));
+			} else {
+				log::add('snapmaker','debug',$keyorigin . "/" .$key . " - n'existe pas pour l'eqlogic " . $snapmakerid->getName());
+			}
 		}
 	}
 }
-getallvaluearray($result);
+getallvaluearray($snapmakerid,$result);

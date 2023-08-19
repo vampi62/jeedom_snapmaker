@@ -74,39 +74,39 @@
 			return player; // retourne la liste des joueurs pour les utiliser dans l'identification les commandes
 		}
 		function #uid#change_visibility_toolhead(local_value) {
-			if (local_value == "3dprint") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprint').css('display', 'auto');
-			} else if (local_value == "3ddoubleprint") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3ddoubleprint').css('display', 'auto');
-			} else if (local_value == "cnc") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .iscnc').css('display', 'auto');
-			} else if (local_value == "laser") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .islaser').css('display', 'auto');
+			if (local_value == "TOOLHEAD_3DPRINTING_1") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprint').show();
+			} else if (local_value == "3ddoubleprint") { //non configurer
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3ddoubleprint').show();
+			} else if (local_value == "cnc") { //non configurer
+				$('.eqLogic[data-eqLogic_uid=#uid#] .iscnc').show();
+			} else if (local_value == "laser") { //non configurer
+				$('.eqLogic[data-eqLogic_uid=#uid#] .islaser').show();
 			}
 		}
 		function #uid#change_visibility_connect(local_value) {
 			if (local_value) {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').show();
 			} else {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').hide();
 			}
 		}
 		function #uid#change_visibility_status(local_value) {
-			if (local_value == "pause") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+			if (local_value == "PAUSE") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-			} else if (local_value == "printing") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'none');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'auto');
+			} else if (local_value == "RUNNING") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-			} else if (local_value == "ready") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').css('display', 'auto');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').css('display', 'none');
+			} else if (local_value == "Idle") {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
@@ -121,18 +121,18 @@
 				#uid#change_visibility_connect(true);
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'none');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'inline');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').show();
 			} else { // pas de connexion
 				#uid#change_visibility_connect(false);
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').css('display', 'inline');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').hide();
 			}
 		}
 		function #uid#switch_caisson(stats) {
-			if (stats == true) {
+			if (stats == 'true') {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').show();
 			} else {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').hide();
@@ -142,58 +142,58 @@
 			if (stats == '1') { // autoconnect actif
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'none');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'inline');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').show();
 			} else { // pas de valuer ou pas d'autoconnect
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').css('display', 'inline');
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').hide();
 			}
 		}
 		function #uid#switch_alim(stats) {
 			if (stats == '1') { // active
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
-				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'none');
-				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'block');
+				$('.cmd[data-cmd_id=#onalim_id#]').hide();
+				$('.cmd[data-cmd_id=#offalim_id#]').show();
 			} else if (stats == '0') {// inactive
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'auto');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
-				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimon').css('display', 'block');
-				$('.cmd[data-cmd_id=#aliminfo_id#] .smalimoff').css('display', 'none');
+				$('.cmd[data-cmd_id=#onalim_id#]').show();
+				$('.cmd[data-cmd_id=#offalim_id#]').hide();
 			} else { // pas de commande
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').css('display', 'none');
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').hide();
 			}
 		}
-		function #uid#_set_value_workSpeed() {
-			if (isNaN(#workSpeed#)) {
+		function #uid#_set_value_workSpeed(speed) {
+			if (isNaN(speed)) {
 				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val('100 %')
 			} else {
-				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val("#workSpeed# %")
+				$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(parseFloat(speed).toFixed(0) + " %")
 			}
 		}
-		function #uid#_set_value_zoffset() {
-			if (isNaN(#zoffset#)) {
-				$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val('0 mm')
+		function #uid#_set_value_zoffset(offset) {
+			if (isNaN(offset)) {
+				$('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val('0 mm')
 			} else {
-				$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val("#zoffset# mm")
+				$('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val(parseFloat(offset).toFixed(2) + " mm")
 			}
 		}
-		function #uid#_set_value_nozzleTargetTemperature() {
-			if (isNaN(#nozzleTargetTemperature#)) {
+		function #uid#_set_value_nozzleTargetTemperature(tntemp) {
+			if (isNaN(tntemp)) {
 				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
 			} else {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val("#nozzleTargetTemperature# °C")
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
 			}
 		}
-		function #uid#_set_value_heatedBedTargetTemperature() {
-			if (isNaN(#heatedBedTargetTemperature#)) {
+		function #uid#_set_value_heatedBedTargetTemperature(tbtemp) {
+			if (isNaN(tbtemp)) {
 				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
 			} else {
-				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val("#heatedBedTargetTemperature# °C")
+				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(tbtemp).toFixed(0) + " °C")
 			}
 		}
 		function #uid#js_snapmaker_selectfichier(postion_tableau) {
@@ -366,7 +366,7 @@
 							</script>
 						</div>
 						<div class="isconnected"><!--visible si connecter -->
-							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#zoffset_id#" data-cmd_uid="#zoffset_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#offsetZ_id#" data-cmd_uid="#offsetZ_uid#" data-version="dashboard" data-eqlogic_id="678">
 								<div class="title ">
 									<div class="cmdName">offset</div>
 								</div>
@@ -387,41 +387,27 @@
 									</div>
 								</div>
 								<script>
-									#uid#_set_value_zoffset()
+									#uid#_set_value_zoffset(#offsetZ#)
 									$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
-										if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-											#uid#_set_value_zoffset()
-										}
-										jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()).toFixed(2)}});
+										#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()))
+										jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()).toFixed(2)}});
 									})
-									$('.cmd[data-cmd_id=#zoffset_id#] .bt_plus').on('click', function () {
-									let max = 2
-									let step = 0.05
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-										#uid#_set_value_zoffset()
-									} else {
-										if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) <= max - step ) {
-											jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) + step}])
+									$('.cmd[data-cmd_id=#offsetZ_id#] .bt_plus').on('click', function () {
+										let max = 2
+										let step = 0.05
+										if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) <= max - step ) {
+											#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) + step)
 										}
-									}
 									})
-									$('.cmd[data-cmd_id=#zoffset_id#] .bt_minus').on('click', function () {
-									let min = -2
-									let step = 0.05
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()))) {
-										#uid#_set_value_zoffset()
-									} else {
-										if (parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) >= min + step) {
-											jeedom.cmd.refreshValue([{cmd_id :'#zoffset_id#',display_value: parseFloat($('.cmd[data-cmd_id=#zoffset_id#] .in_value').val()) - step}])
+									$('.cmd[data-cmd_id=#offsetZ_id#] .bt_minus').on('click', function () {
+										let min = -2
+										let step = 0.05
+										if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) >= min + step) {
+											#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) - step)
 										}
-									}
 									})
-									jeedom.cmd.addUpdateFunction('#zoffset_id#',function(_options) {
-										if (isNaN(_options.display_value)) {
-											#uid#_set_value_zoffset()
-										} else {
-											$('.cmd[data-cmd_id=#zoffset_id#] .in_value').val(parseFloat(_options.display_value).toFixed(2) + " mm")
-										}
+									jeedom.cmd.addUpdateFunction('#offsetZ_id#',function(_options) {
+										#uid#_set_value_zoffset(_options.display_value)
 									});
 								</script>
 							</div>
@@ -446,41 +432,27 @@
 									</div>
 								</div>
 								<script>
-									#uid#_set_value_workSpeed()
+									#uid#_set_value_workSpeed(parseFloat(#workSpeed#)/15)
 									$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
-										if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-											#uid#_set_value_workSpeed()
-										}
+										#uid#_set_value_workSpeed(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))
 										jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()).toFixed(0)}});
 									})
 									$('.cmd[data-cmd_id=#workSpeed_id#] .bt_plus').on('click', function () {
-									let max = 200
-									let step = 1
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-										#uid#_set_value_workSpeed()
-									} else {
+										let max = 200
+										let step = 1
 										if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) <= max - step ) {
-											jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step}])
+											#uid#_set_value_workSpeed(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) + step)
 										}
-									}
 									})
 									$('.cmd[data-cmd_id=#workSpeed_id#] .bt_minus').on('click', function () {
-									let min = 1
-									let step = 1
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()))) {
-										#uid#_set_value_workSpeed()
-									} else {
+										let min = 1
+										let step = 1
 										if (parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) >= min + step) {
-											jeedom.cmd.refreshValue([{cmd_id :'#workSpeed_id#',display_value: parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step}])
+											#uid#_set_value_workSpeed(parseFloat($('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val()) - step)
 										}
-									}
 									})
 									jeedom.cmd.addUpdateFunction('#workSpeed_id#',function(_options) {
-										if (isNaN(_options.display_value)) {
-											#uid#_set_value_workSpeed()
-										} else {
-											$('.cmd[data-cmd_id=#workSpeed_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " %")
-										}
+										#uid#_set_value_workSpeed(parseFloat(_options.display_value)/15)
 									});
 								</script>
 							</div>
@@ -735,41 +707,27 @@
 									</div>
 								</div>
 								<script>
-									#uid#_set_value_nozzleTargetTemperature()
+									#uid#_set_value_nozzleTargetTemperature(#nozzleTargetTemperature#)
 									$('.cmd[data-cmd_id=#settempnozzle_id#] .action').off('click').on('click', function () {
-										if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
-											#uid#_set_value_nozzleTargetTemperature()
-										}
+										#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))
 										jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()).toFixed(0)}});
 									})
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
-									let max = 300
-									let step = 1
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
-										#uid#_set_value_nozzleTargetTemperature()
-									} else {
+										let max = 300
+										let step = 1
 										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
-											jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step}])
+											#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step)
 										}
-									}
 									})
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
-									let min = 0
-									let step = 1
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))) {
-										#uid#_set_value_nozzleTargetTemperature()
-									} else {
+										let min = 0
+										let step = 1
 										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
-											jeedom.cmd.refreshValue([{cmd_id :'#nozzleTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step}])
+											#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step)
 										}
-									}
 									})
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
-										if (isNaN(_options.display_value)) {
-											#uid#_set_value_nozzleTargetTemperature()
-										} else {
-											$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
-										}
+										#uid#_set_value_nozzleTargetTemperature(_options.display_value)
 									});
 								</script>
 							</div>
@@ -794,41 +752,27 @@
 									</div>
 								</div>
 								<script>
-									#uid#_set_value_heatedBedTargetTemperature()
+									#uid#_set_value_heatedBedTargetTemperature(#heatedBedTargetTemperature#)
 									$('.cmd[data-cmd_id=#settempbed_id#] .action').off('click').on('click', function () {
-										if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
-											#uid#_set_value_heatedBedTargetTemperature()
-										}
+										#uid#_set_value_heatedBedTargetTemperature(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))
 										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()).toFixed(0)}});
 									})
 									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
-									let max = 100
-									let step = 1
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
-										#uid#_set_value_heatedBedTargetTemperature()
-									} else {
+										let max = 100
+										let step = 1
 										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
-											jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step}])
+											#uid#_set_value_heatedBedTargetTemperature(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step)
 										}
-									}
 									})
 									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
-									let min = 0
-									let step = 1
-									if (isNaN(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))) {
-										#uid#_set_value_heatedBedTargetTemperature()
-									} else {
+										let min = 0
+										let step = 1
 										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
-											jeedom.cmd.refreshValue([{cmd_id :'#heatedBedTargetTemperature_id#',display_value: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step}])
+											#uid#_set_value_heatedBedTargetTemperature(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step)
 										}
-									}
 									})
 									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
-										if (isNaN(_options.display_value)) {
-											#uid#_set_value_heatedBedTargetTemperature()
-										} else {
-											$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(_options.display_value).toFixed(0) + " °C")
-										}
+										#uid#_set_value_heatedBedTargetTemperature(_options.display_value)
 									});
 								</script>
 							</div>
@@ -870,184 +814,191 @@
 					</div>
 				</div>
 				<br/>
-				<div class="menu-caisson iscaissonon"><!--visible si caisson -->
-					<div class="content-xs titre">
-						<strong>MENU caisson</strong>
-					</div>
-					<div class="contenue">
-						<div>
-							<span   class="cmdName">lumière : </span>
-							<div class="cmd cmd-widget tooltips EnclosureLight" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureLight_id#" data-cmd_uid="cmd#EnclosureLight_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureLight_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips setlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setlight_id#" data-cmd_uid="cmd#setlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">on</a>
-								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips unsetlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetlight_id#" data-cmd_uid="cmd#unsetlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">off</a>
-								</div>
-							</div>
-							<script>
-								function #uid#updatelight_but(stats) {
-									if (stats == '0') { // en attente
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').show();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').hide();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .setlight').show();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .unsetlight').hide();
-									} else if (stats == '1') { // en cours
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').show();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .setlight').hide();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .unsetlight').show();
-									} else { // pas de commande
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#EnclosureLight_id#] .iconon').hide();
-									}
-								}
-								#uid#updatelight_but('#EnclosureLight#');
-								$('.cmd[data-cmd_id=#setlight_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#setlight_id#'})
-								})
-								$('.cmd[data-cmd_id=#unsetlight_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#unsetlight_id#'})
-								})
-								jeedom.cmd.addUpdateFunction('#EnclosureLight_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#EnclosureLight_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									#uid#updatelight_but(_options.display_value);
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#EnclosureLight#',display_value: '#EnclosureLight#', valueDate: '#EnclosureLight_valueDate#', collectDate: '#EnclosureLight_collectDate#', alertLevel: '#EnclosureLight_alertLevel#'}]);
-							</script>
+				<div class="isconnected">
+					<div class="menu-caisson iscaissonon"><!--visible si caisson -->
+						<div class="content-xs titre">
+							<strong>MENU caisson</strong>
 						</div>
-						<div>
-							<span   class="cmdName">ventilation : </span>
-							<div class="cmd cmd-widget tooltips EnclosureFan" data-type="info" data-subtype="numeric" data-cmd_id="#EnclosureFan_id#" data-cmd_uid="cmd#EnclosureFan_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #EnclosureFan_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="fas fa-fan"></i></span>
+						<div class="contenue">
+							<div>
+								<span   class="cmdName">lumière : </span>
+								<div class="cmd cmd-widget tooltips led" data-type="info" data-subtype="numeric" data-cmd_id="#led_id#" data-cmd_uid="cmd#led_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #led_collectDate#">
+									<div class="content-sm">
+										<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
+										<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+									</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips setfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setfan_id#" data-cmd_uid="cmd#setfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">on</a>
+								<div class="cmd cmd-widget tooltips setlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setlight_id#" data-cmd_uid="cmd#setlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">on</a>
+									</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips unsetfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetfan_id#" data-cmd_uid="cmd#unsetfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">off</a>
+								<div class="cmd cmd-widget tooltips unsetlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetlight_id#" data-cmd_uid="cmd#unsetlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">off</a>
+									</div>
 								</div>
-							</div>
-							<script>
-								function #uid#updatefan_but(stats) {
-									if (stats == '0') { // en attente
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').show();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').hide();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .setfan').show();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .unsetfan').hide();
-									} else if (stats == '1') { // en cours
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').show();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .setfan').hide();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .unsetfan').show();
-									} else { // pas de commande
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#EnclosureFan_id#] .iconon').hide();
+								<script>
+									function #uid#updatelight_but(stats) {
+										if (stats == '0') { // en attente
+											$('.cmd[data-cmd_id=#led_id#] .iconoff').show();
+											$('.cmd[data-cmd_id=#led_id#] .iconon').hide();
+											$('.cmd[data-cmd_id=#setlight_id#]').show();
+											$('.cmd[data-cmd_id=#unsetlight_id#]').hide();
+										} else if (stats == '100') { // en cours
+											$('.cmd[data-cmd_id=#led_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#led_id#] .iconon').show();
+											$('.cmd[data-cmd_id=#setlight_id#]').hide();
+											$('.cmd[data-cmd_id=#unsetlight_id#]').show();
+										} else { // pas de commande
+											$('.cmd[data-cmd_id=#led_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#led_id#] .iconon').hide();
+										}
 									}
-								}
-								#uid#updatefan_but('#EnclosureFan#');
-								$('.cmd[data-cmd_id=#setfan_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#setfan_id#'})
-								})
-								$('.cmd[data-cmd_id=#unsetfan_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#unsetfan_id#'})
-								})
-								jeedom.cmd.addUpdateFunction('#EnclosureFan_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#EnclosureFan_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									#uid#updatefan_but(_options.display_value);
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#EnclosureFan#',display_value: '#EnclosureFan#', valueDate: '#EnclosureFan_valueDate#', collectDate: '#EnclosureFan_collectDate#', alertLevel: '#EnclosureFan_alertLevel#'}]);
-							</script>
-						</div>
-						<div>
-							<span   class="cmdName">pause si caisson ouvert : </span>
-							<div class="cmd cmd-widget tooltips stopIfEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#stopIfEnclosureDoorOpen_id#" data-cmd_uid="cmd#stopIfEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #stopIfEnclosureDoorOpen_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
-									<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
-								</div>
+									#uid#updatelight_but('#led#');
+									$('.cmd[data-cmd_id=#setlight_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#setlight_id#'})
+									})
+									$('.cmd[data-cmd_id=#unsetlight_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#unsetlight_id#'})
+									})
+									jeedom.cmd.addUpdateFunction('#led_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#led_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										#uid#updatelight_but(_options.display_value);
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#led#',display_value: '#led#', valueDate: '#led_valueDate#', collectDate: '#led_collectDate#', alertLevel: '#led_alertLevel#'}]);
+								</script>
 							</div>
-							<div class="cmd cmd-widget tooltips setpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setpauseifopen_id#" data-cmd_uid="cmd#setpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">on</a>
+							<div>
+								<span   class="cmdName">ventilation : </span>
+								<div class="cmd cmd-widget tooltips fan" data-type="info" data-subtype="numeric" data-cmd_id="#fan_id#" data-cmd_uid="cmd#fan_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #fan_collectDate#">
+									<div class="content-sm">
+										<span class="iconoff"><i class="fas fa-times"></i></span>
+										<span class="iconon"><i class="fas fa-fan"></i></span>
+									</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips unsetpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetpauseifopen_id#" data-cmd_uid="cmd#unsetpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">off</a>
+								<div class="cmd cmd-widget tooltips setfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setfan_id#" data-cmd_uid="cmd#setfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">on</a>
+									</div>
 								</div>
-							</div>
-							<span   class="cmdName">etat caisson : </span>
-							<div class="cmd cmd-widget tooltips isEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#isEnclosureDoorOpen_id#" data-cmd_uid="cmd#isEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #isEnclosureDoorOpen_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="fas fa-door-closed"></i></span>
-									<span class="iconon"><i class="fas fa-door-open"></i></span>
+								<div class="cmd cmd-widget tooltips unsetfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetfan_id#" data-cmd_uid="cmd#unsetfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">off</a>
+									</div>
 								</div>
-							</div>
-							<script>
-								function #uid#updatsifopen_but(stats) {
-									if (stats == '0') { // en attente
-										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').show();
-										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
-									} else if (stats == '1') { // en cours
-										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').show();
-									} else { // pas de commande
-										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
+								<script>
+									function #uid#updatefan_but(stats) {
+										if (stats == '0') { // en attente
+											$('.cmd[data-cmd_id=#fan_id#] .iconoff').show();
+											$('.cmd[data-cmd_id=#fan_id#] .iconon').hide();
+											$('.cmd[data-cmd_id=#setfan_id#]').show();
+											$('.cmd[data-cmd_id=#unsetfan_id#]').hide();
+										} else if (stats == '1') { // en cours
+											$('.cmd[data-cmd_id=#fan_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#fan_id#] .iconon').show();
+											$('.cmd[data-cmd_id=#setfan_id#]').hide();
+											$('.cmd[data-cmd_id=#unsetfan_id#]').show();
+										} else { // pas de commande
+											$('.cmd[data-cmd_id=#fan_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#fan_id#] .iconon').hide();
+										}
 									}
-								}
-								#uid#updatsifopen_but('#stopIfEnclosureDoorOpen#');
-								$('.cmd[data-cmd_id=#setpauseifopen_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#setpauseifopen_id#'})
-								})
-								$('.cmd[data-cmd_id=#unsetpauseifopen_id#]:last .action').off('click').on('click', function () {
-									jeedom.cmd.execute({id: '#unsetpauseifopen_id#'})
-								})
-								jeedom.cmd.addUpdateFunction('#stopIfEnclosureDoorOpen_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									#uid#updatsifopen_but(_options.display_value);
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#stopIfEnclosureDoorOpen#',display_value: '#stopIfEnclosureDoorOpen#', valueDate: '#stopIfEnclosureDoorOpen_valueDate#', collectDate: '#stopIfEnclosureDoorOpen_collectDate#', alertLevel: '#stopIfEnclosureDoorOpen_alertLevel#'}]);
-							</script>
-							<script>
-								function #uid#updatsisopen_but(stats) {
-									if (stats == '0') { // en attente
-										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').show();
-										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
-									} else if (stats == '1') { // en cours
-										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').show();
-									} else { // pas de commande
-										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
-										$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
+									#uid#updatefan_but('#fan#');
+									$('.cmd[data-cmd_id=#setfan_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#setfan_id#'})
+									})
+									$('.cmd[data-cmd_id=#unsetfan_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#unsetfan_id#'})
+									})
+									jeedom.cmd.addUpdateFunction('#fan_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#fan_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										#uid#updatefan_but(_options.display_value);
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#fan#',display_value: '#fan#', valueDate: '#fan_valueDate#', collectDate: '#fan_collectDate#', alertLevel: '#fan_alertLevel#'}]);
+								</script>
+							</div>
+							<div>
+								<span   class="cmdName">pause si caisson ouvert : </span>
+								<div class="cmd cmd-widget tooltips stopIfEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#stopIfEnclosureDoorOpen_id#" data-cmd_uid="cmd#stopIfEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #stopIfEnclosureDoorOpen_collectDate#">
+									<div class="content-sm">
+										<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
+										<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips setpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setpauseifopen_id#" data-cmd_uid="cmd#setpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">on</a>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips unsetpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetpauseifopen_id#" data-cmd_uid="cmd#unsetpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">off</a>
+									</div>
+								</div>
+								<span   class="cmdName">etat caisson : </span>
+								<div class="cmd cmd-widget tooltips isEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#isEnclosureDoorOpen_id#" data-cmd_uid="cmd#isEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #isEnclosureDoorOpen_collectDate#">
+									<div class="content-sm">
+										<span class="iconoff"><i class="fas fa-door-closed"></i></span>
+										<span class="iconon"><i class="fas fa-door-open"></i></span>
+									</div>
+								</div>
+								<script>
+									function #uid#updatsifopen_but(stats) {
+										if (stats == '0') { // en attente
+											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').show();
+											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
+											$('.cmd[data-cmd_id=#setpauseifopen_id#]').show();
+											$('.cmd[data-cmd_id=#unsetpauseifopen_id#]').hide();
+
+										} else if (stats == '1') { // en cours
+											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').show();
+											$('.cmd[data-cmd_id=#setpauseifopen_id#]').hide();
+											$('.cmd[data-cmd_id=#unsetpauseifopen_id#]').show();
+										} else { // pas de commande
+											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
+										}
 									}
-								}
-								#uid#updatsisopen_but('#isEnclosureDoorOpen#');
-								jeedom.cmd.addUpdateFunction('#isEnclosureDoorOpen_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.collectDate)
-									#uid#updatsisopen_but(_options.display_value);
-								});
-								jeedom.cmd.refreshValue([{cmd_id :'#isEnclosureDoorOpen#',display_value: '#isEnclosureDoorOpen#', valueDate: '#isEnclosureDoorOpen_valueDate#', collectDate: '#isEnclosureDoorOpen_collectDate#', alertLevel: '#isEnclosureDoorOpen_alertLevel#'}]);
-							</script>
+									#uid#updatsifopen_but('#stopIfEnclosureDoorOpen#');
+									$('.cmd[data-cmd_id=#setpauseifopen_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#setpauseifopen_id#'})
+									})
+									$('.cmd[data-cmd_id=#unsetpauseifopen_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#unsetpauseifopen_id#'})
+									})
+									jeedom.cmd.addUpdateFunction('#stopIfEnclosureDoorOpen_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										#uid#updatsifopen_but(_options.display_value);
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#stopIfEnclosureDoorOpen#',display_value: '#stopIfEnclosureDoorOpen#', valueDate: '#stopIfEnclosureDoorOpen_valueDate#', collectDate: '#stopIfEnclosureDoorOpen_collectDate#', alertLevel: '#stopIfEnclosureDoorOpen_alertLevel#'}]);
+								</script>
+								<script>
+									function #uid#updatsisopen_but(stats) {
+										if (stats == '0') { // en attente
+											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').show();
+											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
+										} else if (stats == '1') { // en cours
+											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').show();
+										} else { // pas de commande
+											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
+											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
+										}
+									}
+									#uid#updatsisopen_but('#isEnclosureDoorOpen#');
+									jeedom.cmd.addUpdateFunction('#isEnclosureDoorOpen_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.collectDate)
+										#uid#updatsisopen_but(_options.display_value);
+									});
+									jeedom.cmd.refreshValue([{cmd_id :'#isEnclosureDoorOpen#',display_value: '#isEnclosureDoorOpen#', valueDate: '#isEnclosureDoorOpen_valueDate#', collectDate: '#isEnclosureDoorOpen_collectDate#', alertLevel: '#isEnclosureDoorOpen_alertLevel#'}]);
+								</script>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -1079,10 +1030,14 @@
 								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
 							$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
-								if ($('.cmd[data-cmd_id=#printStatus_id#] .state').val() == '0') { // ne permetre d'eteindre que si l'imprimante n'est pas en cours d'impression
-									jeedom.cmd.execute({id: '#offalim_id#'})
+								status_print = $('.cmd[data-cmd_id=#printStatus_id#] .state').val()
+								if (status_print == "RUNNING") {
+									$.fn.showAlert({
+										message: 'impossible d\'éteindre l\'alimentation en cours d\'impression',
+										level: 'danger'
+									})
 								} else {
-									jeedom.cmd.error('Impossible d\'éteindre l\'alimentation, l\'imprimante est en cours d\'impression')
+									jeedom.cmd.execute({id: '#offalim_id#'})
 								}
 							})
 							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
@@ -1208,7 +1163,7 @@
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
-							jeedom.cmd.execute({id: '#sendgcode_id#', value: {message: fileName}});
+							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
 						});
 						$('#bt_uploadgcode').fileupload({
 							dataType: 'json',
@@ -1344,37 +1299,47 @@
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .left').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " X+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " X-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .right').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " X-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " X+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymax').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Y+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Y+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymin').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Y-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Y-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .up').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Z+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Z+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .down').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " Z-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Z-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte1').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E1+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte2').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E2+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte1').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E1-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte2').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue') + " E2-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 						</script>
 					</div>
