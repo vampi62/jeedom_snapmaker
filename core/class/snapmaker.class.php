@@ -41,7 +41,7 @@ class snapmaker extends eqLogic {
   public static function cron() {
     foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
       if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "1") {
-        if ($snapmaker->getCmd(null, 'status')->execCmd() == "disconnected") {
+        if ($snapmaker->getCmd(null, 'status')->execCmd() == "0") {
           $cmd = $snapmaker->getCmd(null, 'connect');
           if (!is_object($cmd)) {
             continue;

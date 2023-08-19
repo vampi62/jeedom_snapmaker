@@ -29,6 +29,7 @@ import json
 import argparse
 import time
 import requests
+from requests.exceptions import ConnectTimeout
 
 try:
 	from jeedom.jeedom import *
@@ -48,6 +49,8 @@ def read_socket(name):
 			try:
 				payload={}
 				headers = {'Accept': 'application/json'}
+				printerreturnjson = {}
+				commandnotfound = False
 				if message['cmd'] == 'connect':
 					shared.connect_to_printer = True
 				elif message['cmd'] == 'disconnect':
@@ -55,80 +58,81 @@ def read_socket(name):
 					time.sleep(3)
 					if shared.printerconnected:
 						payload = {'token': shared.token}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/disconnect', headers=headers, data=payload)
-						printerreturnjson = {}
-						printerreturnjson['returnstatus'] = True
-						printerreturnjson["apikey"] = shared.apikey
-						printerreturnjson['device'] = shared.device
-						shared.JEEDOM_COM.send_change_immediate(printerreturnjson)
-						shared.printerconnected = False
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/disconnect', headers=headers, data=payload, timeout=3)
 				elif shared.printerconnected:
-					commandnotfound = False
 					if message['cmd'] == 'settempnozzle':
 						payload = {'token': shared.token,"nozzleTemp": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_nozzle_temperature', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_nozzle_temperature', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'settempbed':
 						payload = {'token': shared.token,"heatedBedTemp": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_bed_temperature', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_bed_temperature', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'setspeed':
 						payload = {'token': shared.token,"workSpeed": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_work_speed', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_work_speed', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'setzoffset':
 						payload = {'token': shared.token,"zOffset": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_z_offset', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_z_offset', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'pause':
 						payload = {'token': shared.token}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/pause_print', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/pause_print', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'startprintfile':
-						payload = {'token': shared.token}
-						headers = {'Content-Type': 'multipart/form-data'}
-						files = {'fichier': open(message["value"], 'rb')}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', files=files, headers=headers, data=payload)
+						filename = message['value']
+						payload = {'token': shared.token, 'type': '3DP'}
+						file = open(filename, 'rb')
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=45)
 						logging.debug("code : "+str(printerreturn.status_code))
 						if printerreturn.status_code == 200:
-							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload)
+							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'sendfile':
+						filename = message['value']
 						payload = {'token': shared.token}
-						headers = {'Content-Type': 'multipart/form-data'}
-						files = {'fichier': open(message["value"], 'rb')}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', files=files, headers=headers, data=payload)
+						file = open(filename, 'rb')
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', data=payload,files={'file': (filename, file)}, timeout=45)
 						logging.debug("code : "+str(printerreturn.status_code))
 					elif message['cmd'] == 'stop':
 						payload = {'token': shared.token}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/stop_print', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/stop_print', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'resume':
 						payload = {'token': shared.token}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/resume_print', headers=headers, data=payload)
-					#elif message['cmd'] == 'reload': # a tester
-					#	payload = {'token': shared.token}
-					#	printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/reload', headers=headers, data=payload)
-					#elif message['cmd'] == 'unload': # a tester
-					#	payload = {'token': shared.token}
-					#	printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/unload', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/resume_print', headers=headers, data=payload, timeout=3)
+					elif message['cmd'] == 'reload':
+						payload = {'token': shared.token}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/filament_load', headers=headers, data=payload, timeout=3)
+					elif message['cmd'] == 'unload':
+						payload = {'token': shared.token}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/filament_unload', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'setpauseifopen':
 						payload = {'token': shared.token,"isDoorEnabled": True}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'unsetpauseifopen':
 						payload = {'token': shared.token,"isDoorEnabled": False}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'setlight':
 						payload = {'token': shared.token,"led": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'setfan':
 						payload = {'token': shared.token,"fan": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/enclosure', headers=headers, data=payload, timeout=3)
 					elif message['cmd'] == 'execcomande':
 						payload = {'token': shared.token,"code": message['value']}
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/execute_code', headers=headers, data=payload)
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/execute_code', headers=headers, data=payload, timeout=3)
+					#override_laser_power
+					#laserPower
 					else:
 						commandnotfound = True
 						printerreturnjson['returncmd'] = message['cmd']
 						printerreturnjson['returnvalue'] = message['value']
-					printerreturnjson = {}
-					printerreturnjson['returnstatus'] = not commandnotfound
-					printerreturnjson["apikey"] = shared.apikey
-					printerreturnjson['device'] = shared.device
-					shared.JEEDOM_COM.send_change_immediate(printerreturnjson)
+				else:
+					commandnotfound = True
+					printerreturnjson['returncmd'] = message['cmd']
+					printerreturnjson['returnvalue'] = message['value']
+				printerreturnjson['returnstatus'] = not commandnotfound
+				printerreturnjson["apikey"] = shared.apikey
+				printerreturnjson['device'] = shared.device
+				shared.JEEDOM_COM.send_change_immediate(printerreturnjson)
+			except ConnectTimeout:
+				shared.printerconnected = False
+				logging.error('Printer connexion timeout')
 			except Exception as e:
 				logging.error('Send command to demon error : '+str(e))
 		time.sleep(shared.cycle)
@@ -145,35 +149,41 @@ def printer_connexion(name):
 			# ping printer device IP
 			response = os.system("ping -c 1 " + shared.printer)
 			if response == 0:
-				printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload)
-				printerconnectjson = json.loads(printerconnecthttp.text)
-				if shared.token == "":
-					shared.token = printerconnectjson['token']
-				printerconnectjson["apikey"] = shared.apikey
-				printerconnectjson['device'] = shared.device
-				printerconnectjson["token"] = shared.token
-				if printerconnecthttp.status_code == 200:
-					printerconnectjson['statusconnect'] = "1"
-					shared.printerconnected = True
-				else:
-					printerconnectjson['statusconnect'] = "0"
-					shared.printerconnected = False
-				shared.JEEDOM_COM.send_change_immediate(printerconnectjson)
-				while shared.printerconnected:
-					time.sleep(0.5)
-					printerstatushttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/status?token=' + shared.token, headers=headers, data=payload)
-					printerstatusjson = json.loads(printerstatushttp.text)
-					time.sleep(1.5)
-					if printerstatusjson['moduleList']["enclosure"]:
-						printerenclosurehttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/enclosure?token=' + shared.token, headers=headers, data=payload)
-						printerenclosurejson = json.loads(printerenclosurehttp.text)
-						printerstatusjson["enclosure"] = printerenclosurejson
-					time.sleep(1)
-					printerstatusjson["apikey"] = shared.apikey
-					printerstatusjson['device'] = shared.device
-					shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
-					if printerstatushttp.status_code != 200 or not shared.connect_to_printer:
+				try:
+					printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload, timeout=3)
+					printerconnectjson = json.loads(printerconnecthttp.text)
+					if shared.token == "":
+						shared.token = printerconnectjson['token']
+					printerconnectjson["apikey"] = shared.apikey
+					printerconnectjson['device'] = shared.device
+					printerconnectjson["token"] = shared.token
+					if printerconnecthttp.status_code == 200:
+						printerconnectjson['statusconnect'] = "1"
+						shared.printerconnected = True
+					else:
+						printerconnectjson['statusconnect'] = "0"
 						shared.printerconnected = False
+					shared.JEEDOM_COM.send_change_immediate(printerconnectjson)
+					while shared.printerconnected:
+						time.sleep(0.5)
+						printerstatushttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/status?token=' + shared.token, headers=headers, data=payload, timeout=3)
+						printerstatusjson = json.loads(printerstatushttp.text)
+						time.sleep(1.5)
+						if printerstatusjson['moduleList']["enclosure"]:
+							printerenclosurehttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/enclosure?token=' + shared.token, headers=headers, data=payload, timeout=3)
+							printerenclosurejson = json.loads(printerenclosurehttp.text)
+							printerstatusjson["enclosure"] = printerenclosurejson
+						time.sleep(1)
+						printerstatusjson["apikey"] = shared.apikey
+						printerstatusjson['device'] = shared.device
+						shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
+						if printerstatushttp.status_code != 200 or not shared.connect_to_printer:
+							shared.printerconnected = False
+				except ConnectTimeout:
+					shared.printerconnected = False
+					logging.error('Printer connexion timeout')
+				except Exception as e:
+					logging.error('Send command to demon error : '+str(e))
 			shared.connect_to_printer = False
 			shared.JEEDOM_COM.send_change_immediate({'apikey':shared.apikey,'device':shared.device,'statusconnect':'0'})
 

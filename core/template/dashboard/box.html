@@ -104,7 +104,7 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
-			} else if (local_value == "Idle") {
+			} else if (local_value == "IDLE") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
@@ -546,7 +546,11 @@
 										jeedom.cmd.addUpdateFunction('#elapsedTime_id#',function(_options) {
 											let cmd = $('.cmd[data-cmd_id=#elapsedTime_id#]')
 											cmd.attr('title', 'Valeur du: '+_options.collectDate)
-											cmd.find('.state').empty().append(_options.display_value)
+											let sec_num = parseInt(_options.display_value, 10);
+											let hours   = Math.floor(sec_num / 3600);
+											let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+											let seconds = sec_num - (hours * 3600) - (minutes * 60);
+											cmd.find('.state').empty().append(hours+'h '+minutes+'m '+seconds+ 's')
 										});
 										jeedom.cmd.refreshValue([{cmd_id :'#elapsedTime_id#',display_value: '#elapsedTime#', valueDate: '#elapsedTime_valueDate#', collectDate: '#elapsedTime_collectDate#', alertLevel: '#elapsedTime_alertLevel#'}]);
 									</script>
@@ -560,7 +564,11 @@
 										jeedom.cmd.addUpdateFunction('#remainingTime_id#',function(_options) {
 											let cmd = $('.cmd[data-cmd_id=#remainingTime_id#]')
 											cmd.attr('title', 'Valeur du: '+_options.collectDate)
-											cmd.find('.state').empty().append(_options.display_value)
+											let sec_num = parseInt(_options.display_value, 10);
+											let hours   = Math.floor(sec_num / 3600);
+											let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+											let seconds = sec_num - (hours * 3600) - (minutes * 60);
+											cmd.find('.state').empty().append(hours+'h '+minutes+'m '+seconds+ 's')
 										});
 										jeedom.cmd.refreshValue([{cmd_id :'#remainingTime_id#',display_value: '#remainingTime#', valueDate: '#remainingTime_valueDate#', collectDate: '#remainingTime_collectDate#', alertLevel: '#remainingTime_alertLevel#'}]);
 									</script>

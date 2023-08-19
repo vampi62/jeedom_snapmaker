@@ -51,11 +51,9 @@ if (!is_object($snapmakerid)) {
 if (isset($result['token'])) {
 	log::add('snapmaker', 'debug', "mise a jour du token pour " . $snapmakerid->getName());
 	$oldtoken = $snapmakerid->getConfiguration('tokenapihttp', "none");
-	log::add('snapmaker', 'debug', "oldtoken " . $oldtoken);
-	log::add('snapmaker', 'debug', "newtoken " . $result['token']);
 	if ($result['token'] != $oldtoken) {
-		log::add('snapmaker', 'debug', "mise a jour du token pour " . $snapmakerid->getName());
-		$snapmakerid->setConfiguration('tokenapihttp', $result['token']);
+		$snapmakerid->setConfiguration('tokenapihttp', strval($result['token']));
+		$snapmakerid->save();
 	}
 	unset($result['token']);
 }
@@ -65,6 +63,7 @@ unset($result['apikey']);
 if (isset($result['status'])) {
 	$snapmakerid->checkAndUpdateCmd('printStatus', strval($result['status']));
 	unset($result['status']);
+	unset($result['printStatus']);
 }
 if (isset($result['statusconnect'])) {
 	$snapmakerid->checkAndUpdateCmd('status', strval($result['statusconnect']));
