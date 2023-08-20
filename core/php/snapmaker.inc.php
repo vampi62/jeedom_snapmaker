@@ -96,7 +96,12 @@ function getallvaluearray($snapmakerid,$liste, $keyorigin = "") {
 				if (is_bool($value)) {
 					$value = $value ? 'true' : 'false';
 				}
-				$snapmakerid->checkAndUpdateCmd($key, strval($value));
+				$oldValue = $element->execCmd();
+				$value = strval($value);
+				// limitation des mise a jour pour eviter des ecritures sur le disque trop frequente et/ou plusieurs processus de verification de jeedom
+				if ($oldValue != $value) { // on ne met a jour que si la valeur a change
+					$snapmakerid->checkAndUpdateCmd($key, $value);
+				}
 			} else {
 				log::add('snapmaker','debug',$keyorigin . "/" .$key . " - n'existe pas pour l'eqlogic " . $snapmakerid->getName());
 			}
