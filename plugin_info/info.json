@@ -2,7 +2,7 @@
 	"id" : "snapmaker",
 	"name" : "snapmaker",
 	"description" : {
-		"fr_FR": "connecter votre imprimante 3D snapmaker à jeedom"
+		"fr_FR": "connecter un ou plusieurs imprimantes 3D snapmaker à jeedom"
 	},
 	"licence" : "AGPL",
 	"author" : "vampi62",
@@ -11,13 +11,12 @@
 	"hasDependency" : false,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
-	"changelog_beta" : "https://jeedom.github.io/plugin-template/#language#/beta/changelog",
-	"documentation_beta" : "https://jeedom.github.io/plugin-template/#language#/beta/",
+	"changelog" : "https://jeedom.github.io/plugins/#language#/snapmaker/changelog",
+	"documentation" : "https://jeedom.github.io/plugins/#language#/snapmaker/",
+	"changelog_beta" : "https://jeedom.github.io/plugins/#language#/snapmaker/beta/changelog",
+	"documentation_beta" : "https://jeedom.github.io/plugins/#language#/snapmaker/beta/",
 	"link" : {
-		"forum":"Lien vers le forum",
-		"video" : "Lien vers une video"
+		"forum":"https://github.com/vampi62/jeedom_snapmaker"
 	},
 	"language": [
 		"fr_FR"

@@ -144,6 +144,7 @@ class snapmaker extends eqLogic {
     $this->create_element('setfan'       ,'setfan'       ,'action','other');
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
     $this->create_element('unsetfan'     ,'unsetfan'     ,'action','other');
+    $this->create_element('saveworkSpeed','saveworkSpeed','info'  ,'string');
     
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
@@ -540,6 +541,7 @@ class snapmakerCmd extends cmd {
       break;
       case 'connect':
         $eqlogic->sendmessage('connect',1);
+        $eqlogic->checkAndUpdateCmd('saveworkSpeed', '100');
       break;
       case 'disconnect':
         $eqlogic->sendmessage('disconnect',1);
@@ -552,39 +554,54 @@ class snapmakerCmd extends cmd {
       break;
       case 'setspeed':
         $eqlogic->sendmessage('setspeed',$_options['message']);
+        $eqlogic->checkAndUpdateCmd('saveworkSpeed', $_options['message']);
       break;
       case 'pause':
-        $eqlogic->sendmessage('pause',1);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "RUNNING") {
+          $eqlogic->sendmessage('pause',1);
+        }
       break;
       case 'start':
-        if (!isset($_options['message']) || empty($_options['message'])) {
-          return;
-        }
-        $filename = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . str_replace('/', '_', $_options['message']);
-        if (file_exists($filename)) {
-          $eqlogic->sendmessage('startprintfile',$filename);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "IDLE") {
+          if (!isset($_options['message']) || empty($_options['message'])) {
+            return;
+          }
+          $filename = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . str_replace('/', '_', $_options['message']);
+          if (file_exists($filename)) {
+            $eqlogic->sendmessage('startprintfile',$filename);
+          }
         }
       break;
       case 'sendfile':
-        if (!isset($_options['message']) || empty($_options['message'])) {
-          return;
-        }
-        $filename = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . str_replace('/', '_', $_options['message']);
-        if (file_exists($filename)) {
-          $eqlogic->sendmessage('sendfile',$filename);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "IDLE") {
+          if (!isset($_options['message']) || empty($_options['message'])) {
+            return;
+          }
+          $filename = dirname(__FILE__) . '/../../data/' . $eqlogic->getId() . '/' . str_replace('/', '_', $_options['message']);
+          if (file_exists($filename)) {
+            $eqlogic->sendmessage('sendfile',$filename);
+          }
         }
       break;
       case 'stop':
-        $eqlogic->sendmessage('stop',1);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "RUNNING") {
+          $eqlogic->sendmessage('stop',1);
+        }
       break;
       case 'resume':
-        $eqlogic->sendmessage('resume',1);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "PAUSED") {
+          $eqlogic->sendmessage('resume',1);
+        }
       break;
       case 'reload':
-        $eqlogic->sendmessage('reload',1);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() != "RUNNING") {
+          $eqlogic->sendmessage('reload',1);
+        }
       break;
       case 'unload':
-        $eqlogic->sendmessage('unload',1);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() != "RUNNING") {
+          $eqlogic->sendmessage('unload',1);
+        }
       break;
       case 'setpauseifopen':
         $eqlogic->sendmessage('setpauseifopen',1);
@@ -614,7 +631,9 @@ class snapmakerCmd extends cmd {
         $eqlogic->checkAndUpdateCmd('autoconnect', "0");
       break;
       case 'execcomande':
-        $eqlogic->sendmessage('execcomande', $_options['message']);
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "IDLE") {
+          $eqlogic->sendmessage('execcomande', $_options['message']);
+        }
       break;
     }
   }

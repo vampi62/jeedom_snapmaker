@@ -50,7 +50,6 @@ def read_socket(name):
 				payload={}
 				headers = {'Accept': 'application/json'}
 				printerreturnjson = {}
-				commandnotfound = False
 				if message['cmd'] == 'connect':
 					shared.connect_to_printer = True
 				elif message['cmd'] == 'disconnect':
@@ -74,17 +73,23 @@ def read_socket(name):
 					elif message['cmd'] == 'startprintfile':
 						filename = message['value']
 						payload = {'token': shared.token, 'type': '3DP'}
-						file = open(filename, 'rb')
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=45)
-						logging.debug("code : "+str(printerreturn.status_code))
-						if printerreturn.status_code == 200:
-							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=5)
+						if os.path.isfile(filename):
+							file = open(filename, 'rb')
+							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=45)
+							logging.debug("code : "+str(printerreturn.status_code))
+							if printerreturn.status_code == 200:
+								printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=5)
+						else:
+							printerreturnjson['returnstatus'] = "file not found"
 					elif message['cmd'] == 'sendfile':
 						filename = message['value']
 						payload = {'token': shared.token}
-						file = open(filename, 'rb')
-						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', data=payload,files={'file': (filename, file)}, timeout=45)
-						logging.debug("code : "+str(printerreturn.status_code))
+						if os.path.isfile(filename):
+							file = open(filename, 'rb')
+							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', data=payload,files={'file': (filename, file)}, timeout=45)
+							logging.debug("code : "+str(printerreturn.status_code))
+						else:
+							printerreturnjson['returnstatus'] = "file not found"
 					elif message['cmd'] == 'stop':
 						payload = {'token': shared.token}
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/stop_print', headers=headers, data=payload, timeout=5)
@@ -115,14 +120,14 @@ def read_socket(name):
 					#override_laser_power
 					#laserPower
 					else:
-						commandnotfound = True
-						printerreturnjson['returncmd'] = message['cmd']
-						printerreturnjson['returnvalue'] = message['value']
+						printerreturnjson['returnstatus'] = "command not found"
 				else:
-					commandnotfound = True
-					printerreturnjson['returncmd'] = message['cmd']
-					printerreturnjson['returnvalue'] = message['value']
-				printerreturnjson['returnstatus'] = not commandnotfound
+					printerreturnjson['returnstatus'] = "Printer not connected or command not found"
+				if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
+					if printerreturn.status_code == 200:
+						printerreturnjson['returnstatus'] = "OK"
+					else:
+						printerreturnjson['returnstatus'] = "Error"
 				printerreturnjson["apikey"] = shared.apikey
 				printerreturnjson['device'] = shared.device
 				shared.JEEDOM_COM.send_change_immediate(printerreturnjson)

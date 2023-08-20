@@ -1,18 +1,34 @@
-# Plugin template
+# Plugin snapmaker
 
-Ce "template de plugin" sert de base à la réalisation de plugins pour **Jeedom**.
 
-La documentation générale relative à la conception de plugin est consultable [ici](https://doc.jeedom.com/fr_FR/dev/).
+le plugin snapmaker permet de piloter une ou plusieurs imprimantes 3D snapmaker.
 
-Dans le détail :   
-* [Utilisation du template de plugin](https://doc.jeedom.com/fr_FR/dev/plugin_template) : Le template de plugin est une base de plugin pour Jeedom qui doit être adaptée avec l'id de votre plugin et à laquelle il suffit d'ajouter vos propres fonctions.
+l'imprimante snapmaker est une equipement multi outils (imprimante 3D, graveur laser, fraiseuse CNC), le plugin ne gere que l'imprimante 3D pour le moment.
 
-* [Fichier info.json](https://doc.jeedom.com/fr_FR/dev/structure_info_json) : Intégré depuis la version 3.0 de Jeedom, le fichier **info.json** est obligatoire pour le bon fonctionnement des plugins et leur bon déploiement sur le Market Jeedom.
+1) ajouter un equipement snapmaker
+pour ce faire creer un equipement par imprimante et renseigner les parametres suivrant :
+- ip : l'adresse ip de l'imprimante
+- port : port du daemon snapmaker (utiliser un port non utiliser par un autre service de la machine)
+- cycle : temps de rafraichissement du daemon (en seconde) (0.3 par defaut)
+- token : laisser vide il se remplira de lui meme apres la premiere connexion a l'imprimante
 
-* [Icône du plugin](https://doc.jeedom.com/fr_FR/dev/Icone_de_plugin) : Afin de pouvoir être publié sur le Market Jeedom, tout plugin doit disposer d’une icône. Attention à ne pas utiliser le même code couleur que les icônes des plugins Jeedom officiels.
+si votre imprimante est sur une prise connecter et que les informations de la prise sont renseigner dans jeedom, entrer les element ci-dessous :
+- status alim : retour d'etat de la prise (0 ou 1)
+- on alim : action pour allumer la prise
+- off alim : action pour eteindre la prise
 
-* [Widget du plugin](https://doc.jeedom.com/fr_FR/dev/widget_plugin) : Présentation des différentes manières d'inclure des widgets personnalisés au plugin.
+2) une fois tous les elements rentrer, sauvegarder l'equipement et patienter 1 minute pour que le daemon se lance avant de connecter l'imprimante. (si le daemon ne se lance pas, aller dans les parametres du plugin et cliquer sur le bouton pour relancer le daemon)
 
-* [Documentation du plugin](https://doc.jeedom.com/fr_FR/dev/documentation_plugin) : Présentation de la mise en place d'une documentation car un bon plugin n'est rien sans documentation adéquate.
 
-* [Publication du plugin](https://doc.jeedom.com/fr_FR/dev/publication_plugin) : Description des pré-requis indispensables à la publication du plugin.
+3) une fois le daemon lancer, cliquer sur le bouton "connexion" de l'equipement pour lancer la connexion à l'imprimante.
+
+4) si il s'agit de la premiere connexion, un message vous demandera de valider la connexion sur l'imprimante, valider la connexion sur l'imprimante.
+
+5) si la connexion s'atablie, le widget de l'equipement se mettra a jour avec les informations de l'imprimante, et plusieurs section apparaitront.
+
+6) 3 menu son disponible en bas à droite du widget :
+- dans le menu par defaut vous trouverez les informations de l'imprimante (etat, temperature, etc...)
+- dans le 2eme menu vous pouvez deposer des fichiers gcode et les selectionner pour les envoyer a l'imprimante
+- dans le 3eme menu vous pouvez lancer des commandes manuelles, deplacer les axes, etc...
+
+si vous avez des questions ou des remarques, n'hesitez pas ouvrir une issue sur le github du plugin : https://github.com/vampi62/jeedom_snapmaker
