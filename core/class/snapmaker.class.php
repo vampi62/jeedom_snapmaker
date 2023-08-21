@@ -110,6 +110,15 @@ class snapmaker extends eqLogic {
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
   public function preSave() {
+    if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('statusalim',''))))) {
+      $this->setConfiguration('statusalim', '');
+    }
+    if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('onalim',''))))) {
+      $this->setConfiguration('onalim', '');
+    }
+    if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('offalim',''))))) {
+      $this->setConfiguration('offalim', '');
+    }
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
@@ -182,19 +191,7 @@ class snapmaker extends eqLogic {
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
     }
-    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('statusalim')));
-    if (!is_object($cmd)) {
-      $this->setConfiguration('statusalim', '');
-    }
-    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('onalim')));
-    if (!is_object($cmd)) {
-      $this->setConfiguration('onalim', '');
-    }
-    $cmd = cmd::byId(str_replace("#","",$this->getConfiguration('offalim')));
-    if (!is_object($cmd)) {
-      $this->setConfiguration('offalim', '');
-    }
-    //deamon_start_instance($this);
+    self::deamon_start_instance($this);
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -203,7 +200,7 @@ class snapmaker extends eqLogic {
     if (file_exists($path)) {
       rmdir($path);
     }
-    deamon_stop_instance($this);
+    self::deamon_stop_instance($this);
   }
 
   // Fonction exécutée automatiquement après la suppression de l'équipement

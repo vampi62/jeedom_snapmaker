@@ -70,16 +70,8 @@ if (isset($result['statusconnect'])) {
 	unset($result['statusconnect']);
 }
 if (isset($result['returnstatus'])) {
-	log::add('snapmaker', 'debug', "mise a jour du status pour " . $snapmakerid->getName() . " - " . $result['returnstatus']);
+	log::add('snapmaker', 'info', "mise a jour du status pour " . $snapmakerid->getName() . " - " . $result['returnstatus']);
 	unset($result['returnstatus']);
-}
-if (isset($result['returncmd'])) {
-	log::add('snapmaker', 'debug', "mise a jour du cmd pour " . $snapmakerid->getName() . " - " . $result['returncmd']);
-	unset($result['returncmd']);
-}
-if (isset($result['returnvalue'])) {
-	log::add('snapmaker', 'debug', "mise a jour du value pour " . $snapmakerid->getName() . " - " . $result['returnvalue']);
-	unset($result['returnvalue']);
 }
 
 function getallvaluearray($snapmakerid,$liste, $keyorigin = "") {
