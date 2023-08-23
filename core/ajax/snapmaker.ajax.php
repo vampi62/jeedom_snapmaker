@@ -37,8 +37,8 @@ try {
       throw new Exception(__('Aucun fichier trouvé. Vérifiez le paramètre PHP (post size limit)', __FILE__));
     }
     $extension = strtolower(strrchr($_FILES['file']['name'], '.'));
-    if (!in_array($extension, array('.gcode'))) {
-      throw new Exception(__('Extension du fichier non valide (autorisé .gcode) :', __FILE__) . ' ' . $extension);
+    if (!in_array($extension, array('.gcode','.nc','.cnc'))) {
+      throw new Exception(__('Extension du fichier non valide (autorisé .gcode, .nc, .cnc) :', __FILE__) . ' ' . $extension);
     }
     if (filesize($_FILES['file']['tmp_name']) > 500000000) {
       throw new Exception(__('Le fichier est trop gros (maximum 500Mo)', __FILE__));

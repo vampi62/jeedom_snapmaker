@@ -72,15 +72,25 @@ def read_socket(name):
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/pause_print', headers=headers, data=payload, timeout=5)
 					elif message['cmd'] == 'startprintfile':
 						filename = message['value']
-						payload = {'token': shared.token, 'type': '3DP'}
-						if os.path.isfile(filename):
-							file = open(filename, 'rb')
-							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=45)
-							logging.debug("code : "+str(printerreturn.status_code))
-							if printerreturn.status_code == 200:
-								printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=5)
+						filenotsupported = False
+						if filename[-6:] == ".gcode":
+							payload = {'token': shared.token, 'type': '3DP'}
+						elif filename[-3:] == ".nc":
+							payload = {'token': shared.token, 'type': 'Laser'}
+						elif filename[-4:] == ".cnc":
+							payload = {'token': shared.token, 'type': 'CNC'}
 						else:
-							printerreturnjson['returnstatus'] = "file not found"
+							printerreturnjson['returnstatus'] = "file format not supported"
+							filenotsupported = True
+						if not filenotsupported:
+							if os.path.isfile(filename):
+								file = open(filename, 'rb')
+								printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=45)
+								logging.debug("code : "+str(printerreturn.status_code))
+								if printerreturn.status_code == 200:
+									printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=5)
+							else:
+								printerreturnjson['returnstatus'] = "file not found"
 					elif message['cmd'] == 'sendfile':
 						filename = message['value']
 						payload = {'token': shared.token}
@@ -117,8 +127,21 @@ def read_socket(name):
 					elif message['cmd'] == 'execcomande':
 						payload = {'token': shared.token,"code": message['value']}
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/execute_code', headers=headers, data=payload, timeout=5)
-					#override_laser_power
-					#laserPower
+					elif message['cmd'] == 'switchextruder':
+						payload = {'token': shared.token,"active": message['value']}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/switch_extruder', headers=headers, data=payload, timeout=5)
+					elif message['cmd'] == 'setlaserpower':
+						payload = {'token': shared.token,"laserPower": message['value']}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/override_laser_power', headers=headers, data=payload, timeout=5)
+					elif message['cmd'] == 'setpurifier':
+						payload = {'token': shared.token,"switch": True}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/air_purifier_switch', headers=headers, data=payload, timeout=5)
+					elif message['cmd'] == 'unsetpurifier':
+						payload = {'token': shared.token,"switch": False}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/air_purifier_switch', headers=headers, data=payload, timeout=5)
+					elif message['cmd'] == 'setpurifierfan':
+						payload = {'token': shared.token,"fan_speed": message['value']}
+						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/air_purifier_fan_speed', headers=headers, data=payload, timeout=5)
 					else:
 						printerreturnjson['returnstatus'] = "command not found"
 				else:
