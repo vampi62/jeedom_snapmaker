@@ -323,7 +323,7 @@
 		.is3ddoubleprint {
 			display: none;
 		}
-		.islazer {
+		.islaser {
 			display: none;
 		}
 		.iscnc {
@@ -1291,10 +1291,10 @@
 										<div class="text-center sliderspeedtext">6400</div>
 									</div>
 								</td>
-								<td rowspan="3" style="width:75px;" class="position-relative islazer iscnc">
+								<td rowspan="3" style="width:75px;" class="position-relative islaser iscnc">
 									<div class="h-80">
 										<div class="text-center">puissance</div>
-										<input type="range" class="vertical-range sliderpowerValue" min="0" max="100" value="50" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
+										<input type="range" class="vertical-range sliderpowerValue" min="0" max="25" value="10" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
 										<div class="text-center sliderpowertext">50 %</div>
 									</div>
 								</td>
@@ -1363,7 +1363,19 @@
 									$('.eqLogic[data-eqLogic_uid=#uid#]:last .' + namedisplay).text(input.value + unit);
 								}
 								function #uid#onRangeRelease(input) {
-									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G " + input.value}}); // home
+									if (global_#uid#_toolhead == "laser") {
+										if (input.value == 0) {
+											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M5"}}); // laser off
+										} else {
+											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M3 P" + input.value + " S" + Math.round(input.value * 2.55)}}); // laser on
+										}
+									} else if (global_#uid#_toolhead == "cnc") {
+										if (input.value == 0) {
+											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M5"}}); // laser off
+										} else {
+											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M3 P" + input.value}}); // laser on
+										}
+									}
 								}
 							</script>
 						</div>
