@@ -53,7 +53,7 @@ if (isset($result['token'])) {
 	$oldtoken = $snapmakerid->getConfiguration('tokenapihttp', "none");
 	if ($result['token'] != $oldtoken) {
 		$snapmakerid->setConfiguration('tokenapihttp', strval($result['token']));
-		$snapmakerid->save();
+		$snapmakerid->save(true);
 	}
 	unset($result['token']);
 }
