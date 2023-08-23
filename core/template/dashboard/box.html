@@ -79,10 +79,10 @@
 			} else if (local_value == "3ddoubleprint") { //non configurer
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3ddoubleprint').show();
 				global_#uid#_toolhead = "3ddoubleprint";
-			} else if (local_value == "cnc") { //non configurer
+			} else if (local_value == "TOOLHEAD_CNC_1") { //non configurer
 				$('.eqLogic[data-eqLogic_uid=#uid#] .iscnc').show();
 				global_#uid#_toolhead = "cnc";
-			} else if (local_value == "laser") { //non configurer
+			} else if (local_value == "TOOLHEAD_LASER_1") { //non configurer
 				$('.eqLogic[data-eqLogic_uid=#uid#] .islaser').show();
 				global_#uid#_toolhead = "laser";
 			}
@@ -128,12 +128,23 @@
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').show();
+				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty();
+			} else if (stats == '2') { // première connexion
+				global_#uid#_connect = false;
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').show();
+				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty().append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
 			} else { // pas de connexion
 				global_#uid#_connect = false;
+				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
+				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').hide();
+				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty();
 			}
 			#uid#change_visibility_connect();
 		}
@@ -253,15 +264,17 @@
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
 
 			// si imprimante connecter active les boutons
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
 			if (global_#uid#_connect) {
 				// si le type d'outil correspond a la machine active le bouton start
-				if (header_type == "3dp") {
+				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
 						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 					} else if ((typeoutil == "dualExtruderToolheadForSM2") && (global_#uid#_toolhead == "3ddoubleprint")) {
 						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 					}
-				} else if (header_type == "cnc") {
+				} else if (typemachine == "cnc") {
 					if (global_#uid#_toolhead == "cnc") {
 						if ((global_#uid#is_rotate == "true") && (axerotatif == "true")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
@@ -269,7 +282,7 @@
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 						}
 					}
-				} else if (header_type == "laser") {
+				} else if (typemachine == "laser") {
 					if (global_#uid#_toolhead == "laser") {
 						if ((global_#uid#is_rotate == "true") && (axerotatif == "true")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
@@ -401,6 +414,7 @@
 							<div class="content-xs">
 								<span   class="cmdName">print Status: </span>
 								<strong class="state">#printStatus#</strong>
+								<strong class="firstloginmsg"></strong>
 							</div>
 							<script>
 								#uid#change_visibility_status('#printStatus#');
