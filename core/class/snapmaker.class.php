@@ -515,6 +515,9 @@ class snapmakerCmd extends cmd {
           $thumbnail = '';
           $file_total_lines = '';
           $estimated_time = '';
+          $header_type = '';
+          $tool_head = '';
+          $is_rotate = '';
           for ($i = 0; $i < 100; $i++) {
             $line = fgets($filecont);
             if (strpos($line, ';thumbnail:') !== false) {
@@ -529,9 +532,21 @@ class snapmakerCmd extends cmd {
               $estimated_time = substr($line, strpos($line, ';estimated_time(s):') + strlen(';estimated_time(s):') + 1);
               $estimated_time = str_replace(array("\r", "" . PHP_EOL), '', $estimated_time);
             }
+            if (strpos($line, ';header_type:') !== false) {
+              $header_type = substr($line, strpos($line, ';header_type:') + strlen(';header_type:') + 1);
+              $header_type = str_replace(array("\r", "" . PHP_EOL), '', $header_type);
+            }
+            if (strpos($line, ';tool_head:') !== false) {
+              $tool_head = substr($line, strpos($line, ';tool_head:') + strlen(';tool_head:') + 1);
+              $tool_head = str_replace(array("\r", "" . PHP_EOL), '', $tool_head);
+            }
+            if (strpos($line, ';is_rotate:') !== false) {
+              $is_rotate = substr($line, strpos($line, ';is_rotate:') + strlen(';is_rotate:') + 1);
+              $is_rotate = str_replace(array("\r", "" . PHP_EOL), '', $is_rotate);
+            }
           }
           fclose($filecont);
-          $filelist[] = $file . '-:-' . convert(filesize($filedir)) . '-:-' . date("Y-m-d H:i:s", filemtime($filedir)) . '-:-' . $file_total_lines . '-:-' . $estimated_time . '-:-' . $thumbnail;
+          $filelist[] = $file . '-:-' . convert(filesize($filedir)) . '-:-' . date("Y-m-d H:i:s", filemtime($filedir)) . '-:-' . $header_type . '-:-' . $file_total_lines . '-:-' . $estimated_time . '-:-' . $thumbnail . '-:-' . $tool_head . '-:-' . $is_rotate;
         }
         $filelist = implode("-!-", $filelist);
         $eqlogic->checkAndUpdateCmd('filelist', $filelist);
