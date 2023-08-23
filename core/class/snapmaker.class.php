@@ -191,13 +191,21 @@ class snapmaker extends eqLogic {
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
     }
-    self::deamon_start_instance($this);
+    if ($this->getConfiguration('socketport','0') != '0') {
+      self::deamon_start_instance($this);
+    }
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
   public function preRemove() {
     $path = dirname(__FILE__) . '/../../data/' . $this->getId();
     if (file_exists($path)) {
+      $objects = scandir($path);
+      foreach ($objects as $object) {
+        if ($object != '.' && $object != '..') {
+          unlink($path.'/'.$object);
+        }
+      }
       rmdir($path);
     }
     self::deamon_stop_instance($this);
