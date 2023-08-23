@@ -173,32 +173,55 @@ def printer_connexion(name):
 				try:
 					printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload, timeout=5)
 					printerconnectjson = json.loads(printerconnecthttp.text)
-					if shared.token == "":
-						shared.token = printerconnectjson['token']
-					printerconnectjson["apikey"] = shared.apikey
-					printerconnectjson['device'] = shared.device
-					printerconnectjson["token"] = shared.token
 					if printerconnecthttp.status_code == 200:
 						printerconnectjson['statusconnect'] = "1"
 						shared.printerconnected = True
 					else:
 						printerconnectjson['statusconnect'] = "0"
 						shared.printerconnected = False
-					shared.JEEDOM_COM.send_change_immediate(printerconnectjson)
+					printerconnectjson["apikey"] = shared.apikey
+					printerconnectjson['device'] = shared.device
+					if shared.token == "": # si pas de token alors première connexion
+						printerconnectjson['statusconnect'] = "2"
+						temptoken = printerconnectjson["token"]
+						printerconnectjson['token'] = None
+						shared.JEEDOM_COM.send_change_immediate(printerconnectjson)
+						connexioninit = False
+						while shared.connect_to_printer and (not connexioninit):
+							printerstatushttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/status?token=' + temptoken, headers=headers, data=payload, timeout=5)
+							logging.debug("code : "+str(printerstatushttp.status_code))
+							if printerstatushttp.status_code == 200:
+								printerstatusjson = json.loads(printerstatushttp.text)
+								printerstatusjson["apikey"] = shared.apikey
+								printerstatusjson['device'] = shared.device
+								printerstatusjson['token'] = temptoken
+								printerstatusjson['statusconnect'] = "1"
+								shared.token = temptoken
+								shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
+								connexioninit = True
+							time.sleep(1)
+						if not connexioninit:
+							shared.printerconnected = False
+					else:
+						shared.JEEDOM_COM.send_change_immediate(printerconnectjson)
 					while shared.printerconnected:
 						time.sleep(0.3)
 						printerstatushttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/status?token=' + shared.token, headers=headers, data=payload, timeout=5)
-						printerstatusjson = json.loads(printerstatushttp.text)
-						time.sleep(1.1)
-						if printerstatusjson['moduleList']["enclosure"]:
-							printerenclosurehttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/enclosure?token=' + shared.token, headers=headers, data=payload, timeout=5)
-							printerenclosurejson = json.loads(printerenclosurehttp.text)
-							printerstatusjson["enclosure"] = printerenclosurejson
-						time.sleep(0.8)
-						printerstatusjson["apikey"] = shared.apikey
-						printerstatusjson['device'] = shared.device
-						shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
-						if printerstatushttp.status_code != 200 or not shared.connect_to_printer:
+						logging.debug("code : "+str(printerstatushttp.status_code))
+						if printerstatushttp.status_code != 204:
+							printerstatusjson = json.loads(printerstatushttp.text)
+							time.sleep(1.1)
+							if printerstatusjson['moduleList']["enclosure"]:
+								printerenclosurehttp = requests.request("GET",'http://'+shared.printer+':8080/api/v1/enclosure?token=' + shared.token, headers=headers, data=payload, timeout=5)
+								printerenclosurejson = json.loads(printerenclosurehttp.text)
+								printerstatusjson["enclosure"] = printerenclosurejson
+							time.sleep(0.8)
+							printerstatusjson["apikey"] = shared.apikey
+							printerstatusjson['device'] = shared.device
+							shared.JEEDOM_COM.send_change_immediate(printerstatusjson)
+						else:
+							time.sleep(0.8)
+						if (printerstatushttp.status_code != 200 and printerstatushttp.status_code != 204) or not shared.connect_to_printer:
 							payload = {'token': shared.token}
 							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/disconnect', headers=headers, data=payload, timeout=5)
 							shared.printerconnected = False
@@ -206,6 +229,7 @@ def printer_connexion(name):
 					shared.printerconnected = False
 					logging.error('Printer connexion timeout')
 				except Exception as e:
+					logging.error('Send command to demon error : ')
 					logging.error('Send command to demon error : '+str(e))
 			shared.connect_to_printer = False
 			shared.JEEDOM_COM.send_change_immediate({'apikey':shared.apikey,'device':shared.device,'statusconnect':'0'})
@@ -268,6 +292,8 @@ if args.printer:
 	shared.printer = args.printer
 if args.token:
 	shared.token = args.token
+	if shared.token == "none":
+		shared.token = ""
 if args.loglevel:
     shared.log_level = args.loglevel
 if args.callback:
