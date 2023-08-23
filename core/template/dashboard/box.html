@@ -553,10 +553,18 @@
 										<strong class="state2"> %</strong>
 									</div>
 									<script>
-										$('.cmd[data-cmd_id=#progress_id#] .state1').empty().append(parseFloat(#progress#*100).toFixed(2))
+										let progress = parseFloat(#progress#).toFixed(2)
+										console.log(progress)
+										if (progress == 'NaN') {
+											progress = 0
+										}
+										$('.cmd[data-cmd_id=#progress_id#] .state1').empty().append(parseFloat(progress*100).toFixed(2))
 										jeedom.cmd.addUpdateFunction('#progress_id#',function(_options) {
 											let cmd = $('.cmd[data-cmd_id=#progress_id#]')
 											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											if (_options.display_value == '') {
+												_options.display_value = 0
+											}
 											cmd.find('.state1').empty().append(parseFloat(_options.display_value*100).toFixed(2))
 										});
 									</script>
