@@ -1204,7 +1204,7 @@
 								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
 								data: { action:'delete', id: '#id#', file: fileName },
 								success: function(response) {
-									jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
+									jeedom.cmd.execute({id: '#refresh_id#'});
 								},
 								error: function (request, status, error) {
 									handleAjaxError(request, status, error);
