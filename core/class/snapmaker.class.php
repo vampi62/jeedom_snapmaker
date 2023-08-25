@@ -93,7 +93,29 @@ class snapmaker extends eqLogic {
   /*     * *********************Méthodes d'instance************************* */
 
   // Fonction exécutée automatiquement avant la création de l'équipement
+  private function check_port_dispo($portToCheck) {
+    $command = "sudo netstat -tuln | grep 'LISTEN' | awk '{print $4}' | cut -d ':' -f 2"; // Commande pour lister les ports en écoute
+    $output = [];
+    $returnVar = 0;
+    exec($command, $output, $returnVar);
+    if ($returnVar === 0) {
+      return $output;
+    } else {
+      log::add('snapmaker', 'debug', 'Erreur lors de la recherche de port libre');
+      return [];
+    }
+  }
   public function preInsert() {
+    $this->setConfiguration('cycle', '0.3');
+    $defaut_port_socket = 12100;
+    $list_port_used = $this->check_port_dispo($defaut_port_socket + $i);
+    for ($i = 0; $i < 100; $i++) {
+      log::add('snapmaker', 'debug', 'Test port : ' . strval($defaut_port_socket + $i));
+      if (!in_array(strval($defaut_port_socket + $i), $list_port_used)) {
+        $this->setConfiguration('socketport', $defaut_port_socket + $i);
+        break;
+      }
+    }
   }
 
   // Fonction exécutée automatiquement après la création de l'équipement
@@ -102,10 +124,13 @@ class snapmaker extends eqLogic {
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
+    // stop instance
   }
 
   // Fonction exécutée automatiquement après la mise à jour de l'équipement
   public function postUpdate() {
+    // verifie si le port est libre
+    // si oui alors start instance
   }
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
@@ -191,8 +216,11 @@ class snapmaker extends eqLogic {
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
     }
-    if ($this->getConfiguration('socketport','0') != '0') {
+    if (($this->getConfiguration('socketport','') != '') && ($this->getConfiguration('adresseip','') != '')) {
       self::deamon_start_instance($this);
+    }
+    else {
+      self::deamon_stop_instance($this);
     }
   }
 
@@ -321,10 +349,13 @@ class snapmaker extends eqLogic {
       }
     }
     $return['launchable'] = 'ok';
-    $ipsnapmaker = $_instance->getConfiguration("adresseip", "none");
-    if ($ipsnapmaker == 'none') {
+    if ($_instance->getConfiguration("adresseip", "") == '') {
       $return['launchable'] = 'nok';
-      $return['launchable_message'] = __('L\'ip de la snapmaker n\'est pas configuré', __FILE__);
+      $return['launchable_message'] = __('L\'ip n\'est pas configuré pour : ' . $_instance->getName(), __FILE__);
+    }
+    if ($_instance->getConfiguration("socketport", "") == '') {
+      $return['launchable'] = 'nok';
+      $return['launchable_message'] = __('Le port du socket n\'est pas configuré pour : ' . $_instance->getName(), __FILE__);
     }
     return $return;
   }
@@ -348,17 +379,15 @@ class snapmaker extends eqLogic {
     self::deamon_stop_instance($_instance);
     $deamon_info = self::deamon_info_instance($_instance);
     if ($deamon_info['launchable'] != 'ok') {
-      throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+      throw new Exception(__($deamon_info['launchable_message'], __FILE__));
     }
-    $ipsnapmaker = $_instance->getConfiguration("adresseip", "none");
-    $token = $_instance->getConfiguration("tokenapihttp", "none");
     $snapmaker_path = realpath(__DIR__ . '/../../resources/snapmakerd');
     $cmd = '/usr/bin/python3 ' . $snapmaker_path . '/snapmakerd.py';
     $cmd .= ' --device ' . $id_objet;
-    $cmd .= ' --printer ' . $ipsnapmaker;
-    $cmd .= ' --token ' . $token;
+    $cmd .= ' --printer ' . $_instance->getConfiguration("adresseip", "none");
+    $cmd .= ' --token ' . $_instance->getConfiguration("tokenapihttp", "none");
     $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('snapmaker'));
-    $cmd .= ' --socketport ' . $_instance->getConfiguration("socketport", "12100");
+    $cmd .= ' --socketport ' . $_instance->getConfiguration("socketport", "12200");
     $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/snapmaker/core/php/snapmaker.inc.php';
     $cmd .= ' --cycle ' . $_instance->getConfiguration("cycle", "0.3");
     $cmd .= ' --apikey ' . jeedom::getApiKey('snapmaker');
@@ -387,7 +416,7 @@ class snapmaker extends eqLogic {
       $pid = intval(trim(file_get_contents($pid_file)));
       system::kill($pid);
     }
-    system::fuserk($_instance->getConfiguration("socketport", "12100"));
+    system::fuserk($_instance->getConfiguration("socketport", "12200"));
     sleep(1);
   }
 
