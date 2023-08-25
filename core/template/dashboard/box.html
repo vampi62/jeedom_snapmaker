@@ -157,6 +157,11 @@
 		}
 		function #uid#switch_rotate(stats) {
 			global_#uid#is_rotate = stats;
+			if (stats == 'true') {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isrotateon').show();
+			} else {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isrotateon').hide();
+			}
 		}
 		
 		function #uid#switch_reconnect(stats) {
@@ -330,6 +335,9 @@
 			display: none;
 		}
 		.iscaissonon {
+			display: none;
+		}
+		.isrotateon {
 			display: none;
 		}
 		.isaliminfo {
@@ -1284,6 +1292,7 @@
 								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
 								<td ><button class="inserte1 is3dprint is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
 								<td ><button class="inserte2 is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td ><button class="axe_horaire isrotateon"><i class="fa fa-undo fa-5x fa-flip-horizontal"></i></button></td>
 								<td rowspan="3" style="width:75px;" class="position-relative">
 									<div class="h-80">
 										<div class="text-center">vitesse</div>
@@ -1295,7 +1304,7 @@
 									<div class="h-80">
 										<div class="text-center">puissance</div>
 										<input type="range" class="vertical-range sliderpowerValue" min="0" max="25" value="10" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
-										<div class="text-center sliderpowertext">50 %</div>
+										<div class="text-center sliderpowertext">10 %</div>
 									</div>
 								</td>
 							</tr>
@@ -1306,6 +1315,8 @@
 								<td class="text-center">Z</td>
 								<td class="text-center is3dprint is3ddoubleprint">E1</td>
 								<td class="text-center is3ddoubleprint">E2</td>
+								<td class="text-center isrotateon">O</td>
+								
 							</tr>
 							<tr>
 								<td ><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
@@ -1314,6 +1325,7 @@
 								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
 								<td ><button class="retracte1 is3dprint is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
 								<td ><button class="retracte2 is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
+								<td ><button class="axe_antihoraire isrotateon"><i class="fa fa-undo fa-5x"></i></button></td>
 							</tr>
 						</table>
 						<div style="display: flex; justify-content: space-around;">
@@ -1425,6 +1437,14 @@
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .axe_horaire').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " B+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .axe_antihoraire').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " B-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 						</script>
 					</div>
