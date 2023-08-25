@@ -109,7 +109,7 @@ class snapmaker extends eqLogic {
     $this->setConfiguration('cycle', '0.3');
     $defaut_port_socket = 12100;
     $list_port_used = $this->check_port_dispo($defaut_port_socket + $i);
-    for ($i = 0; $i < 100; $i++) {
+    for ($i = 0; $i < 99; $i++) {
       log::add('snapmaker', 'debug', 'Test port : ' . strval($defaut_port_socket + $i));
       if (!in_array(strval($defaut_port_socket + $i), $list_port_used)) {
         $this->setConfiguration('socketport', $defaut_port_socket + $i);
@@ -120,17 +120,17 @@ class snapmaker extends eqLogic {
 
   // Fonction exécutée automatiquement après la création de l'équipement
   public function postInsert() {
+    if ($this->getConfiguration('socketport','') != '') {
+      self::deamon_start_instance($this);
+    }
   }
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
-    // stop instance
   }
 
   // Fonction exécutée automatiquement après la mise à jour de l'équipement
   public function postUpdate() {
-    // verifie si le port est libre
-    // si oui alors start instance
   }
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
@@ -216,12 +216,7 @@ class snapmaker extends eqLogic {
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
     }
-    if (($this->getConfiguration('socketport','') != '') && ($this->getConfiguration('adresseip','') != '')) {
-      self::deamon_start_instance($this);
-    }
-    else {
-      self::deamon_stop_instance($this);
-    }
+    $this->sendmessage("updateip", $this->getConfiguration("adresseip", "none"));
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -309,7 +304,7 @@ class snapmaker extends eqLogic {
       return;
     }
     $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-    socket_connect($socket, '127.0.0.1', $this->getConfiguration("socketport", "12100"));
+    socket_connect($socket, '127.0.0.1', $this->getConfiguration("socketport", "12200"));
     socket_write($socket, $value, strlen($value));
     socket_close($socket);
   }
@@ -349,10 +344,6 @@ class snapmaker extends eqLogic {
       }
     }
     $return['launchable'] = 'ok';
-    if ($_instance->getConfiguration("adresseip", "") == '') {
-      $return['launchable'] = 'nok';
-      $return['launchable_message'] = __('L\'ip n\'est pas configuré pour : ' . $_instance->getName(), __FILE__);
-    }
     if ($_instance->getConfiguration("socketport", "") == '') {
       $return['launchable'] = 'nok';
       $return['launchable_message'] = __('Le port du socket n\'est pas configuré pour : ' . $_instance->getName(), __FILE__);
