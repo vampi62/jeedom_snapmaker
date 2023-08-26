@@ -209,15 +209,13 @@ class snapmaker extends eqLogic {
     $this->create_element('heatedBedTemperature'      ,'heatedBedTemperature'      ,'info','string');
     $this->create_element('heatedBedTargetTemperature','heatedBedTargetTemperature','info','string');
     $this->create_element('isFilamentOut'             ,'isFilamentOut'             ,'info','string');
-    $this->create_element('workSpeed'                 ,'workSpeed'                 ,'info','string');
     $this->create_element('printStatus'               ,'printStatus'               ,'info','string');
     $this->create_element('fileName'                  ,'fileName'                  ,'info','string');
     $this->create_element('totalLines'                ,'totalLines'                ,'info','string');
     $this->create_element('estimatedTime'             ,'estimatedTime'             ,'info','string');
     $this->create_element('currentLine'               ,'currentLine'               ,'info','string');
     $this->create_element('progress'                  ,'progress'                  ,'info','string');
-    $this->create_element('spindleSpeed'              ,'spindleSpeed'              ,'info','string');
-    
+
     //$this->set_limit_element('progress',0,100);
     $this->create_element('elapsedTime'               ,'elapsedTime'               ,'info','string');
     $this->create_element('remainingTime'             ,'remainingTime'             ,'info','string');
