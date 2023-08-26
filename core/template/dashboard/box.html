@@ -1468,6 +1468,7 @@
 							</div>
 							<script>
 								function #uid#setworkorigin(axis) { // set work origin
+									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G90"}});
 									if (axis == "home") {
 										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G92 X0 Y0 Z0 B0"}});
 									} else {
@@ -1475,10 +1476,11 @@
 									}
 								}
 								function #uid#gotoworkorigin(axis) { // go to work origin
+									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G90"}});
 									if (axis == "home") {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " X0 Y0 Z0 B0"}});
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 X0 Y0 Z0 B0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value()}});
 									} else {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " " + axis + "0"}});
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 " + axis + "0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value()}});
 									}
 								}
 							</script>
