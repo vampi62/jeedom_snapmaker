@@ -43,10 +43,24 @@ class snapmaker extends eqLogic {
       if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "1") {
         if ($snapmaker->getCmd(null, 'status')->execCmd() == "0") {
           $cmd = $snapmaker->getCmd(null, 'connect');
-          if (!is_object($cmd)) {
-            continue;
+          if (is_object($cmd)) {
+            $cmd->execCmd(); // connexion à l'imprimante si autoconnect = 1 et status = 0
           }
-          $cmd->execCmd();
+        }
+      }
+      if ($snapmaker->getCmd(null, 'autoshutdown')->execCmd() == "1") {
+        if ($snapmaker->getCmd(null, 'status')->execCmd() == "1") {
+          if ($snapmaker->getCmd(null, 'printStatus')->execCmd() == "IDLE") {
+            $cmdalimoff = cmd::byId(str_replace("#","",$this->getConfiguration('offalim','')));
+            if (is_object($cmdalimoff)) {
+              $cmd = $snapmaker->getCmd(null, 'disconnect');
+              if (is_object($cmd)) {
+                $cmd->execCmd();
+                sleep(5);
+                $cmdalimoff->execCmd(); // déconnexion de l'imprimante si autoshutdown = 1 et status = 1 et printStatus = IDLE
+              }
+            }
+          }
         }
       }
     }
@@ -93,23 +107,40 @@ class snapmaker extends eqLogic {
   /*     * *********************Méthodes d'instance************************* */
 
   // Fonction exécutée automatiquement avant la création de l'équipement
+  private function check_port_dispo($portToCheck) {
+    $command = "sudo netstat -tuln | grep 'LISTEN' | awk '{print $4}' | cut -d ':' -f 2"; // Commande pour lister les ports en écoute
+    $output = [];
+    $returnVar = 0;
+    exec($command, $output, $returnVar);
+    if ($returnVar === 0) {
+      return $output;
+    } else {
+      log::add('snapmaker', 'debug', 'Erreur lors de la recherche de port libre');
+      return [];
+    }
+  }
   public function preInsert() {
+    $this->setConfiguration('cycle', '0.3');
+    $defaut_port_socket = 12100;
+    $list_port_used = $this->check_port_dispo($defaut_port_socket + $i);
+    for ($i = 0; $i < 99; $i++) {
+      log::add('snapmaker', 'debug', 'Test port : ' . strval($defaut_port_socket + $i));
+      if (!in_array(strval($defaut_port_socket + $i), $list_port_used)) {
+        $this->setConfiguration('socketport', $defaut_port_socket + $i);
+        break;
+      }
+    }
   }
 
   // Fonction exécutée automatiquement après la création de l'équipement
   public function postInsert() {
+    if ($this->getConfiguration('socketport','') != '') {
+      self::deamon_start_instance($this);
+    }
   }
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
-  }
-
-  // Fonction exécutée automatiquement après la mise à jour de l'équipement
-  public function postUpdate() {
-  }
-
-  // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
-  public function preSave() {
     if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('statusalim',''))))) {
       $this->setConfiguration('statusalim', '');
     }
@@ -119,6 +150,15 @@ class snapmaker extends eqLogic {
     if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('offalim',''))))) {
       $this->setConfiguration('offalim', '');
     }
+  }
+
+  // Fonction exécutée automatiquement après la mise à jour de l'équipement
+  public function postUpdate() {
+    $this->sendmessage("updateip", $this->getConfiguration("adresseip", "none"));
+  }
+
+  // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
+  public function preSave() {
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
@@ -134,6 +174,9 @@ class snapmaker extends eqLogic {
 
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
+
+    $this->create_element('setautoshutdown'  ,'setautoshutdown'  ,'action','other');
+    $this->create_element('unsetautoshutdown','unsetautoshutdown','action','other');
 
     $this->create_element('sendgcode'  ,'sendgcode'  ,'action','other');
     $this->create_element('execcomande','execcomande','action','message');
@@ -156,6 +199,7 @@ class snapmaker extends eqLogic {
     $this->create_element('saveworkSpeed','saveworkSpeed','info'  ,'string');
     
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
+    $this->create_element('autoshutdown'              ,'autoshutdown'              ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
     $this->create_element('status'                    ,'status'                    ,'info','string');
     $this->create_element('homed'                     ,'homed'                     ,'info','string');
@@ -165,13 +209,13 @@ class snapmaker extends eqLogic {
     $this->create_element('heatedBedTemperature'      ,'heatedBedTemperature'      ,'info','string');
     $this->create_element('heatedBedTargetTemperature','heatedBedTargetTemperature','info','string');
     $this->create_element('isFilamentOut'             ,'isFilamentOut'             ,'info','string');
-    $this->create_element('workSpeed'                 ,'workSpeed'                 ,'info','string');
     $this->create_element('printStatus'               ,'printStatus'               ,'info','string');
     $this->create_element('fileName'                  ,'fileName'                  ,'info','string');
     $this->create_element('totalLines'                ,'totalLines'                ,'info','string');
     $this->create_element('estimatedTime'             ,'estimatedTime'             ,'info','string');
     $this->create_element('currentLine'               ,'currentLine'               ,'info','string');
     $this->create_element('progress'                  ,'progress'                  ,'info','string');
+
     //$this->set_limit_element('progress',0,100);
     $this->create_element('elapsedTime'               ,'elapsedTime'               ,'info','string');
     $this->create_element('remainingTime'             ,'remainingTime'             ,'info','string');
@@ -190,9 +234,6 @@ class snapmaker extends eqLogic {
     $path = dirname(__FILE__) . '/../../data/' . $this->getId();
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
-    }
-    if ($this->getConfiguration('socketport','0') != '0') {
-      self::deamon_start_instance($this);
     }
   }
 
@@ -281,7 +322,7 @@ class snapmaker extends eqLogic {
       return;
     }
     $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-    socket_connect($socket, '127.0.0.1', $this->getConfiguration("socketport", "12100"));
+    socket_connect($socket, '127.0.0.1', $this->getConfiguration("socketport", "12200"));
     socket_write($socket, $value, strlen($value));
     socket_close($socket);
   }
@@ -321,10 +362,9 @@ class snapmaker extends eqLogic {
       }
     }
     $return['launchable'] = 'ok';
-    $ipsnapmaker = $_instance->getConfiguration("adresseip", "none");
-    if ($ipsnapmaker == 'none') {
+    if ($_instance->getConfiguration("socketport", "") == '') {
       $return['launchable'] = 'nok';
-      $return['launchable_message'] = __('L\'ip de la snapmaker n\'est pas configuré', __FILE__);
+      $return['launchable_message'] = __('Le port du socket n\'est pas configuré pour : ' . $_instance->getName(), __FILE__);
     }
     return $return;
   }
@@ -348,17 +388,15 @@ class snapmaker extends eqLogic {
     self::deamon_stop_instance($_instance);
     $deamon_info = self::deamon_info_instance($_instance);
     if ($deamon_info['launchable'] != 'ok') {
-      throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+      throw new Exception(__($deamon_info['launchable_message'], __FILE__));
     }
-    $ipsnapmaker = $_instance->getConfiguration("adresseip", "none");
-    $token = $_instance->getConfiguration("tokenapihttp", "none");
     $snapmaker_path = realpath(__DIR__ . '/../../resources/snapmakerd');
     $cmd = '/usr/bin/python3 ' . $snapmaker_path . '/snapmakerd.py';
     $cmd .= ' --device ' . $id_objet;
-    $cmd .= ' --printer ' . $ipsnapmaker;
-    $cmd .= ' --token ' . $token;
+    $cmd .= ' --printer ' . $_instance->getConfiguration("adresseip", "none");
+    $cmd .= ' --token ' . $_instance->getConfiguration("tokenapihttp", "none");
     $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel('snapmaker'));
-    $cmd .= ' --socketport ' . $_instance->getConfiguration("socketport", "12100");
+    $cmd .= ' --socketport ' . $_instance->getConfiguration("socketport", "12200");
     $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/snapmaker/core/php/snapmaker.inc.php';
     $cmd .= ' --cycle ' . $_instance->getConfiguration("cycle", "0.3");
     $cmd .= ' --apikey ' . jeedom::getApiKey('snapmaker');
@@ -387,7 +425,7 @@ class snapmaker extends eqLogic {
       $pid = intval(trim(file_get_contents($pid_file)));
       system::kill($pid);
     }
-    system::fuserk($_instance->getConfiguration("socketport", "12100"));
+    system::fuserk($_instance->getConfiguration("socketport", "12200"));
     sleep(1);
   }
 
@@ -649,6 +687,12 @@ class snapmakerCmd extends cmd {
       break;
       case 'unsetautoconnect':
         $eqlogic->checkAndUpdateCmd('autoconnect', "0");
+      break;
+      case 'setautoshutdown':
+        $eqlogic->checkAndUpdateCmd('autoshutdown', "1");
+      break;
+      case 'unsetautoshutdown':
+        $eqlogic->checkAndUpdateCmd('autoshutdown', "0");
       break;
       case 'execcomande':
         if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "IDLE") {

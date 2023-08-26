@@ -75,12 +75,12 @@ if (isset($result['returnstatus'])) {
 }
 
 function getallvaluearray($snapmakerid,$liste, $keyorigin = "") {
-	$value_iniore = array("x","y","z","offsetX","offsetY"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement et status n'est pas utilise donc pour eviter des ecriture inutile on ne le met pas a jour
+	$value_ignore = array("x","y","z","offsetX","offsetY","spindleSpeed","workSpeed"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement pour eviter des ecriture inutile sur le disque on ne les mets pas a jour
 	foreach ($liste as $key => $value) {
 		if (is_array($value)) {
 			getallvaluearray($snapmakerid,$value,$keyorigin . "/" .$key);
 		} else {
-			if (in_array($key, $value_iniore)) {
+			if (in_array($key, $value_ignore)) {
 				continue;
 			}
 			$element = $snapmakerid->getCmd(null, $key);

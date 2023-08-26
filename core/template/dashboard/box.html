@@ -157,8 +157,12 @@
 		}
 		function #uid#switch_rotate(stats) {
 			global_#uid#is_rotate = stats;
+			if (stats == 'true') {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isrotateon').show();
+			} else {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .isrotateon').hide();
+			}
 		}
-		
 		function #uid#switch_reconnect(stats) {
 			if (stats == '1') { // autoconnect actif
 				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').hide();
@@ -187,6 +191,19 @@
 				$('.cmd[data-cmd_id=#offalim_id#]').hide();
 			} else { // pas de commande
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').hide();
+			}
+		}
+		function #uid#switch_shutdown(stats) {
+			if (stats == '1') { // autoshutdown actif
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconoff').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconon').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .setautoshutdown').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .unsetautoshutdown').show();
+			} else { // pas de valuer ou pas d'autoshutdown
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconoff').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconon').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .setautoshutdown').show();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .unsetautoshutdown').hide();
 			}
 		}
 		function #uid#_set_value_saveworkSpeed(speed) {
@@ -332,6 +349,9 @@
 		.iscaissonon {
 			display: none;
 		}
+		.isrotateon {
+			display: none;
+		}
 		.isaliminfo {
 			display: none;
 		}
@@ -387,12 +407,12 @@
 							</div>
 							<div class="cmd cmd-widget tooltips setautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoconnect_id#" data-cmd_uid="cmd#setautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">activer auto-reco</a>
+									<a class="btn btn-sm btn-default action">activer auto-reconnexion</a>
 								</div>
 							</div>
 							<div class="cmd cmd-widget tooltips unsetautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoconnect_id#" data-cmd_uid="cmd#unsetautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">deactiver auto-reco</a>
+									<a class="btn btn-sm btn-default action">désactiver auto-reconnexion</a>
 								</div>
 							</div>
 							<script>
@@ -427,50 +447,52 @@
 							</script>
 						</div>
 						<div class="isconnected"><!--visible si connecter -->
-							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#offsetZ_id#" data-cmd_uid="#offsetZ_uid#" data-version="dashboard" data-eqlogic_id="678">
-								<div class="title ">
-									<div class="cmdName">offset</div>
-								</div>
-								<div class="content-sm ">
-									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
+							<div class="is3dprint is3ddoubleprint">
+								<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#offsetZ_id#" data-cmd_uid="#offsetZ_uid#" data-version="dashboard" data-eqlogic_id="678">
+									<div class="title ">
+										<div class="cmdName">offset</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips setzoffset" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#" data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">set</a>
+									<div class="content-sm ">
+										<div class="input-group buttons">
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+										</span>
+										<input type="text" class="input-sm in_value form-control" value="">
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+										</span>
+										</div>
 									</div>
+									<div class="cmd cmd-widget tooltips setzoffset" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#" data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">set</a>
+										</div>
+									</div>
+									<script>
+										#uid#_set_value_zoffset(#offsetZ#)
+										$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
+											#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()))
+											jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()).toFixed(2)}});
+										})
+										$('.cmd[data-cmd_id=#offsetZ_id#] .bt_plus').on('click', function () {
+											let max = 2
+											let step = 0.05
+											if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) <= max - step ) {
+												#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) + step)
+											}
+										})
+										$('.cmd[data-cmd_id=#offsetZ_id#] .bt_minus').on('click', function () {
+											let min = -2
+											let step = 0.05
+											if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) >= min + step) {
+												#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) - step)
+											}
+										})
+										jeedom.cmd.addUpdateFunction('#offsetZ_id#',function(_options) {
+											#uid#_set_value_zoffset(_options.display_value)
+										});
+									</script>
 								</div>
-								<script>
-									#uid#_set_value_zoffset(#offsetZ#)
-									$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
-										#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()).toFixed(2)}});
-									})
-									$('.cmd[data-cmd_id=#offsetZ_id#] .bt_plus').on('click', function () {
-										let max = 2
-										let step = 0.05
-										if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) <= max - step ) {
-											#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) + step)
-										}
-									})
-									$('.cmd[data-cmd_id=#offsetZ_id#] .bt_minus').on('click', function () {
-										let min = -2
-										let step = 0.05
-										if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) >= min + step) {
-											#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) - step)
-										}
-									})
-									jeedom.cmd.addUpdateFunction('#offsetZ_id#',function(_options) {
-										#uid#_set_value_zoffset(_options.display_value)
-									});
-								</script>
 							</div>
 							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#saveworkSpeed_id#" data-cmd_uid="#saveworkSpeed_uid#" data-version="dashboard" data-eqlogic_id="678">
 								<div class="title ">
@@ -493,7 +515,7 @@
 									</div>
 								</div>
 								<script>
-									#uid#_set_value_saveworkSpeed(parseFloat(#saveworkSpeed#)/15)
+									#uid#_set_value_saveworkSpeed(parseFloat(#saveworkSpeed#))
 									$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
 										#uid#_set_value_saveworkSpeed(parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()))
 										jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()).toFixed(0)}});
@@ -513,7 +535,7 @@
 										}
 									})
 									jeedom.cmd.addUpdateFunction('#saveworkSpeed_id#',function(_options) {
-										#uid#_set_value_saveworkSpeed(parseFloat(_options.display_value)/15)
+										#uid#_set_value_saveworkSpeed(parseFloat(_options.display_value))
 									});
 								</script>
 							</div>
@@ -567,12 +589,12 @@
 										<strong class="state2"> %</strong>
 									</div>
 									<script>
-										let progress = parseFloat(#progress#).toFixed(2)
-										console.log(progress)
-										if (progress == 'NaN') {
-											progress = 0
+										let progress#uid# = parseFloat(#progress#).toFixed(2)
+										console.log(progress#uid#)
+										if (progress#uid# == 'NaN') {
+											progress#uid# = 0
 										}
-										$('.cmd[data-cmd_id=#progress_id#] .state1').empty().append(parseFloat(progress*100).toFixed(2))
+										$('.cmd[data-cmd_id=#progress_id#] .state1').empty().append(parseFloat(progress#uid#*100).toFixed(2))
 										jeedom.cmd.addUpdateFunction('#progress_id#',function(_options) {
 											let cmd = $('.cmd[data-cmd_id=#progress_id#]')
 											cmd.attr('title', 'Valeur du: '+_options.valueDate)
@@ -1106,6 +1128,43 @@
 						</script>
 					</div>
 					<br/>
+					<div class="isconnected">
+						<div class="isprintrunning">
+							<div class="autoshutdown">
+								<span class="cmdName">status re-connexion : </span>
+								<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
+									<div class="content-sm">
+										<span class="iconoff"><i class="fas fa-times"></i></span>
+										<span class="iconon"><i class="icon jeedom-prise"></i></span>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">activer auto-shutdown si programme terminer</a>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">désactiver auto-shutdown si programme terminer</a>
+									</div>
+								</div>
+								<script>
+									#uid#switch_shutdown('#autoshutdown#');
+									$('.cmd[data-cmd_id=#setautoshutdown_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#setautoshutdown_id#'})
+									})
+									$('.cmd[data-cmd_id=#unsetautoshutdown_id#]:last .action').off('click').on('click', function () {
+										jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
+									})
+									jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#autoshutdown_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										#uid#switch_shutdown(_options.display_value);
+									});
+								</script>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div> <!-- Pan_menu -->
 			<div class="Pan_fichier" style="display: none;">
@@ -1204,7 +1263,7 @@
 								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
 								data: { action:'delete', id: '#id#', file: fileName },
 								success: function(response) {
-									jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
+									jeedom.cmd.execute({id: '#refresh_id#'});
 								},
 								error: function (request, status, error) {
 									handleAjaxError(request, status, error);
@@ -1284,6 +1343,7 @@
 								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
 								<td ><button class="inserte1 is3dprint is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
 								<td ><button class="inserte2 is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
+								<td ><button class="axe_horaire isrotateon"><i class="fa fa-undo fa-5x fa-flip-horizontal"></i></button></td>
 								<td rowspan="3" style="width:75px;" class="position-relative">
 									<div class="h-80">
 										<div class="text-center">vitesse</div>
@@ -1294,8 +1354,11 @@
 								<td rowspan="3" style="width:75px;" class="position-relative islaser iscnc">
 									<div class="h-80">
 										<div class="text-center">puissance</div>
-										<input type="range" class="vertical-range sliderpowerValue" min="0" max="25" value="10" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
-										<div class="text-center sliderpowertext">50 %</div>
+										<input type="range" class="vertical-range sliderpowerValue" min="10" max="50" value="30" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
+										<div class="text-center sliderpowertext">30 %</div>
+										<div class="text-center">
+											<button class="button" onclick="#uid#onRangeRelease(this,'off')">off</button>
+										</div>
 									</div>
 								</td>
 							</tr>
@@ -1306,6 +1369,8 @@
 								<td class="text-center">Z</td>
 								<td class="text-center is3dprint is3ddoubleprint">E1</td>
 								<td class="text-center is3ddoubleprint">E2</td>
+								<td class="text-center isrotateon">O</td>
+								
 							</tr>
 							<tr>
 								<td ><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
@@ -1314,6 +1379,7 @@
 								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
 								<td ><button class="retracte1 is3dprint is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
 								<td ><button class="retracte2 is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
+								<td ><button class="axe_antihoraire isrotateon"><i class="fa fa-undo fa-5x"></i></button></td>
 							</tr>
 						</table>
 						<div style="display: flex; justify-content: space-around;">
@@ -1362,19 +1428,57 @@
 								function #uid#updateRangeValue(input,namedisplay,unit) {
 									$('.eqLogic[data-eqLogic_uid=#uid#]:last .' + namedisplay).text(input.value + unit);
 								}
-								function #uid#onRangeRelease(input) {
+								function #uid#onRangeRelease(input,cut = '') {
 									if (global_#uid#_toolhead == "laser") {
-										if (input.value == 0) {
+										if (cut != '') {
 											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M5"}}); // laser off
 										} else {
 											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M3 P" + input.value + " S" + Math.round(input.value * 2.55)}}); // laser on
 										}
 									} else if (global_#uid#_toolhead == "cnc") {
-										if (input.value == 0) {
+										if (cut != '') {
 											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M5"}}); // laser off
 										} else {
 											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M3 P" + input.value}}); // laser on
 										}
+									}
+								}
+							</script>
+						</div>
+						<div class="iscnc islaser">
+							<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px;">
+								<table style="border: none; ">
+									<tr>
+										<td>set origin</td>
+										<td><button class="button" onclick="#uid#setworkorigin('home')">home origin</button></td>
+										<td><button class="button" onclick="#uid#setworkorigin('X')">X origin</button></td>
+										<td><button class="button" onclick="#uid#setworkorigin('Y')">Y origin</button></td>
+										<td><button class="button" onclick="#uid#setworkorigin('Z')">Z origin</button></td>
+										<td class="isrotateon"><button class="button" onclick="#uid#setworkorigin('B')">axe origin</button></td>
+									</tr>
+									<tr>
+										<td>go to origin</td>
+										<td><button class="button" onclick="#uid#gotoworkorigin('home')">home origin</button></td>
+										<td><button class="button" onclick="#uid#gotoworkorigin('X')">X origin</button></td>
+										<td><button class="button" onclick="#uid#gotoworkorigin('Y')">Y origin</button></td>
+										<td><button class="button" onclick="#uid#gotoworkorigin('Z')">Z origin</button></td>
+										<td class="isrotateon"><button class="button" onclick="#uid#gotoworkorigin('B')">axe origin</button></td>
+									</tr>
+								</table>
+							</div>
+							<script>
+								function #uid#setworkorigin(axis) { // set work origin
+									if (axis == "home") {
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G92 X0 Y0 Z0 B0"}});
+									} else {
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G92 " + axis + "0"}});
+									}
+								}
+								function #uid#gotoworkorigin(axis) { // go to work origin
+									if (axis == "home") {
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " X0 Y0 Z0 B0"}});
+									} else {
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " " + axis + "0"}});
 									}
 								}
 							</script>
@@ -1412,19 +1516,27 @@
 
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte1').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte1').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .axe_horaire').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " B+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_uid=#uid#]:last .axe_antihoraire').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " B-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 						</script>
 					</div>

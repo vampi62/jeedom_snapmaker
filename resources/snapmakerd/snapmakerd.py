@@ -145,7 +145,10 @@ def read_socket(name):
 					else:
 						printerreturnjson['returnstatus'] = "command not found"
 				else:
-					printerreturnjson['returnstatus'] = "Printer not connected or command not found"
+					if message['cmd'] == 'updateip':
+						shared.printer = message['value']
+					else:
+						printerreturnjson['returnstatus'] = "Printer not connected or command not found"
 				if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
 					if printerreturn.status_code == 200:
 						printerreturnjson['returnstatus'] = "OK"
