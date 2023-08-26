@@ -43,10 +43,24 @@ class snapmaker extends eqLogic {
       if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "1") {
         if ($snapmaker->getCmd(null, 'status')->execCmd() == "0") {
           $cmd = $snapmaker->getCmd(null, 'connect');
-          if (!is_object($cmd)) {
-            continue;
+          if (is_object($cmd)) {
+            $cmd->execCmd(); // connexion à l'imprimante si autoconnect = 1 et status = 0
           }
-          $cmd->execCmd();
+        }
+      }
+      if ($snapmaker->getCmd(null, 'autoshutdown')->execCmd() == "1") {
+        if ($snapmaker->getCmd(null, 'status')->execCmd() == "1") {
+          if ($snapmaker->getCmd(null, 'printStatus')->execCmd() == "IDLE") {
+            $cmdalimoff = cmd::byId(str_replace("#","",$this->getConfiguration('offalim','')));
+            if (is_object($cmdalimoff)) {
+              $cmd = $snapmaker->getCmd(null, 'disconnect');
+              if (is_object($cmd)) {
+                $cmd->execCmd();
+                sleep(5);
+                $cmdalimoff->execCmd(); // déconnexion de l'imprimante si autoshutdown = 1 et status = 1 et printStatus = IDLE
+              }
+            }
+          }
         }
       }
     }
@@ -127,14 +141,6 @@ class snapmaker extends eqLogic {
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
-  }
-
-  // Fonction exécutée automatiquement après la mise à jour de l'équipement
-  public function postUpdate() {
-  }
-
-  // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
-  public function preSave() {
     if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('statusalim',''))))) {
       $this->setConfiguration('statusalim', '');
     }
@@ -144,6 +150,15 @@ class snapmaker extends eqLogic {
     if (!is_object(cmd::byId(str_replace("#","",$this->getConfiguration('offalim',''))))) {
       $this->setConfiguration('offalim', '');
     }
+  }
+
+  // Fonction exécutée automatiquement après la mise à jour de l'équipement
+  public function postUpdate() {
+    $this->sendmessage("updateip", $this->getConfiguration("adresseip", "none"));
+  }
+
+  // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
+  public function preSave() {
   }
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
@@ -159,6 +174,9 @@ class snapmaker extends eqLogic {
 
     $this->create_element('setautoconnect'  ,'setautoconnect'  ,'action','other');
     $this->create_element('unsetautoconnect','unsetautoconnect','action','other');
+
+    $this->create_element('setautoshutdown'  ,'setautoshutdown'  ,'action','other');
+    $this->create_element('unsetautoshutdown','unsetautoshutdown','action','other');
 
     $this->create_element('sendgcode'  ,'sendgcode'  ,'action','other');
     $this->create_element('execcomande','execcomande','action','message');
@@ -181,6 +199,7 @@ class snapmaker extends eqLogic {
     $this->create_element('saveworkSpeed','saveworkSpeed','info'  ,'string');
     
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
+    $this->create_element('autoshutdown'              ,'autoshutdown'              ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
     $this->create_element('status'                    ,'status'                    ,'info','string');
     $this->create_element('homed'                     ,'homed'                     ,'info','string');
@@ -197,6 +216,8 @@ class snapmaker extends eqLogic {
     $this->create_element('estimatedTime'             ,'estimatedTime'             ,'info','string');
     $this->create_element('currentLine'               ,'currentLine'               ,'info','string');
     $this->create_element('progress'                  ,'progress'                  ,'info','string');
+    $this->create_element('spindleSpeed'              ,'spindleSpeed'              ,'info','string');
+    
     //$this->set_limit_element('progress',0,100);
     $this->create_element('elapsedTime'               ,'elapsedTime'               ,'info','string');
     $this->create_element('remainingTime'             ,'remainingTime'             ,'info','string');
@@ -216,7 +237,6 @@ class snapmaker extends eqLogic {
     if (!file_exists($path)) {
       mkdir($path, 0777, true);
     }
-    $this->sendmessage("updateip", $this->getConfiguration("adresseip", "none"));
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -669,6 +689,12 @@ class snapmakerCmd extends cmd {
       break;
       case 'unsetautoconnect':
         $eqlogic->checkAndUpdateCmd('autoconnect', "0");
+      break;
+      case 'setautoshutdown':
+        $eqlogic->checkAndUpdateCmd('autoshutdown', "1");
+      break;
+      case 'unsetautoshutdown':
+        $eqlogic->checkAndUpdateCmd('autoshutdown', "0");
       break;
       case 'execcomande':
         if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "IDLE") {
