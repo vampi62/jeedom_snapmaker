@@ -13,6 +13,7 @@
 		global_#uid#_toolhead = "";
 		global_#uid#is_rotate = "";
 		global_#uid#_connect = false;
+		global_#uid#_printstatus = "";
 		if ('#refresh_id#' != ''){
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
 				jeedom.cmd.execute({id: '#refresh_id#'});
@@ -95,6 +96,7 @@
 			}
 		}
 		function #uid#change_visibility_status(local_value) {
+			global_#uid#_printstatus = local_value;
 			if (local_value == "PAUSED") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').show();
@@ -283,7 +285,7 @@
 			// si imprimante connecter active les boutons
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
-			if (global_#uid#_connect) {
+			if ((global_#uid#_connect) && (global_#uid#_printstatus == "IDLE")) {
 				// si le type d'outil correspond a la machine active le bouton start
 				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
@@ -1126,42 +1128,42 @@
 								#uid#switch_alim(_options.display_value);
 							});
 						</script>
-					</div>
-					<br/>
-					<div class="isconnected">
-						<div class="isprintrunning">
-							<div class="autoshutdown">
-								<span class="cmdName">status re-connexion : </span>
-								<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
-									<div class="content-sm">
-										<span class="iconoff"><i class="fas fa-times"></i></span>
-										<span class="iconon"><i class="icon jeedom-prise"></i></span>
+						<br/>
+						<div class="isconnected">
+							<div class="isprintrunning">
+								<div class="autoshutdown">
+									<span class="cmdName">status autoshutdown si travail terminer : </span>
+									<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
+										<div class="content-sm">
+											<span class="iconoff"><i class="fas fa-times"></i></span>
+											<span class="iconon"><i class="icon jeedom-prise"></i></span>
+										</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">activer auto-shutdown si programme terminer</a>
+									<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">activer auto-shutdown</a>
+										</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">désactiver auto-shutdown si programme terminer</a>
+									<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">désactiver auto-shutdown</a>
+										</div>
 									</div>
+									<script>
+										#uid#switch_shutdown('#autoshutdown#');
+										$('.cmd[data-cmd_id=#setautoshutdown_id#]:last .action').off('click').on('click', function () {
+											jeedom.cmd.execute({id: '#setautoshutdown_id#'})
+										})
+										$('.cmd[data-cmd_id=#unsetautoshutdown_id#]:last .action').off('click').on('click', function () {
+											jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
+										})
+										jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#autoshutdown_id#]')
+											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											#uid#switch_shutdown(_options.display_value);
+										});
+									</script>
 								</div>
-								<script>
-									#uid#switch_shutdown('#autoshutdown#');
-									$('.cmd[data-cmd_id=#setautoshutdown_id#]:last .action').off('click').on('click', function () {
-										jeedom.cmd.execute({id: '#setautoshutdown_id#'})
-									})
-									$('.cmd[data-cmd_id=#unsetautoshutdown_id#]:last .action').off('click').on('click', function () {
-										jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
-									})
-									jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#autoshutdown_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										#uid#switch_shutdown(_options.display_value);
-									});
-								</script>
 							</div>
 						</div>
 					</div>
@@ -1273,6 +1275,9 @@
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
@@ -1296,6 +1301,9 @@
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
 						});
 						$('#bt_uploadgcode').fileupload({
 							dataType: 'json',

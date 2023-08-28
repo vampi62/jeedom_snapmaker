@@ -51,15 +51,13 @@ class snapmaker extends eqLogic {
       if ($snapmaker->getCmd(null, 'autoshutdown')->execCmd() == "1") {
         if ($snapmaker->getCmd(null, 'status')->execCmd() == "1") {
           if ($snapmaker->getCmd(null, 'printStatus')->execCmd() == "IDLE") {
+            $snapmaker->getCmd(null, 'disconnect')->execCmd();
             $cmdalimoff = cmd::byId(str_replace("#","",$this->getConfiguration('offalim','')));
             if (is_object($cmdalimoff)) {
-              $cmd = $snapmaker->getCmd(null, 'disconnect');
-              if (is_object($cmd)) {
-                $cmd->execCmd();
-                sleep(5);
-                $cmdalimoff->execCmd(); // déconnexion de l'imprimante si autoshutdown = 1 et status = 1 et printStatus = IDLE
-              }
+              sleep(5);
+              $cmdalimoff->execCmd();
             }
+            $snapmaker->checkAndUpdateCmd('autoshutdown', '0');
           }
         }
       }
