@@ -89,7 +89,73 @@ try {
     */
     ajax::success(readfile($file));
   }
-
+  if (init('action') == 'reprise') {
+    $uploaddir = __DIR__ . '/../../data/' . init('id');
+    if (!file_exists($uploaddir)) {
+      throw new \Exception(__('Impossible de trouver le répertoire de l\'équipement', __FILE__).init('id'));
+    }
+    $file = $uploaddir . '/' . init('file');
+    if (!file_exists($file)) {
+      throw new \Exception(__('Impossible de trouver le fichier', __FILE__).init('file'));
+    }
+    $numeroLigne = 149293;
+    $pourcentage = 0.40;
+    $contenuFichierSource = file($file);
+    $fileis = init('fileis');
+    $valeur_de_Z = -1;
+    $valeur_de_E = -1;
+    $valeur_de_T = -1;
+    if (($fileis == "3dprint") || ($fileis == "3ddoubleprint")) {// 3d print avec 1 ou 2 extrudeurs
+      $contenuPremieresLignes = array_slice($contenuFichierSource, 0, 40);
+      for ($i = $numeroLigne; $i >= 0; $i--) {
+        if (strpos($contenuFichierSource[$i], 'Z') !== false) {
+          $valeur_de_Z = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'Z') + 1);
+        }
+        if (strpos($contenuFichierSource[$i], 'E') !== false) {
+          $valeur_de_E = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'E') + 1);
+        }
+        if ($valeur_de_Z != -1) {
+          if ($fileis == "3ddoubleprint") {
+            if (strpos($contenuFichierSource[$i], ' T') !== false) {
+              $valeur_de_T = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], ' T') + 1);
+            }
+            if (($valeur_de_E != -1) && ($valeur_de_T != -1)) {
+              break;
+            }
+          } else {
+            if ($valeur_de_E != -1) {
+              break;
+            }
+          }
+        }
+      }
+      for ($i = 0; $i <= count($contenuPremieresLignes); $i++) {
+        if (strpos($contenuPremieresLignes[$i], ';file_total_lines') !== false) {
+          $LignesActuel = intval(substr($contenuPremieresLignes[$i], strpos($contenuPremieresLignes[$i], ': ') + 1));
+          $contenuPremieresLignes[$i] = str_replace($LignesActuel, $nouveauNombreLignes, $contenuPremieresLignes[$i]);
+        }
+        else if (strpos($contenuPremieresLignes[$i], ';estimated_time') !== false) {
+          $EstimeActuel = intval(substr($contenuPremieresLignes[$i], strpos($contenuPremieresLignes[$i], ': ') + 1));
+          $contenuPremieresLignes[$i] = str_replace($EstimeActuel, $EstimeActuel * $pourcentage, $contenuPremieresLignes[$i]);
+        }
+      }
+      if ($fileis == "3ddoubleprint") {
+        $contenuPremieresLignes[] = "T" . $valeur_de_T ."\n";
+      }
+      $contenuPremieresLignes[] = "G1 Z" . $valeur_de_Z ."\n";
+      $contenuPremieresLignes[] = "G92 E" . $valeur_de_E ."\n";
+      $contenuCopie = array_slice($contenuFichierSource, $numeroLigne-1);
+      $contenuCopie = array_merge($contenuPremieresLignes, $contenuCopie);
+      $newfile = $uploaddir . '/reprise_' . init('file');
+      file_put_contents($newfile, implode("", $contenuCopie));
+      echo "La copie a été créée à partir de la dernière occurrence de la ligne avec la chaîne 'Z' (ligne $numeroLigne) et enregistrée dans $newfile.";
+    }
+    // cnc
+    // avec axe
+    // laser
+    // avec axe
+    ajax::success();
+  }
   throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
   /*     * *********Catch exeption*************** */
 }
