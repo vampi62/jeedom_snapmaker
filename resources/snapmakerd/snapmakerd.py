@@ -30,12 +30,24 @@ import argparse
 import time
 import requests
 from requests.exceptions import ConnectTimeout
+import subprocess
 
 try:
 	from jeedom.jeedom import *
 except ImportError:
 	print("Error: importing module jeedom.jeedom")
 	sys.exit(1)
+
+def ping(host):
+    is_up = False
+    with open(os.devnull, 'w') as DEVNULL:
+        try:
+            response = subprocess.check_call(['ping', '-c', '1', host],stdout=DEVNULL,stderr=DEVNULL)
+            is_up = True
+        except subprocess.CalledProcessError:
+            response = None
+            is_up = False
+    return is_up
 
 def read_socket(name):
 	global JEEDOM_SOCKET_MESSAGE
@@ -170,9 +182,7 @@ def printer_connexion(name):
 	while 1:
 		time.sleep(1)
 		if shared.connect_to_printer:
-			# ping printer device IP
-			response = os.system("ping -c 1 " + shared.printer)
-			if response == 0:
+			if ping(shared.printer):
 				try:
 					printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload, timeout=5)
 					printerconnectjson = json.loads(printerconnecthttp.text)

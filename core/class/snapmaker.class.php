@@ -52,7 +52,7 @@ class snapmaker extends eqLogic {
         if ($snapmaker->getCmd(null, 'status')->execCmd() == "1") {
           if ($snapmaker->getCmd(null, 'printStatus')->execCmd() == "IDLE") {
             $snapmaker->getCmd(null, 'disconnect')->execCmd();
-            $cmdalimoff = cmd::byId(str_replace("#","",$this->getConfiguration('offalim','')));
+            $cmdalimoff = cmd::byId(str_replace("#","",$snapmaker->getConfiguration('offalim','')));
             if (is_object($cmdalimoff)) {
               sleep(5);
               $cmdalimoff->execCmd();
