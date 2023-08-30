@@ -30,12 +30,24 @@ import argparse
 import time
 import requests
 from requests.exceptions import ConnectTimeout
+import subprocess
 
 try:
 	from jeedom.jeedom import *
 except ImportError:
 	print("Error: importing module jeedom.jeedom")
 	sys.exit(1)
+
+def ping(host):
+    is_up = False
+    with open(os.devnull, 'w') as DEVNULL:
+        try:
+            response = subprocess.check_call(['ping', '-c', '1', host],stdout=DEVNULL,stderr=DEVNULL)
+            is_up = True
+        except subprocess.CalledProcessError:
+            response = None
+            is_up = False
+    return is_up
 
 def read_socket(name):
 	global JEEDOM_SOCKET_MESSAGE
@@ -142,18 +154,18 @@ def read_socket(name):
 					elif message['cmd'] == 'setpurifierfan':
 						payload = {'token': shared.token,"fan_speed": message['value']}
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/air_purifier_fan_speed', headers=headers, data=payload, timeout=5)
+					if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
+						if printerreturn.status_code == 200:
+							printerreturnjson['returnstatus'] = "OK"
+						else:
+							printerreturnjson['returnstatus'] = "Error"
 					else:
 						printerreturnjson['returnstatus'] = "command not found"
 				else:
-					if message['cmd'] == 'updateip':
+					if message['cmd'] == 'updateip': #mise a jour de l'ip de l'imprimante que si pas connecté
 						shared.printer = message['value']
 					else:
-						printerreturnjson['returnstatus'] = "Printer not connected or command not found"
-				if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
-					if printerreturn.status_code == 200:
-						printerreturnjson['returnstatus'] = "OK"
-					else:
-						printerreturnjson['returnstatus'] = "Error"
+						printerreturnjson['returnstatus'] = "Printer not connected"
 				printerreturnjson["apikey"] = shared.apikey
 				printerreturnjson['device'] = shared.device
 				shared.JEEDOM_COM.send_change_immediate(printerreturnjson)
@@ -170,9 +182,7 @@ def printer_connexion(name):
 	while 1:
 		time.sleep(1)
 		if shared.connect_to_printer:
-			# ping printer device IP
-			response = os.system("ping -c 1 " + shared.printer)
-			if response == 0:
+			if ping(shared.printer):
 				try:
 					printerconnecthttp = requests.request("POST",'http://'+shared.printer+':8080/api/v1/connect?token=' + shared.token, headers=headers, data=payload, timeout=5)
 					printerconnectjson = json.loads(printerconnecthttp.text)

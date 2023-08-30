@@ -13,6 +13,7 @@
 		global_#uid#_toolhead = "";
 		global_#uid#is_rotate = "";
 		global_#uid#_connect = false;
+		global_#uid#_printstatus = "";
 		if ('#refresh_id#' != ''){
 			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
 				jeedom.cmd.execute({id: '#refresh_id#'});
@@ -95,6 +96,7 @@
 			}
 		}
 		function #uid#change_visibility_status(local_value) {
+			global_#uid#_printstatus = local_value;
 			if (local_value == "PAUSED") {
 				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
 				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').show();
@@ -244,25 +246,38 @@
 		function #uid#js_snapmaker_selectfichier(postion_tableau) {
 			// ajoute l'atribut selected sur la ligne selectionner
 			$('.cmd[data-eqlogic_id=#filelist_id#] .state tr').removeClass('highlight');
-			$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
-			// recupere le nom du fichier
-			let nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
-			// recupere la taille du fichier
-			let taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
-			// recupere la date du fichier
-			let datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
-			// recupere le nombre de ligne du fichier
-			let typemachine = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
-			// recupere le nombre de ligne du fichier
-			let nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
-			// recupere le temps d'impression du fichier
-			let temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
-			// recupere l'image en base64 du fichier
-			let img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(6)').text();
-			// recupere le temps d'impression du fichier
-			let typeoutil = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(7)').text();
-			// recupere l'image en base64 du fichier
-			let axerotatif = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(8)').text();
+			if (postion_tableau > 0) {
+				$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
+				// recupere le nom du fichier
+				let nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
+				// recupere la taille du fichier
+				let taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
+				// recupere la date du fichier
+				let datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
+				// recupere le nombre de ligne du fichier
+				let typemachine = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
+				// recupere le nombre de ligne du fichier
+				let nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
+				// recupere le temps d'impression du fichier
+				let temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
+				// recupere l'image en base64 du fichier
+				let img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(6)').text();
+				// recupere le temps d'impression du fichier
+				let typeoutil = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(7)').text();
+				// recupere l'image en base64 du fichier
+				let axerotatif = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(8)').text();
+			} else {
+				// vide les info
+				let nomfichier = "";
+				let taillefichier = "";
+				let datefichier = "";
+				let typemachine = "";
+				let nbrligne = "";
+				let temps_impr = "";
+				let img64 = "";
+				let typeoutil = "";
+				let axerotatif = "";
+			}
 
 			// affiche les info du fichier
 			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text(nomfichier);
@@ -283,7 +298,9 @@
 			// si imprimante connecter active les boutons
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
-			if (global_#uid#_connect) {
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',true);
+			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').hide();
+			if ((global_#uid#_connect) && (global_#uid#_printstatus == "IDLE")) {
 				// si le type d'outil correspond a la machine active le bouton start
 				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
@@ -309,6 +326,12 @@
 					}
 				}
 				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
+			}
+			else if (!global_#uid#_connect) {
+				if ((nomfichier == $('.cmd[data-cmd_id=#fileName#] .state').text()) && (parseFloat($('.cmd[data-cmd_id=#progress_id#] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
+					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',false);
+					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').show();
+				}
 			}
 		}
 	</script>
@@ -383,7 +406,7 @@
 								</div>
 							</div>
 							<script>
-								#uid#switch_connect('#status#');
+								#uid#switch_connect('#statusconnect#');
 								$('.cmd[data-cmd_id=#connect_id#]:last .action').off('click').on('click', function () {
 									jeedom.cmd.execute({id: '#connect_id#'})
 								})
@@ -1110,14 +1133,13 @@
 								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
 							$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
-								status_print = $('.cmd[data-cmd_id=#printStatus_id#] .state').val()
-								if (status_print == "RUNNING") {
+								if (global_#uid#_printstatus == "IDLE") {
+									jeedom.cmd.execute({id: '#offalim_id#'})
+								} else {
 									$.fn.showAlert({
 										message: 'impossible d\'éteindre l\'alimentation en cours d\'impression',
 										level: 'danger'
 									})
-								} else {
-									jeedom.cmd.execute({id: '#offalim_id#'})
 								}
 							})
 							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
@@ -1126,42 +1148,42 @@
 								#uid#switch_alim(_options.display_value);
 							});
 						</script>
-					</div>
-					<br/>
-					<div class="isconnected">
-						<div class="isprintrunning">
-							<div class="autoshutdown">
-								<span class="cmdName">status re-connexion : </span>
-								<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
-									<div class="content-sm">
-										<span class="iconoff"><i class="fas fa-times"></i></span>
-										<span class="iconon"><i class="icon jeedom-prise"></i></span>
+						<br/>
+						<div class="isconnected">
+							<div class="isprintrunning">
+								<div class="autoshutdown">
+									<span class="cmdName">status autoshutdown si travail terminer : </span>
+									<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
+										<div class="content-sm">
+											<span class="iconoff"><i class="fas fa-times"></i></span>
+											<span class="iconon"><i class="icon jeedom-prise"></i></span>
+										</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">activer auto-shutdown si programme terminer</a>
+									<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">activer auto-shutdown</a>
+										</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">désactiver auto-shutdown si programme terminer</a>
+									<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">désactiver auto-shutdown</a>
+										</div>
 									</div>
+									<script>
+										#uid#switch_shutdown('#autoshutdown#');
+										$('.cmd[data-cmd_id=#setautoshutdown_id#]:last .action').off('click').on('click', function () {
+											jeedom.cmd.execute({id: '#setautoshutdown_id#'})
+										})
+										$('.cmd[data-cmd_id=#unsetautoshutdown_id#]:last .action').off('click').on('click', function () {
+											jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
+										})
+										jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#autoshutdown_id#]')
+											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											#uid#switch_shutdown(_options.display_value);
+										});
+									</script>
 								</div>
-								<script>
-									#uid#switch_shutdown('#autoshutdown#');
-									$('.cmd[data-cmd_id=#setautoshutdown_id#]:last .action').off('click').on('click', function () {
-										jeedom.cmd.execute({id: '#setautoshutdown_id#'})
-									})
-									$('.cmd[data-cmd_id=#unsetautoshutdown_id#]:last .action').off('click').on('click', function () {
-										jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
-									})
-									jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#autoshutdown_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										#uid#switch_shutdown(_options.display_value);
-									});
-								</script>
 							</div>
 						</div>
 					</div>
@@ -1245,6 +1267,9 @@
 						</div>
 					</div>
 					<div class="content-xs">
+						<span class="is3dprint is3ddoubleprint">
+							<a class="btn btn-sm btn-default reprise" disabled hidden>reprise</a>
+						</span>
 						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
 						<a class="btn btn-sm btn-default start" disabled>start</a>
 						<a class="btn btn-sm btn-default download" download="" disabled>download</a>
@@ -1264,6 +1289,25 @@
 								data: { action:'delete', id: '#id#', file: fileName },
 								success: function(response) {
 									jeedom.cmd.execute({id: '#refresh_id#'});
+									#uid#js_snapmaker_selectfichier(-1);
+								},
+								error: function (request, status, error) {
+									handleAjaxError(request, status, error);
+								}
+							});
+						});
+						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .reprise').on('click', function() {
+							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							var line = $('.cmd[data-cmd_id=#currentLine_id#] .state1').text();
+							var percent = $('.cmd[data-cmd_id=#progress_id#] .state1').text();
+							var fileis = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselecttool .state').text();
+							$.ajax({
+								type: "POST",
+								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+								data: { action:'reprise', id: '#id#', file: fileName, line: line, percent: percent, fileis: fileis},
+								success: function(response) {
+									jeedom.cmd.execute({id: '#refresh_id#'});
+									#uid#js_snapmaker_selectfichier(-1);
 								},
 								error: function (request, status, error) {
 									handleAjaxError(request, status, error);
@@ -1273,6 +1317,9 @@
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
@@ -1296,6 +1343,9 @@
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
 						});
 						$('#bt_uploadgcode').fileupload({
 							dataType: 'json',
@@ -1572,7 +1622,7 @@
 				<td class="td_bot3" style="width: 18px;text-align: right;" nowrap>
 					<i class="fas fa-bars cursor tooltips changecmdmenu noRefresh" title='menu' style="margin-right: 3px;"></i>
 					<i class="fas fa-tools cursor tooltips changecmdfichier noRefresh" title='fichiers' style="margin-right: 3px;"></i>
-					<i class="fas fa-border-none cursor tooltips changecmdaxes noRefresh isconnected" title='axes' style="margin-right: 3px;"></i>
+					<span class="isconnected"><i class="fas fa-border-none cursor tooltips changecmdaxes noRefresh is3dprintpauseoridle" title='axes' style="margin-right: 3px;"></i></span>
 				</td>
 			</tr>
 			<script>

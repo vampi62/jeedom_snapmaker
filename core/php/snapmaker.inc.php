@@ -65,12 +65,8 @@ if (isset($result['status'])) {
 	unset($result['status']);
 	unset($result['printStatus']);
 }
-if (isset($result['statusconnect'])) {
-	$snapmakerid->checkAndUpdateCmd('status', strval($result['statusconnect']));
-	unset($result['statusconnect']);
-}
 if (isset($result['returnstatus'])) {
-	log::add('snapmaker', 'info', "mise a jour du status pour " . $snapmakerid->getName() . " - " . $result['returnstatus']);
+	log::add('snapmaker', 'info', "retour de commande pour " . $snapmakerid->getName() . " : " . $result['returnstatus']);
 	unset($result['returnstatus']);
 }
 
