@@ -41,15 +41,15 @@ class snapmaker extends eqLogic {
   public static function cron() {
     foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
       if ($snapmaker->getCmd(null, 'autoconnect')->execCmd() == "1") {
-        if ($snapmaker->getCmd(null, 'status')->execCmd() == "0") {
+        if ($snapmaker->getCmd(null, 'statusconnect')->execCmd() == "0") {
           $cmd = $snapmaker->getCmd(null, 'connect');
           if (is_object($cmd)) {
-            $cmd->execCmd(); // connexion à l'imprimante si autoconnect = 1 et status = 0
+            $cmd->execCmd(); // connexion à l'imprimante si autoconnect = 1 et statusconnect = 0
           }
         }
       }
       if ($snapmaker->getCmd(null, 'autoshutdown')->execCmd() == "1") {
-        if ($snapmaker->getCmd(null, 'status')->execCmd() == "1") {
+        if ($snapmaker->getCmd(null, 'statusconnect')->execCmd() == "1") {
           if ($snapmaker->getCmd(null, 'printStatus')->execCmd() == "IDLE") {
             $snapmaker->getCmd(null, 'disconnect')->execCmd();
             $cmdalimoff = cmd::byId(str_replace("#","",$snapmaker->getConfiguration('offalim','')));
@@ -71,16 +71,8 @@ class snapmaker extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
+  public static function cron10() {}
   */
-  public static function cron10() {
-    foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
-      $cmd = $snapmaker->getCmd(null, 'refresh');
-      if (!is_object($cmd)) {
-        continue;
-      }
-      $cmd->execCmd();
-    }
-  }
 
   /*
   * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom
@@ -89,8 +81,16 @@ class snapmaker extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement toutes les 30 minutes par Jeedom
-  public static function cron30() {}
   */
+  public static function cron30() {
+    foreach (self::byType('snapmaker', true) as $snapmaker) { //parcours tous les équipements actifs du plugin
+      $cmd = $snapmaker->getCmd(null, 'refresh');
+      if (!is_object($cmd)) {
+        continue;
+      }
+      $cmd->execCmd();
+    }
+  }
 
   /*
   * Fonction exécutée automatiquement toutes les heures par Jeedom
@@ -199,7 +199,7 @@ class snapmaker extends eqLogic {
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
     $this->create_element('autoshutdown'              ,'autoshutdown'              ,'info','string');
     $this->create_element('filelist'                  ,'filelist'                  ,'info','string');
-    $this->create_element('status'                    ,'status'                    ,'info','string');
+    $this->create_element('statusconnect'             ,'statusconnect'             ,'info','string');
     $this->create_element('homed'                     ,'homed'                     ,'info','string');
     $this->create_element('toolHead'                  ,'toolHead'                  ,'info','string');
     $this->create_element('nozzleTemperature'         ,'nozzleTemperature'         ,'info','string');

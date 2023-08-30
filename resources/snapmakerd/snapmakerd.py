@@ -154,18 +154,18 @@ def read_socket(name):
 					elif message['cmd'] == 'setpurifierfan':
 						payload = {'token': shared.token,"fan_speed": message['value']}
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/air_purifier_fan_speed', headers=headers, data=payload, timeout=5)
+					if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
+						if printerreturn.status_code == 200:
+							printerreturnjson['returnstatus'] = "OK"
+						else:
+							printerreturnjson['returnstatus'] = "Error"
 					else:
 						printerreturnjson['returnstatus'] = "command not found"
 				else:
-					if message['cmd'] == 'updateip':
+					if message['cmd'] == 'updateip': #mise a jour de l'ip de l'imprimante que si pas connecté
 						shared.printer = message['value']
 					else:
-						printerreturnjson['returnstatus'] = "Printer not connected or command not found"
-				if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
-					if printerreturn.status_code == 200:
-						printerreturnjson['returnstatus'] = "OK"
-					else:
-						printerreturnjson['returnstatus'] = "Error"
+						printerreturnjson['returnstatus'] = "Printer not connected"
 				printerreturnjson["apikey"] = shared.apikey
 				printerreturnjson['device'] = shared.device
 				shared.JEEDOM_COM.send_change_immediate(printerreturnjson)

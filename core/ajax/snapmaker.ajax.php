@@ -98,14 +98,14 @@ try {
     if (!file_exists($file)) {
       throw new \Exception(__('Impossible de trouver le fichier', __FILE__).init('file'));
     }
-    $numeroLigne = 149293;
-    $pourcentage = 0.40;
+    $numeroLigne = intval(init('line'));
+    $pourcentage = intval(init('percent')) / 100;
     $contenuFichierSource = file($file);
     $fileis = init('fileis');
     $valeur_de_Z = -1;
     $valeur_de_E = -1;
     $valeur_de_T = -1;
-    if (($fileis == "3dprint") || ($fileis == "3ddoubleprint")) {// 3d print avec 1 ou 2 extrudeurs
+    if (($fileis == "singleExtruderToolheadForSM2") || ($fileis == "dualExtruderToolheadForSM2")) {// 3d print avec 1 ou 2 extrudeurs
       $contenuPremieresLignes = array_slice($contenuFichierSource, 0, 40);
       for ($i = $numeroLigne; $i >= 0; $i--) {
         if (strpos($contenuFichierSource[$i], 'Z') !== false) {
@@ -115,7 +115,7 @@ try {
           $valeur_de_E = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'E') + 1);
         }
         if ($valeur_de_Z != -1) {
-          if ($fileis == "3ddoubleprint") {
+          if ($fileis == "dualExtruderToolheadForSM2") {
             if (strpos($contenuFichierSource[$i], ' T') !== false) {
               $valeur_de_T = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], ' T') + 1);
             }
@@ -139,7 +139,7 @@ try {
           $contenuPremieresLignes[$i] = str_replace($EstimeActuel, $EstimeActuel * $pourcentage, $contenuPremieresLignes[$i]);
         }
       }
-      if ($fileis == "3ddoubleprint") {
+      if ($fileis == "dualExtruderToolheadForSM2") {
         $contenuPremieresLignes[] = "T" . $valeur_de_T ."\n";
       }
       $contenuPremieresLignes[] = "G1 Z" . $valeur_de_Z ."\n";
@@ -148,10 +148,7 @@ try {
       $contenuCopie = array_merge($contenuPremieresLignes, $contenuCopie);
       $newfile = $uploaddir . '/reprise_' . init('file');
       file_put_contents($newfile, implode("", $contenuCopie));
-      echo "La copie a été créée à partir de la dernière occurrence de la ligne avec la chaîne 'Z' (ligne $numeroLigne) et enregistrée dans $newfile.";
     }
-    // cnc
-    // avec axe
     // laser
     // avec axe
     ajax::success();
