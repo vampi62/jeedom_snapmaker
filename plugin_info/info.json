@@ -2,7 +2,7 @@
 	"id" : "snapmaker",
 	"name" : "snapmaker",
 	"description" : {
-		"fr_FR": "connecter une ou plusieurs imprimantes 3D snapmaker à jeedom"
+		"fr_FR": "connecter une ou plusieurs imprimantes 3D snapmaker à jeedom, stocker vos fichiers et lancer vos impressions depuis jeedom"
 	},
 	"licence" : "AGPL",
 	"author" : "vampi62",
@@ -13,8 +13,8 @@
 	"maxDependancyInstallTime" : 0,
 	"changelog" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/changelog.md",
 	"documentation" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/index.md",
-	"changelog_beta" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/beta/changelog.md",
-	"documentation_beta" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/beta/index.md",
+	"changelog_beta" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/changelog.md",
+	"documentation_beta" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/index.md",
 	"link" : {
 		"forum":"https://github.com/vampi62/jeedom_snapmaker/issues"
 	},
