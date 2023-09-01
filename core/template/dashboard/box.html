@@ -246,37 +246,35 @@
 		function #uid#js_snapmaker_selectfichier(postion_tableau) {
 			// ajoute l'atribut selected sur la ligne selectionner
 			$('.cmd[data-eqlogic_id=#filelist_id#] .state tr').removeClass('highlight');
+			let nomfichier = "";
+			let taillefichier = "";
+			let datefichier = "";
+			let typemachine = "";
+			let nbrligne = "";
+			let temps_impr = "";
+			let img64 = "";
+			let typeoutil = "";
+			let axerotatif = "";
 			if (postion_tableau > 0) {
 				$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
 				// recupere le nom du fichier
-				let nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
+				nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
 				// recupere la taille du fichier
-				let taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
+				taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
 				// recupere la date du fichier
-				let datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
+				datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
 				// recupere le nombre de ligne du fichier
-				let typemachine = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
+				typemachine = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
 				// recupere le nombre de ligne du fichier
-				let nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
+				nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
 				// recupere le temps d'impression du fichier
-				let temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
+				temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
 				// recupere l'image en base64 du fichier
-				let img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(6)').text();
+				img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(6)').text();
 				// recupere le temps d'impression du fichier
-				let typeoutil = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(7)').text();
+				typeoutil = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(7)').text();
 				// recupere l'image en base64 du fichier
-				let axerotatif = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(8)').text();
-			} else {
-				// vide les info
-				let nomfichier = "";
-				let taillefichier = "";
-				let datefichier = "";
-				let typemachine = "";
-				let nbrligne = "";
-				let temps_impr = "";
-				let img64 = "";
-				let typeoutil = "";
-				let axerotatif = "";
+				axerotatif = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(8)').text();
 			}
 
 			// affiche les info du fichier
@@ -328,7 +326,7 @@
 				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
 			}
 			else if (!global_#uid#_connect) {
-				if ((nomfichier == $('.cmd[data-cmd_id=#fileName#] .state').text()) && (parseFloat($('.cmd[data-cmd_id=#progress_id#] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
+				if ((nomfichier == $('.cmd[data-cmd_id=#fileName_id#] .state').text()) && (parseFloat($('.cmd[data-cmd_id=#progress_id#] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
 					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',false);
 					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').show();
 				}
