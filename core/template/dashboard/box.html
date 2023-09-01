@@ -598,8 +598,8 @@
 										<strong class="state">#fileName#</strong>
 									</div>
 									<script>
-										jeedom.cmd.addUpdateFunction('#fileName#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#fileName#]')
+										jeedom.cmd.addUpdateFunction('#fileName_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#fileName_id#]')
 											cmd.attr('title', 'Valeur du: '+_options.valueDate)
 											cmd.find('.state').empty().append(_options.display_value)
 										});
