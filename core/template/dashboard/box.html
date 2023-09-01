@@ -411,8 +411,8 @@
 								$('.cmd[data-cmd_id=#disconnect_id#]:last .action').off('click').on('click', function () {
 									jeedom.cmd.execute({id: '#disconnect_id#'})
 								})
-								jeedom.cmd.addUpdateFunction('#status_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#status_id#]')
+								jeedom.cmd.addUpdateFunction('#statusconnect_id#',function(_options) {
+									let cmd = $('.cmd[data-cmd_id=#statusconnect_id#]')
 									cmd.attr('title', 'Valeur du: '+_options.valueDate)
 									#uid#switch_connect(_options.display_value);
 								});
