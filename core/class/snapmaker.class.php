@@ -597,7 +597,6 @@ class snapmakerCmd extends cmd {
       break;
       case 'connect':
         $eqlogic->sendmessage('connect',1);
-        $eqlogic->checkAndUpdateCmd('saveworkSpeed', '100');
       break;
       case 'disconnect':
         $eqlogic->sendmessage('disconnect',1);
