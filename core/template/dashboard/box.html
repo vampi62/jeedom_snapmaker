@@ -297,7 +297,6 @@
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',true);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').hide();
 			if ((global_#uid#_connect) && (global_#uid#_printstatus == "IDLE")) {
 				// si le type d'outil correspond a la machine active le bouton start
 				if (typemachine == "3dp") {
@@ -328,7 +327,6 @@
 			else if (!global_#uid#_connect) {
 				if ((nomfichier == $('.cmd[data-cmd_id=#fileName_id#] .state').text()) && (parseFloat($('.cmd[data-cmd_id=#progress_id#] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
 					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',false);
-					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').show();
 				}
 			}
 		}
@@ -611,7 +609,6 @@
 									</div>
 									<script>
 										let progress#uid# = parseFloat(#progress#).toFixed(2)
-										console.log(progress#uid#)
 										if (progress#uid# == 'NaN') {
 											progress#uid# = 0
 										}
@@ -1266,7 +1263,7 @@
 					</div>
 					<div class="content-xs">
 						<span class="is3dprint is3ddoubleprint">
-							<a class="btn btn-sm btn-default reprise" disabled hidden>reprise</a>
+							<a class="btn btn-sm btn-default reprise" disabled>reprise</a>
 						</span>
 						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
 						<a class="btn btn-sm btn-default start" disabled>start</a>
