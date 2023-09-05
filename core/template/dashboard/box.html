@@ -289,7 +289,6 @@
 			// insert l'image en base64 dans le src de l'image
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectimage .state').attr('src',img64);
 			// active les bouton
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .renamefile').attr('disabled',false);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .deletefile').attr('disabled',false);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
 
@@ -1277,6 +1276,9 @@
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<script>
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').on('click', function() {
+							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled') == 'disabled') {
+								return;
+							}
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							$.ajax({
 								type: "POST",
@@ -1292,6 +1294,9 @@
 							});
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .reprise').on('click', function() {
+							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .reprise').attr('disabled') == 'disabled') {
+								return;
+							}
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							var line = $('.cmd[data-cmd_id=#currentLine_id#] .state1').text();
 							var percent = $('.cmd[data-cmd_id=#progress_id#] .state1').text();
@@ -1310,6 +1315,9 @@
 							});
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
+							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled') == 'disabled') {
+								return;
+							}
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
@@ -1317,6 +1325,9 @@
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
+							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').attr('disabled') == 'disabled') {
+								return;
+							}
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							$.ajax({
 								type: "GET",
@@ -1336,6 +1347,9 @@
 							});
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
+							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled') == 'disabled') {
+								return;
+							}
 							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
 							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
