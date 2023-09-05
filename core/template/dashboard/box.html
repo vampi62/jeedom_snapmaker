@@ -11,15 +11,15 @@
 	</center>
 	<script>
 		global_#uid#_toolhead = "";
-		global_#uid#is_rotate = "";
+		global_#uid#_isrotate = "";
 		global_#uid#_connect = false;
 		global_#uid#_printstatus = "";
 		if ('#refresh_id#' != ''){
-			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+			$('.eqLogic[data-eqLogic_id=#id#] .refresh').on('click', function () {
 				jeedom.cmd.execute({id: '#refresh_id#'});
 			});
 		} else {
-			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove();
+			$('.eqLogic[data-eqLogic_id=#id#] .refresh').remove();
 		}
 		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
 			local_table = document.createElement("table");
@@ -75,137 +75,138 @@
 		}
 		function #uid#change_visibility_toolhead(local_value) {
 			if (local_value == "TOOLHEAD_3DPRINTING_1") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprint').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .is3dprint').show();
 				global_#uid#_toolhead = "3dprint";
 			} else if (local_value == "3ddoubleprint") { //non configurer
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3ddoubleprint').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .is3ddoubleprint').show();
 				global_#uid#_toolhead = "3ddoubleprint";
 			} else if (local_value == "TOOLHEAD_CNC_1") { //non configurer
-				$('.eqLogic[data-eqLogic_uid=#uid#] .iscnc').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .iscnc').show();
 				global_#uid#_toolhead = "cnc";
 			} else if (local_value == "TOOLHEAD_LASER_1") { //non configurer
-				$('.eqLogic[data-eqLogic_uid=#uid#] .islaser').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
 				global_#uid#_toolhead = "laser";
 			}
 		}
 		function #uid#change_visibility_connect() {
 			if (global_#uid#_connect) {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .isconnected').show();
 			} else {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isconnected').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .isconnected').hide();
 			}
 		}
 		function #uid#change_visibility_status(local_value) {
 			global_#uid#_printstatus = local_value;
 			if (local_value == "PAUSED") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .smpause').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smresume').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .smstop').show();
 			} else if (local_value == "RUNNING") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .smpause').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .smresume').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smstop').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
 			} else if (local_value == "IDLE") {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smpause').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smresume').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smstop').hide();
 			} else {// retirer toutes les commandes
-				$('.eqLogic[data-eqLogic_uid=#uid#] .is3dprintpauseoridle').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isprintrunning').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smpause').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smresume').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .smstop').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smpause').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smresume').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .smstop').hide();
 			}
 		}
 		function #uid#switch_connect(stats) {
 			if (stats == '1') { // connecter
 				global_#uid#_connect = true;
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').show();
 				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty();
 			} else if (stats == '2') { // première connexion
 				global_#uid#_connect = false;
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').show();
 				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty().append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
 			} else { // pas de connexion
 				global_#uid#_connect = false;
-				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
-				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconoff').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .iconon').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .connect').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .statusimpr .disconnect').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .start').attr('disabled',true);
+				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').hide();
 				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty();
 			}
 			#uid#change_visibility_connect();
 		}
 		function #uid#switch_caisson(stats) {
 			if (stats == 'true') {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .iscaissonon').show();
 			} else {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .iscaissonon').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .iscaissonon').hide();
 			}
 		}
 		function #uid#switch_rotate(stats) {
-			global_#uid#is_rotate = stats;
+			global_#uid#_isrotate = stats;
 			if (stats == 'true') {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isrotateon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .isrotateon').show();
 			} else {
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isrotateon').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .isrotateon').hide();
 			}
 		}
 		function #uid#switch_reconnect(stats) {
 			if (stats == '1') { // autoconnect actif
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconoff').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .setautoconnect').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .unsetautoconnect').show();
 			} else { // pas de valuer ou pas d'autoconnect
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconoff').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .iconon').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .setautoconnect').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoreco .unsetautoconnect').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconoff').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconon').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .setautoconnect').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .unsetautoconnect').hide();
 			}
 		}
 		function #uid#switch_alim(stats) {
 			if (stats == '1') { // active
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
 				$('.cmd[data-cmd_id=#onalim_id#]').hide();
 				$('.cmd[data-cmd_id=#offalim_id#]').show();
 			} else if (stats == '0') {// inactive
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
 				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
 				$('.cmd[data-cmd_id=#onalim_id#]').show();
 				$('.cmd[data-cmd_id=#offalim_id#]').hide();
 			} else { // pas de commande
-				$('.eqLogic[data-eqLogic_uid=#uid#] .isaliminfo').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').hide();
 			}
 		}
 		function #uid#switch_shutdown(stats) {
 			if (stats == '1') { // autoshutdown actif
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconoff').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconon').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .setautoshutdown').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .unsetautoshutdown').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconoff').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .setautoshutdown').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .unsetautoshutdown').show();
 			} else { // pas de valuer ou pas d'autoshutdown
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconoff').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .iconon').hide();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .setautoshutdown').show();
-				$('.eqLogic[data-eqLogic_uid=#uid#] .autoshutdown .unsetautoshutdown').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconoff').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconon').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .setautoshutdown').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .unsetautoshutdown').hide();
 			}
 		}
 		function #uid#_set_value_saveworkSpeed(speed) {
@@ -279,9 +280,9 @@
 
 			// affiche les info du fichier
 			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text(nomfichier);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectdate .state').text(datefichier);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttaille .state').text(taillefichier);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectligne .state').text(nbrligne);
+			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectdate .state').text(datefichier);
+			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselecttaille .state').text(taillefichier);
+			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectligne .state').text(nbrligne);
 			#uid#_set_value_Time($('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttemps'),temps_impr);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttype .state').text(typemachine);
 			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttool .state').text(typeoutil);
@@ -306,17 +307,17 @@
 					}
 				} else if (typemachine == "cnc") {
 					if (global_#uid#_toolhead == "cnc") {
-						if ((global_#uid#is_rotate == "true") && (axerotatif == "true")) {
+						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
-						} else if ((!global_#uid#is_rotate == "false") && (axerotatif == "false")) {
+						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 						}
 					}
 				} else if (typemachine == "laser") {
 					if (global_#uid#_toolhead == "laser") {
-						if ((global_#uid#is_rotate == "true") && (axerotatif == "true")) {
+						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
-						} else if ((!global_#uid#is_rotate == "false") && (axerotatif == "false")) {
+						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 						}
 					}
@@ -764,7 +765,9 @@
 								<div class="content-xs">
 									<span   class="cmdName">Temperature du lit : </span> 
 									<strong class="state1">#heatedBedTemperature#</strong>
-									<strong class="state2"> °C</strong>
+									<strong class="state2"> °C / </strong>
+									<strong class="state3">#heatedBedTargetTemperature#</strong>
+									<strong class="state4"> °C</strong>
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
@@ -778,7 +781,9 @@
 								<div class="content-xs">
 									<span   class="cmdName">Temperature buse : </span> 
 									<strong class="state1">#nozzleTemperature#</strong>
-									<strong class="state2"> °C</strong>
+									<strong class="state2"> °C / </strong>
+									<strong class="state3">#nozzleTargetTemperature#</strong>
+									<strong class="state4"> °C</strong>
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
@@ -830,6 +835,7 @@
 									})
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
 										#uid#_set_value_nozzleTargetTemperature(_options.display_value)
+										$('.cmd[data-cmd_id=#nozzleTemperature_id#] .state3').empty().append(_options.display_value)
 									});
 								</script>
 							</div>
@@ -875,6 +881,7 @@
 									})
 									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
 										#uid#_set_value_heatedBedTargetTemperature(_options.display_value)
+										$('.cmd[data-cmd_id=#heatedBedTemperature_id#] .state3').empty().append(_options.display_value)
 									});
 								</script>
 							</div>
@@ -1271,6 +1278,8 @@
 						<span class="btn btn-default btn-file" style="width:100%;">
 							<i class="fas fa-cloud-upload-alt"></i>Ajouter un fichier<input id="bt_uploadgcode" type="file" name="file" accept=".gcode, .nc, .cnc" data-url="plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#">
 						</span>
+						<!-- balise message "fichier en cours d'envoie"-->
+						<span class="msg"></span>
 					</div>
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
@@ -1323,6 +1332,7 @@
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .msg').empty().append('<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>');
 						});
 						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
 							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').attr('disabled') == 'disabled') {
@@ -1355,6 +1365,12 @@
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
+							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .msg').empty().append('<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>');
+							// pause de 10s
+							setTimeout(function() {
+								console.log('pause de 10s');
+							}, 10000);
+							$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
 						});
 						$('#bt_uploadgcode').fileupload({
 							dataType: 'json',
@@ -1485,7 +1501,7 @@
 									$('.cmd[data-cmd_id=#execcomande_id#] .message').val('');
 								});
 								function #uid#updateRangeValue(input,namedisplay,unit) {
-									$('.eqLogic[data-eqLogic_uid=#uid#]:last .' + namedisplay).text(input.value + unit);
+									$('.eqLogic[data-eqLogic_id=#id#]:last .' + namedisplay).text(input.value + unit);
 								}
 								function #uid#onRangeRelease(input,cut = '') {
 									if (global_#uid#_toolhead == "laser") {
@@ -1537,67 +1553,67 @@
 								function #uid#gotoworkorigin(axis) { // go to work origin
 									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G90"}});
 									if (axis == "home") {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 X0 Y0 Z0 B0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value()}});
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 X0 Y0 Z0 B0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value()}});
 									} else {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 " + axis + "0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value()}});
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 " + axis + "0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value()}});
 									}
 								}
 							</script>
 						</div>
 						<script>
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .home').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .home').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .left').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .left').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " X-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " X-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .right').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .right').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " X+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
-							})
-
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymax').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Y+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
-							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .ymin').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Y-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " X+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .up').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .ymax').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Z+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Y+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .down').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .ymin').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " Z-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Y-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte1').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .up').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Z+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .inserte2').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .down').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Z-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte1').off('click').on('click', function () {
+
+							$('.eqLogic[data-eqLogic_id=#id#]:last .inserte1').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .retracte2').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .inserte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .axe_horaire').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .retracte1').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " B+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_uid=#uid#]:last .axe_antihoraire').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#]:last .retracte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_uid=#uid#]:last .sliderspeedValue').value() + " B-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_id=#id#]:last .axe_horaire').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " B+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+							})
+							$('.eqLogic[data-eqLogic_id=#id#]:last .axe_antihoraire').off('click').on('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " B-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 						</script>
 					</div>
@@ -1636,17 +1652,17 @@
 			</tr>
 			<script>
 				if ('#numberTryWithoutSuccess#' >= 3) {
-					$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').css('color', 'red');
+					$('.eqLogic[data-eqLogic_id=#id#] .infcmd').css('color', 'red');
 				}
 				//**************************************//	
-				$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').off('click').on('click', function () {
-					$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover({
+				$('.eqLogic[data-eqLogic_id=#id#] .infcmd').off('click').on('click', function () {
+					$('.eqLogic[data-eqLogic_id=#id#] .infcmd').popover({
 						container: "body",
 						html: true,
 						placement: "auto",
 						selector : true,
 						//title: false,//"<strong>Liste des équipements</strong>",
-						content: function () {return $('.eqLogic[data-eqLogic_uid=#uid#] .infhtm').html(); } ,
+						content: function () {return $('.eqLogic[data-eqLogic_id=#id#] .infhtm').html(); } ,
 					})
 						.on("show.bs.popover", function () { 
 							$(this).data("bs.popover").tip()
@@ -1659,38 +1675,38 @@
 								"background": "#474646",
 							});
 						});
-					$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover('show'); 
+					$('.eqLogic[data-eqLogic_id=#id#] .infcmd').popover('show'); 
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .changecmdmenu').on('click',function () { // menu
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_menu').show();
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_fichier').hide();
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_axes').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .changecmdmenu').on('click',function () { // menu
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_menu').show();
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_fichier').hide();
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_axes').hide();
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .changecmdfichier').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_menu').hide();
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_fichier').show();
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_axes').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .changecmdfichier').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_menu').hide();
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_fichier').show();
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_axes').hide();
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .changecmdaxes').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_menu').hide();
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_fichier').hide();
-					$('.eqLogic[data-eqLogic_uid=#uid#] .Pan_axes').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .changecmdaxes').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_menu').hide();
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_fichier').hide();
+					$('.eqLogic[data-eqLogic_id=#id#] .Pan_axes').show();
 				});
 
-				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-menu .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-menu .contenue').toggle();
+				$('.eqLogic[data-eqLogic_id=#id#] .menu-menu .titre').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .menu-menu .contenue').toggle();
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-module .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-module .contenue').toggle();
+				$('.eqLogic[data-eqLogic_id=#id#] .menu-module .titre').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .menu-module .contenue').toggle();
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-outil .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-outil .contenue').toggle();
+				$('.eqLogic[data-eqLogic_id=#id#] .menu-outil .titre').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .menu-outil .contenue').toggle();
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-caisson .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-caisson .contenue').toggle();
+				$('.eqLogic[data-eqLogic_id=#id#] .menu-caisson .titre').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .menu-caisson .contenue').toggle();
 				});
-				$('.eqLogic[data-eqLogic_uid=#uid#] .menu-alim .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_uid=#uid#] .menu-alim .contenue').toggle();
+				$('.eqLogic[data-eqLogic_id=#id#] .menu-alim .titre').on('click',function () { // fichier
+					$('.eqLogic[data-eqLogic_id=#id#] .menu-alim .contenue').toggle();
 				});
 			</script>
 		</table>
