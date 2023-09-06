@@ -62,11 +62,19 @@ unset($result['apikey']);
 
 if (isset($result['status'])) {
 	$snapmakerid->checkAndUpdateCmd('printStatus', strval($result['status']));
+	if ($result['status'] == "IDLE") { // on remet les vitesses par defaut si le status passe a IDLE
+		$snapmakerid->checkAndUpdateCmd('saveworkSpeed', '100');
+	}
 	unset($result['status']);
 	unset($result['printStatus']);
 }
 if (isset($result['returnstatus'])) {
-	log::add('snapmaker', 'info', "retour de commande pour " . $snapmakerid->getName() . " : " . $result['returnstatus']);
+	$oldval = $snapmakerid->getCmd(null, 'returnstatus')->execCmd(); // switch qui rajoute 0 pour forcer l'actualisation de la notif dans le dashboard
+	if ($result['returnstatus'] == $oldval) {
+		$snapmakerid->checkAndUpdateCmd('returnstatus', strval($result['returnstatus']) . " : 0");
+	} else {
+		$snapmakerid->checkAndUpdateCmd('returnstatus', strval($result['returnstatus']));
+	}
 	unset($result['returnstatus']);
 }
 
@@ -89,6 +97,9 @@ function getallvaluearray($snapmakerid,$liste, $keyorigin = "") {
 				// limitation des mise a jour pour eviter des ecritures sur le disque trop frequente et/ou plusieurs processus de verification de jeedom
 				if ($oldValue != $value) { // on ne met a jour que si la valeur a change
 					$snapmakerid->checkAndUpdateCmd($key, $value);
+					if ($key == "fileName") { // si le nom du fichier est different on reinitialise la valeur de vitesse enregistrer
+						$snapmakerid->checkAndUpdateCmd('saveworkSpeed', '100');
+					}
 				}
 			} else {
 				log::add('snapmaker','debug',$keyorigin . "/" .$key . " - n'existe pas pour l'eqlogic " . $snapmakerid->getName());

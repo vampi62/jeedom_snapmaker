@@ -92,7 +92,7 @@ def read_socket(name):
 						elif filename[-4:] == ".cnc":
 							payload = {'token': shared.token, 'type': 'CNC'}
 						else:
-							printerreturnjson['returnstatus'] = "file format not supported"
+							printerreturnjson['returnstatus'] = message['cmd'] + " : 2"#file format not supported
 							filenotsupported = True
 						if not filenotsupported:
 							if os.path.isfile(filename):
@@ -102,7 +102,7 @@ def read_socket(name):
 								if printerreturn.status_code == 200:
 									printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=5)
 							else:
-								printerreturnjson['returnstatus'] = "file not found"
+								printerreturnjson['returnstatus'] = message['cmd'] + " : 1"#file not found
 					elif message['cmd'] == 'sendfile':
 						filename = message['value']
 						payload = {'token': shared.token}
@@ -111,7 +111,7 @@ def read_socket(name):
 							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', data=payload,files={'file': (filename, file)}, timeout=45)
 							logging.debug("code : "+str(printerreturn.status_code))
 						else:
-							printerreturnjson['returnstatus'] = "file not found"
+							printerreturnjson['returnstatus'] = message['cmd'] + " : 1"#file not found
 					elif message['cmd'] == 'stop':
 						payload = {'token': shared.token}
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/stop_print', headers=headers, data=payload, timeout=5)
@@ -155,17 +155,14 @@ def read_socket(name):
 						payload = {'token': shared.token,"fan_speed": message['value']}
 						printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/air_purifier_fan_speed', headers=headers, data=payload, timeout=5)
 					if 'printerreturn' in locals() and isinstance(printerreturn, requests.Response):
-						if printerreturn.status_code == 200:
-							printerreturnjson['returnstatus'] = "OK"
-						else:
-							printerreturnjson['returnstatus'] = "Error"
+						printerreturnjson['returnstatus'] = message['cmd'] + " : " + str(printerreturn.status_code)
 					else:
-						printerreturnjson['returnstatus'] = "command not found"
+						printerreturnjson['returnstatus'] = message['cmd'] + " : 3" #command not found
 				else:
 					if message['cmd'] == 'updateip': #mise a jour de l'ip de l'imprimante que si pas connecté
 						shared.printer = message['value']
 					else:
-						printerreturnjson['returnstatus'] = "Printer not connected"
+						printerreturnjson['returnstatus'] = message['cmd'] + " : 4"#Printer not connected
 				printerreturnjson["apikey"] = shared.apikey
 				printerreturnjson['device'] = shared.device
 				shared.JEEDOM_COM.send_change_immediate(printerreturnjson)
