@@ -421,7 +421,7 @@
 							<div class="cmd cmd-widget tooltips autoconnect" data-type="info" data-subtype="numeric" data-cmd_id="#autoconnect_id#" data-cmd_uid="cmd#autoconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoconnect_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="fas fa-times"></i></span>
-									<span class="iconon"><i class="icon jeedom-prise"></i></span>
+									<span class="iconon"><i class="icon jeedom-off"></i></span>
 								</div>
 							</div>
 							<div class="cmd cmd-widget tooltips setautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoconnect_id#" data-cmd_uid="cmd#setautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
@@ -1157,7 +1157,7 @@
 									<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
 										<div class="content-sm">
 											<span class="iconoff"><i class="fas fa-times"></i></span>
-											<span class="iconon"><i class="icon jeedom-prise"></i></span>
+											<span class="iconon"><i class="fas fa-stopwatch"></i></span>
 										</div>
 									</div>
 									<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
@@ -1372,29 +1372,31 @@
 						});
 						jeedom.cmd.addUpdateFunction('#returnstatus_id#',function(_options) {
 							// separe _options.display_value en 2 string via le séparateur " : "
-							var msgreturn = _options.display_value.split(" : ");
+							console.log(_options.display_value);
+							let msgreturn#uid# = _options.display_value;
+							msgreturn#uid# = msgreturn#uid#.split(" : ");
 							// si la 2eme string contient 1
-							if (msgreturn[1] == "1") {
+							if (msgreturn#uid#[1] == "1") {
 								$.fn.showAlert({
 									message: "fichier non trouvé",
 									level: 'danger'
 								})
-							} else if (msgreturn[1] == "2") {
+							} else if (msgreturn#uid#[1] == "2") {
 								$.fn.showAlert({
 									message: "format de fichier non reconnue",
 									level: 'danger'
 								})
-							} else if (msgreturn[1] == "3") {
+							} else if (msgreturn#uid#[1] == "3") {
 								$.fn.showAlert({
 									message: "commande non reconnue",
 									level: 'danger'
 								})
-							} else if (msgreturn[1] == "4") {
+							} else if (msgreturn#uid#[1] == "4") {
 								$.fn.showAlert({
 									message: "imprimante non connectée",
 									level: 'danger'
 								})
-							} else if (msgreturn[1] == "409") {
+							} else if (msgreturn#uid#[1] == "409") {
 								// si il y a du contenue dans la balise .eqLogic[data-eqLogic_id=#id#] .fileselect .msg
 								if ($('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').text() != "") {
 									$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
@@ -1403,7 +1405,7 @@
 									message: "erreur de communication avec la snapmaker",
 									level: 'danger'
 								})
-							} else if (msgreturn[1] == "200") {
+							} else if (msgreturn#uid#[1] == "200") {
 								if ($('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').text() != "") {
 									$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
 									$.fn.showAlert({
@@ -1412,7 +1414,7 @@
 									})
 								} else {
 									$.fn.showAlert({
-										message: "commande : " + msgreturn[0] + " envoyée avec succès",
+										message: "commande : " + msgreturn#uid#[0] + " envoyée avec succès",
 										level: 'success'
 									})
 								}

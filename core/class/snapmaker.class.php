@@ -195,7 +195,7 @@ class snapmaker extends eqLogic {
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
     $this->create_element('unsetfan'     ,'unsetfan'     ,'action','other');
     $this->create_element('saveworkSpeed','saveworkSpeed','info'  ,'string');
-    $this->create_element('returnstatus ','returnstatus ','info'  ,'string');
+    $this->create_element('returnstatus' ,'returnstatus' ,'info'  ,'string');
     
     $this->create_element('autoconnect'               ,'autoconnect'               ,'info','string');
     $this->create_element('autoshutdown'              ,'autoshutdown'              ,'info','string');
@@ -640,7 +640,7 @@ class snapmakerCmd extends cmd {
         }
       break;
       case 'stop':
-        if ($eqlogic->getCmd(null, "printStatus")->execCmd() == "RUNNING") {
+        if ($eqlogic->getCmd(null, "printStatus")->execCmd() != "IDLE") {
           $eqlogic->sendmessage('stop',1);
         }
       break;

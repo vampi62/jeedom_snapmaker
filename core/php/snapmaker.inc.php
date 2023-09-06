@@ -68,6 +68,15 @@ if (isset($result['status'])) {
 	unset($result['status']);
 	unset($result['printStatus']);
 }
+if (isset($result['returnstatus'])) {
+	$oldval = $snapmakerid->getCmd(null, 'returnstatus')->execCmd(); // switch qui rajoute 0 pour forcer l'actualisation de la notif dans le dashboard
+	if ($result['returnstatus'] == $oldval) {
+		$snapmakerid->checkAndUpdateCmd('returnstatus', strval($result['returnstatus']) . " : 0");
+	} else {
+		$snapmakerid->checkAndUpdateCmd('returnstatus', strval($result['returnstatus']));
+	}
+	unset($result['returnstatus']);
+}
 
 function getallvaluearray($snapmakerid,$liste, $keyorigin = "") {
 	$value_ignore = array("x","y","z","offsetX","offsetY","spindleSpeed","workSpeed"); // liste des valeurs a ne pas mettre a jour , x,y,z sont des valuer qui change regulierement pour eviter des ecriture inutile sur le disque on ne les mets pas a jour

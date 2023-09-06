@@ -4,6 +4,11 @@
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 06/09/2023
+
+- notification de retour de commande
+- affichage d'un message le temps de l'upload d'un fichier vers l'imprimante
+
 # 30/08/2023
 
 - bouton pour creer un fichier reprise si l'impression a ete interrompu (dans la liste des fichiers, sélectionner celui que vous imprimez) (! ne pas faire de home ou deplacer l'impression du plateau)
