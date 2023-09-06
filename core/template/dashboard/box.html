@@ -1366,11 +1366,62 @@
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
 							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .msg').empty().append('<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>');
-							// pause de 10s
-							setTimeout(function() {
-								console.log('pause de 10s');
-							}, 10000);
+						});
+						$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').on('click', function() {
 							$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+						});
+						jeedom.cmd.addUpdateFunction('#returnstatus_id#',function(_options) {
+							// separe _options.display_value en 2 string via le séparateur " : "
+							var msgreturn = _options.display_value.split(" : ");
+							// si la 2eme string contient 1
+							if (msgreturn[1] == "1") {
+								$.fn.showAlert({
+									message: "fichier non trouvé",
+									level: 'danger'
+								})
+							} else if (msgreturn[1] == "2") {
+								$.fn.showAlert({
+									message: "format de fichier non reconnue",
+									level: 'danger'
+								})
+							} else if (msgreturn[1] == "3") {
+								$.fn.showAlert({
+									message: "commande non reconnue",
+									level: 'danger'
+								})
+							} else if (msgreturn[1] == "4") {
+								$.fn.showAlert({
+									message: "imprimante non connectée",
+									level: 'danger'
+								})
+							} else if (msgreturn[1] == "409") {
+								// si il y a du contenue dans la balise .eqLogic[data-eqLogic_id=#id#] .fileselect .msg
+								if ($('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').text() != "") {
+									$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+								}
+								$.fn.showAlert({
+									message: "erreur de communication avec la snapmaker",
+									level: 'danger'
+								})
+							} else if (msgreturn[1] == "200") {
+								if ($('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').text() != "") {
+									$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+									$.fn.showAlert({
+										message: "fichier envoyée avec succès",
+										level: 'success'
+									})
+								} else {
+									$.fn.showAlert({
+										message: "commande : " + msgreturn[0] + " envoyée avec succès",
+										level: 'success'
+									})
+								}
+							} else {
+								$.fn.showAlert({
+									message: "retour de commande inconnue : " + _options.display_value,
+									level: 'warning'
+								})
+							}
 						});
 						$('#bt_uploadgcode').fileupload({
 							dataType: 'json',
