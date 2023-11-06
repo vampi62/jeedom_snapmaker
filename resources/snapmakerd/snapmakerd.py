@@ -97,7 +97,7 @@ def read_socket(name):
 						if not filenotsupported:
 							if os.path.isfile(filename):
 								file = open(filename, 'rb')
-								printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=45)
+								printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/prepare_print', data=payload, files={'file': (filename, file)}, timeout=180)
 								logging.debug("code : "+str(printerreturn.status_code))
 								if printerreturn.status_code == 200:
 									printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/start_print', headers=headers, data=payload, timeout=5)
@@ -108,7 +108,7 @@ def read_socket(name):
 						payload = {'token': shared.token}
 						if os.path.isfile(filename):
 							file = open(filename, 'rb')
-							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', data=payload,files={'file': (filename, file)}, timeout=45)
+							printerreturn = requests.request("POST",'http://'+shared.printer+':8080/api/v1/upload', data=payload,files={'file': (filename, file)}, timeout=180)
 							logging.debug("code : "+str(printerreturn.status_code))
 						else:
 							printerreturnjson['returnstatus'] = message['cmd'] + " : 1"#file not found

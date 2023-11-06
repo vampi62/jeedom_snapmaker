@@ -26,7 +26,7 @@
 			local_thr = document.createElement("thead");
 			local_tr = document.createElement("tr");
 			local_tr.setAttribute("style","white-space: nowrap;");
-			for(j = 0; count(headtable) > j; j++) {
+			for(j = 0; headtable.length > j; j++) {
 				local_th = document.createElement("th");
 				local_th.setAttribute("style","padding: 5px;");
 				if (headtable[j] == null) {
@@ -182,16 +182,16 @@
 		function #uid#switch_alim(stats) {
 			if (stats == '1') { // active
 				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').show();
-				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
-				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
-				$('.cmd[data-cmd_id=#onalim_id#]').hide();
-				$('.cmd[data-cmd_id=#offalim_id#]').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#onalim_id#]').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#offalim_id#]').show();
 			} else if (stats == '0') {// inactive
 				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').show();
-				$('.cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
-				$('.cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
-				$('.cmd[data-cmd_id=#onalim_id#]').show();
-				$('.cmd[data-cmd_id=#offalim_id#]').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#onalim_id#]').show();
+				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#offalim_id#]').hide();
 			} else { // pas de commande
 				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').hide();
 			}
@@ -1130,10 +1130,10 @@
 						</div>
 						<script>
 							#uid#switch_alim('#aliminfo#');
-							$('.cmd[data-cmd_id=#onalim_id#]:last .action').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#onalim_id#]:last .action').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
-							$('.cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
+							$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
 								if (global_#uid#_printstatus == "IDLE") {
 									jeedom.cmd.execute({id: '#offalim_id#'})
 								} else {
@@ -1144,7 +1144,7 @@
 								}
 							})
 							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
-								let cmd = $('.cmd[data-cmd_id=#aliminfo_id#]')
+								let cmd = $('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#]')
 								cmd.attr('title', 'Valeur du: '+_options.valueDate)
 								#uid#switch_alim(_options.display_value);
 							});
