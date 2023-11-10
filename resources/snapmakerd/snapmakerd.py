@@ -34,8 +34,8 @@ import subprocess
 
 try:
 	from jeedom.jeedom import *
-except ImportError:
-	print("Error: importing module jeedom.jeedom")
+except ImportError as e:
+	print("Error: importing module jeedom.jeedom " + str(e))
 	sys.exit(1)
 
 def ping(host):
