@@ -131,14 +131,14 @@
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').show();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').hide();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').show();
-				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty();
+				$('.cmd[data-cmd_id=#printStatus_id#] .firstloginmsg').empty();
 			} else if (stats == '2') { // première connexion
 				global_#uid#_connect = false;
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').hide();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').show();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').hide();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').show();
-				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty().append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
+				$('.cmd[data-cmd_id=#printStatus_id#] .firstloginmsg').empty().append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
 			} else { // pas de connexion
 				global_#uid#_connect = false;
 				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .start').attr('disabled',true);
@@ -147,7 +147,7 @@
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').hide();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').show();
 				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').hide();
-				$('.cmd[data-cmd_id=#printStatus_id#] .fistloginmsg').empty();
+				$('.cmd[data-cmd_id=#printStatus_id#] .firstloginmsg').empty();
 			}
 			#uid#change_visibility_connect();
 		}
@@ -385,7 +385,7 @@
 					<div class="contenue">
 						<div class="statusimpr">
 							<span class="cmdName">status connexion : </span>
-							<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#status_id#" data-cmd_uid="cmd#status_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #status_collectDate#">
+							<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#statusconnect_id#" data-cmd_uid="cmd#statusconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #statusconnect_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="fas fa-times"></i></span>
 									<span class="iconon"><i class="icon jeedom-prise"></i></span>
