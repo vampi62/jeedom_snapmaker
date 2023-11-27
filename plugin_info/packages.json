@@ -2,6 +2,7 @@
   "pre-install": {
   },
   "apt": {
+    "iputils-ping" : {"reinstall" : true}
   },
   "pip3": {
     "pyserial" : {"reinstall" : true},
