@@ -4,6 +4,13 @@
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 06/01/2024
+
+- ajout des commande pour le module d'impresion 3D avec 2 extrudeur
+- ajout de la commande pour les modules de gravure laser (tester avec le module 1600mW), le module 20W n'est pas bien reconnu par l'api de snapmaker
+- suppression du cron 30
+- image par defaut pour les fichiers et le widget n'est plus bloquant avec les fichier venant d'autre slicer que luban
+
 # 06/09/2023
 
 - notification de retour de commande
