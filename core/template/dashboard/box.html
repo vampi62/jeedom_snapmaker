@@ -74,16 +74,25 @@
 			$('.cmd[data-eqlogic_id=' + nom_tableau + '] .state').append(local_table);
 		}
 		function #uid#change_visibility_toolhead(local_value) {
-			if (local_value == "TOOLHEAD_3DPRINTING_1") {
+			if (local_value == "1") { // tete imprimante 3d 1 extrudeur
 				$('.eqLogic[data-eqLogic_id=#id#] .is3dprint').show();
 				global_#uid#_toolhead = "3dprint";
-			} else if (local_value == "3ddoubleprint") { //non configurer
-				$('.eqLogic[data-eqLogic_id=#id#] .is3ddoubleprint').show();
-				global_#uid#_toolhead = "3ddoubleprint";
-			} else if (local_value == "TOOLHEAD_CNC_1") { //non configurer
+			} else if (local_value == "2") { // tete cnc
 				$('.eqLogic[data-eqLogic_id=#id#] .iscnc').show();
 				global_#uid#_toolhead = "cnc";
-			} else if (local_value == "TOOLHEAD_LASER_1") { //non configurer
+			} else if (local_value == "3") { // tete laser 1600mw
+				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				global_#uid#_toolhead = "laser";
+			} else if (local_value == "4") { // tete laser 10 W
+				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				global_#uid#_toolhead = "laser";
+			} else if (local_value == "5") { // tete imprimante 3d 2 extrudeur
+				$('.eqLogic[data-eqLogic_id=#id#] .is3ddoubleprint').show();
+				global_#uid#_toolhead = "3ddoubleprint";
+			} else if (local_value == "6") { // tete laser 20 W
+				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				global_#uid#_toolhead = "laser";
+			} else if (local_value == "7") { // tete laser 40 W
 				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
 				global_#uid#_toolhead = "laser";
 			}
@@ -230,6 +239,20 @@
 				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
 			}
 		}
+		function #uid#_set_value_nozzleTargetTemperature1(tntemp) {
+			if (isNaN(tntemp)) {
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val('0 °C')
+			} else {
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
+			}
+		}
+		function #uid#_set_value_nozzleTargetTemperature2(tntemp) {
+			if (isNaN(tntemp)) {
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val('0 °C')
+			} else {
+				$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
+			}
+		}
 		function #uid#_set_value_heatedBedTargetTemperature(tbtemp) {
 			if (isNaN(tbtemp)) {
 				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
@@ -302,7 +325,9 @@
 				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
 						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
-					} else if ((typeoutil == "dualExtruderToolheadForSM2") && (global_#uid#_toolhead == "3ddoubleprint")) {
+					} else if (((typeoutil == "dualExtruderToolheadForSM2") || (typeoutil == "singleExtruderToolheadForSM2")) && (global_#uid#_toolhead == "3ddoubleprint")) {
+						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+					} else if (typeoutil == "unknown") {
 						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 					}
 				} else if (typemachine == "cnc") {
@@ -312,6 +337,8 @@
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 						}
+					} else if (typeoutil == "unknown") {
+						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 					}
 				} else if (typemachine == "laser") {
 					if (global_#uid#_toolhead == "laser") {
@@ -320,8 +347,13 @@
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
 							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 						}
+					} else if (typeoutil == "unknown") {
+						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 					}
+				} else if (typemachine == "unknown") {
+					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
 				}
+
 				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
 			}
 			else if (!global_#uid#_connect) {
@@ -330,6 +362,18 @@
 				}
 			}
 		}
+	</script>
+	<script>
+		#uid#change_visibility_toolhead('#headType#');
+		jeedom.cmd.addUpdateFunction('#headType_id#',function(_options) {
+			#uid#change_visibility_toolhead(_options.display_value);
+		});
+	</script>
+	<script>
+		#uid#switch_caisson('#hasEnclosure#')
+		jeedom.cmd.addUpdateFunction('#hasEnclosure_id#',function(_options) {
+			#uid#switch_caisson(_options.display_value)
+		});
 	</script>
 	<style>
 		.table tbody tr.highlight td {
@@ -686,30 +730,12 @@
 								<span   class="cmdName">outil : </span>
 								<strong class="state">#toolHead#</strong>
 							</div>
-							<script>
-								#uid#change_visibility_toolhead('#toolHead#');
-								jeedom.cmd.addUpdateFunction('#toolHead_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#toolHead_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
-									cmd.find('.state').empty().append(_options.display_value)
-									#uid#change_visibility_toolhead(_options.display_value);
-								});
-							</script>
 						</div>
 						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#enclosure_id#" data-cmd_uid="cmd#enclosure_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #enclosure_collectDate#">
 							<div class="content-xs">
 								<span   class="cmdName">enclosure : </span>
 								<strong class="state">#enclosure#</strong>
 							</div>
-							<script>
-								#uid#switch_caisson('#enclosure#')
-								jeedom.cmd.addUpdateFunction('#enclosure_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#enclosure_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
-									cmd.find('.state').empty().append(_options.display_value)
-									#uid#switch_caisson(_options.display_value)
-								});
-							</script>
 						</div>
 						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#rotaryModule_id#" data-cmd_uid="cmd#rotaryModule_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #rotaryModule_collectDate#">
 							<div class="content-xs">
@@ -777,23 +803,57 @@
 									});
 								</script>
 							</div>
-							<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature_collectDate#">
+							<div class="is3dprint">
+								<div class="cmd cmd-widget is3dprint" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature_collectDate#">
+									<div class="content-xs">
+										<span   class="cmdName">Temperature buse : </span> 
+										<strong class="state1">#nozzleTemperature#</strong>
+										<strong class="state2"> °C / </strong>
+										<strong class="state3">#nozzleTargetTemperature#</strong>
+										<strong class="state4"> °C</strong>
+									</div>
+									<script>
+										jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
+											let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
+											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											cmd.find('.state1').empty().append(_options.display_value)
+										});
+									</script>
+								</div>
+							</div>
+							<div class="cmd cmd-widget is3ddoubleprint" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature1_id#" data-cmd_uid="cmd#nozzleTemperature1_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature1_collectDate#">
 								<div class="content-xs">
-									<span   class="cmdName">Temperature buse : </span> 
-									<strong class="state1">#nozzleTemperature#</strong>
+									<span   class="cmdName">Temperature buse 1 : </span> 
+									<strong class="state1">#nozzleTemperature1#</strong>
 									<strong class="state2"> °C / </strong>
-									<strong class="state3">#nozzleTargetTemperature#</strong>
+									<strong class="state3">#nozzleTargetTemperature1#</strong>
 									<strong class="state4"> °C</strong>
 								</div>
 								<script>
-									jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
+									jeedom.cmd.addUpdateFunction('#nozzleTemperature1_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#nozzleTemperature1_id#]')
 										cmd.attr('title', 'Valeur du: '+_options.valueDate)
 										cmd.find('.state1').empty().append(_options.display_value)
 									});
 								</script>
 							</div>
-							<div style="padding: 5px;" class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div class="cmd cmd-widget is3ddoubleprint" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature2_id#" data-cmd_uid="cmd#nozzleTemperature2_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #nozzleTemperature2_collectDate#">
+								<div class="content-xs">
+									<span   class="cmdName">Temperature buse 2 : </span> 
+									<strong class="state1">#nozzleTemperature2#</strong>
+									<strong class="state2"> °C / </strong>
+									<strong class="state3">#nozzleTargetTemperature2#</strong>
+									<strong class="state4"> °C</strong>
+								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#nozzleTemperature2_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#nozzleTemperature2_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										cmd.find('.state1').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+							<div style="padding: 5px;" class="cmd cmd-widget is3dprint" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
 								<div class="title ">
 									<div class="cmdName">Temperature cible de la buse</div>
 								</div>
@@ -815,7 +875,7 @@
 								</div>
 								<script>
 									#uid#_set_value_nozzleTargetTemperature(#nozzleTargetTemperature#)
-									$('.cmd[data-cmd_id=#settempnozzle_id#] .action').off('click').on('click', function () {
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .action').off('click').on('click', function () {
 										#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))
 										jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()).toFixed(0)}});
 									})
@@ -836,6 +896,98 @@
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
 										#uid#_set_value_nozzleTargetTemperature(_options.display_value)
 										$('.cmd[data-cmd_id=#nozzleTemperature_id#] .state3').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+							<div style="padding: 5px;" class="cmd cmd-widget is3ddoubleprint" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature1_id#" data-cmd_uid="#nozzleTargetTemperature1_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">Temperature cible de la buse 1</div>
+								</div>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									#uid#_set_value_nozzleTargetTemperature1(#nozzleTargetTemperature1#)
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .action').off('click').on('click', function () {
+										#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()))
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M104 T0 S" + parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()).toFixed(0)}});
+									})
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .bt_plus').on('click', function () {
+										let max = 300
+										let step = 1
+										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) <= max - step ) {
+											#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) + step)
+										}
+									})
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .bt_minus').on('click', function () {
+										let min = 0
+										let step = 1
+										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) >= min + step) {
+											#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) - step)
+										}
+									})
+									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature1_id#',function(_options) {
+										#uid#_set_value_nozzleTargetTemperature1(_options.display_value)
+										$('.cmd[data-cmd_id=#nozzleTemperature1_id#] .state3').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+							<div style="padding: 5px;" class="cmd cmd-widget is3ddoubleprint" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature2_id#" data-cmd_uid="#nozzleTargetTemperature2_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">Temperature cible de la buse 2</div>
+								</div>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									#uid#_set_value_nozzleTargetTemperature2(#nozzleTargetTemperature2#)
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .action').off('click').on('click', function () {
+										#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()))
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M104 T1 S" + parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()).toFixed(0)}});
+									})
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .bt_plus').on('click', function () {
+										let max = 300
+										let step = 1
+										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) <= max - step ) {
+											#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) + step)
+										}
+									})
+									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .bt_minus').on('click', function () {
+										let min = 0
+										let step = 1
+										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) >= min + step) {
+											#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) - step)
+										}
+									})
+									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature2_id#',function(_options) {
+										#uid#_set_value_nozzleTargetTemperature2(_options.display_value)
+										$('.cmd[data-cmd_id=#nozzleTemperature2_id#] .state3').empty().append(_options.display_value)
 									});
 								</script>
 							</div>
@@ -885,15 +1037,17 @@
 									});
 								</script>
 							</div>
-							<div class="is3dprintpauseoridle"><!--visible si print idle ou pause -->
-								<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">reload</a>
+							<div class="is3dprint">
+								<div class="is3dprintpauseoridle"><!--visible si print idle ou pause -->
+									<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">reload</a>
+										</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips unload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unload_id#" data-cmd_uid="cmd#unload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">unload</a>
+									<div class="cmd cmd-widget tooltips unload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unload_id#" data-cmd_uid="cmd#unload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">unload</a>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -913,6 +1067,60 @@
 								<script>
 									jeedom.cmd.addUpdateFunction('#isFilamentOut_id#',function(_options) {
 										let cmd = $('.cmd[data-cmd_id=#isFilamentOut_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+						</div>
+						<div class="islaser">
+							<div class="cmd cmd-widget tooltips laserCamera" data-type="info" data-subtype="numeric" data-cmd_id="#laserCamera_id#" data-cmd_uid="cmd#laserCamera_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<span class="cmdName">camera du laser : </span>
+									<strong class="state">#laserCamera#</strong>
+								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#laserCamera_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#laserCamera_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+							<div class="cmd cmd-widget tooltips laserPower" data-type="info" data-subtype="numeric" data-cmd_id="#laserPower_id#" data-cmd_uid="cmd#laserPower_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<span class="cmdName">puissance du laser : </span>
+									<strong class="state">#laserPower#</strong>
+								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#laserPower_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#laserPower_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+							<div class="cmd cmd-widget tooltips laserFocalLength" data-type="info" data-subtype="numeric" data-cmd_id="#laserFocalLength_id#" data-cmd_uid="cmd#laserFocalLength_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<span class="cmdName">longueur focal : </span>
+									<strong class="state">#laserFocalLength#</strong>
+								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#laserFocalLength_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#laserFocalLength_id#]')
+										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										cmd.find('.state').empty().append(_options.display_value)
+									});
+								</script>
+							</div>
+							<div class="cmd cmd-widget tooltips laser10WErrorState" data-type="info" data-subtype="numeric" data-cmd_id="#laser10WErrorState_id#" data-cmd_uid="cmd#laser10WErrorState_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+								<div class="content-sm">
+									<span class="cmdName">laser status erreur : </span>
+									<strong class="state">#laser10WErrorState#</strong>
+								</div>
+								<script>
+									jeedom.cmd.addUpdateFunction('#laser10WErrorState_id#',function(_options) {
+										let cmd = $('.cmd[data-cmd_id=#laser10WErrorState_id#]')
 										cmd.attr('title', 'Valeur du: '+_options.valueDate)
 										cmd.find('.state').empty().append(_options.display_value)
 									});
@@ -1372,7 +1580,6 @@
 						});
 						jeedom.cmd.addUpdateFunction('#returnstatus_id#',function(_options) {
 							// separe _options.display_value en 2 string via le séparateur " : "
-							console.log(_options.display_value);
 							let msgreturn#uid# = _options.display_value;
 							msgreturn#uid# = msgreturn#uid#.split(" : ");
 							// si la 2eme string contient 1
@@ -1646,18 +1853,22 @@
 
 							$('.eqLogic[data-eqLogic_id=#id#]:last .inserte1').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T0"}}); // selectionne l'extrudeur 1
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_id=#id#]:last .inserte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T1"}}); // selectionne l'extrudeur 2
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_id=#id#]:last .retracte1').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T0"}}); // selectionne l'extrudeur 1
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_id=#id#]:last .retracte2').off('click').on('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T1"}}); // selectionne l'extrudeur 2
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
 							})
 							$('.eqLogic[data-eqLogic_id=#id#]:last .axe_horaire').off('click').on('click', function () {

@@ -7,7 +7,7 @@ l'imprimante snapmaker est un équipement multi outils (imprimante 3D, graveur l
 1) ajouter un équipement snapmaker
 pour ce faire creer un équipement par imprimante et renseigner les parametres suivrant :
 - ip : l'adresse ip de l'imprimante
-- port : port du daemon snapmaker (port non utiliser entre 12100 et 12199 choisi automatiquement)
+- port : port du daemon snapmaker (port non utiliser par aucun autre service ou deamon entre 12100 et 12199)
 - cycle : temps de rafraichissement du daemon (en seconde) (0.3 par defaut)
 - token : laisser vide il se remplira de lui meme apres la premiere connexion a l'imprimante
 
@@ -28,13 +28,14 @@ si vous disposez d'une prise connecter pour allumer et eteindre l'imprimante, vo
 - dans le 3eme menu vous pouvez lancer des commandes manuelles, déplacer les axes, etc... (visible uniquement si l'imprimante est connecter et qu'elle n'a pas de tache en cours)
 
 4) info
+- les opérations de calibration et de mise à jour du firmware ne sont pas disponible dans le plugin, il faut les faire depuis l'écran de l'imprimante
 - le menu axes s'adaptera pour afficher les commandes adéquat en fonction de l'outil connecter sur l'imprimante (imprimante, graveur laser ou fraiseuse CNC) (!seul le module impression avec 2 buses n'a pas été intégré pour le moment!)
 - le laser et la fraiseuse CNC peuvent être activé a 40% de leur puissance maximum (attention au laser, veuillez l'activer que si vous controler l'imprimante à proximité de celle ci, sur une durée courte et avec les protections adéquat)
 - une fois que votre imprimante commence un travail si vous avez renseigner les parametres de la prise connecter, vous pouvez activer une option dans le premier menu (sous menu alim) pour éteindre l'imprimante une fois le travail fini jusqu'a 5 minute apres la fin du travail.
 - si votre impression vient à être interrompu (coupure de courant, etc...) le plugin vous proposera de reprendre l'impression à partir de la couche ou elle s'est arrêté (attention à ne pas toucher à l'imprimante pour ne pas déplacer un axe ce qui risque de causé un décalage) (fonctionnalité en cours de test uniquement pour les impressions 3D)
 - si l'impression ne démarre pas, après l'upload d'un fichier avec "start" alors verifier le caplage des élément de l'imprimante et le capteur de filament, (si vous rencontrer des problèmes avec ce capteur, vous pouvez le désactiver avec une commande "M412 S0" et le réactiver avec "M412 S1" (attention si vous le désactiver, prévoyer assez de filament pour votre impression))
 
-ce plugin a été testé sur une snapmaker 2.0 A350T avec les modules impression 3D, graveur laser 1.8W, fraiseuse CNC et caisson de protection.
+ce plugin a été testé sur une snapmaker 2.0 A350T avec les modules impression 3D, graveur laser 1.6W et 20W, fraiseuse CNC et caisson de protection.
 les modèles similaire devrait fonctionner mais faite un retour sur le forum si vous avez des soucis, ou des suggestions d'amélioration.
 
 si vous avez des questions ou des remarques, n'hesitez pas ouvrir une issue sur le github du plugin : https://github.com/vampi62/jeedom_snapmaker

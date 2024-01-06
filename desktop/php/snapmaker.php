@@ -140,7 +140,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez un port libre pour le deamon}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="socketport" placeholder="{{12100 ne pas utiliser le même pour pour plusieurs machines}}" disabled>
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="socketport" placeholder="{{12100 ne pas utiliser le même pour pour plusieurs machines}}">
 								</div>
 							</div>
 							<div class="form-group">
