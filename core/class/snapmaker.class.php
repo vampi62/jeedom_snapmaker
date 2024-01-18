@@ -165,7 +165,7 @@ class snapmaker extends eqLogic {
   public function postSave() {
     $this->create_element('refresh','Rafraichir','action','other');
     $this->create_element('pause'  ,'pause'     ,'action','other');
-    $this->create_element('start'  ,'start'     ,'action','other');
+    $this->create_element('start'  ,'start'     ,'action','message');
     $this->create_element('stop'   ,'stop'      ,'action','other');
     $this->create_element('resume' ,'resume'    ,'action','other');
 
@@ -178,9 +178,8 @@ class snapmaker extends eqLogic {
     $this->create_element('setautoshutdown'  ,'setautoshutdown'  ,'action','other');
     $this->create_element('unsetautoshutdown','unsetautoshutdown','action','other');
 
-    $this->create_element('sendgcode'  ,'sendgcode'  ,'action','other');
     $this->create_element('execcomande','execcomande','action','message');
-    $this->create_element('sendfile'   ,'sendfile'   ,'action','other');
+    $this->create_element('sendfile'   ,'sendfile'   ,'action','message');
 
     $this->create_element('reload','reload','action','other');
     $this->create_element('unload','unload','action','other');
@@ -188,10 +187,12 @@ class snapmaker extends eqLogic {
     $this->create_element('setpauseifopen'  ,'setpauseifopen'  ,'action','other');
     $this->create_element('unsetpauseifopen','unsetpauseifopen','action','other');
     
-    $this->create_element('settempnozzle','settempnozzle','action','other');
-    $this->create_element('settempbed'   ,'settempbed'   ,'action','other');
-    $this->create_element('setspeed'     ,'setspeed'     ,'action','other');
-    $this->create_element('setzoffset'   ,'setzoffset'   ,'action','other');
+    $this->create_element('settempnozzle','settempnozzle','action','message');
+    $this->create_element('settempbed'   ,'settempbed'   ,'action','message');
+    $this->create_element('setspeed'     ,'setspeed'     ,'action','message');
+    $this->create_element('setzoffset'   ,'setzoffset'   ,'action','message');
+    $this->create_element('settempnozzle1','settempnozzle1','action','message');
+    $this->create_element('settempnozzle2','settempnozzle2','action','message');
     $this->create_element('setlight'     ,'setlight'     ,'action','other');
     $this->create_element('setfan'       ,'setfan'       ,'action','other');
     $this->create_element('unsetlight'   ,'unsetlight'   ,'action','other');
@@ -632,6 +633,12 @@ class snapmakerCmd extends cmd {
       break;
       case 'settempnozzle':
         $eqlogic->sendmessage('settempnozzle',$_options['message']);
+      break;
+      case 'settempnozzle1':
+        $eqlogic->sendmessage('execcomande', "M104 T0 S" . $_options['message']);
+      break;
+      case 'settempnozzle2':
+        $eqlogic->sendmessage('execcomande',"M104 T1 S" . $_options['message']);
       break;
       case 'settempbed':
         $eqlogic->sendmessage('settempbed',$_options['message']);

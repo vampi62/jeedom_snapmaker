@@ -923,7 +923,7 @@
 									#uid#_set_value_nozzleTargetTemperature1(#nozzleTargetTemperature1#)
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .action').off('click').on('click', function () {
 										#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M104 T0 S" + parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()).toFixed(0)}});
+										jeedom.cmd.execute({id: '#settempnozzle1_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()).toFixed(0)}});
 									})
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .bt_plus').on('click', function () {
 										let max = 300
@@ -969,7 +969,7 @@
 									#uid#_set_value_nozzleTargetTemperature2(#nozzleTargetTemperature2#)
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .action').off('click').on('click', function () {
 										#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M104 T1 S" + parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()).toFixed(0)}});
+										jeedom.cmd.execute({id: '#settempnozzle2_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()).toFixed(0)}});
 									})
 									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .bt_plus').on('click', function () {
 										let max = 300
