@@ -287,7 +287,11 @@ class snapmaker extends eqLogic {
     $newelement->setLogicalId($newcmd);
     $newelement->setType($newtype);
     $newelement->setSubType($newsubtype);
-    $newelement->setTemplate('dashboard',$newtemplate);
+    if ($newtype == 'info') {
+      $newelement->setGeneric_type('GENERIC_INFO');
+    } else {
+      $newelement->setGeneric_type('GENERIC_ACTION');
+    }
     if ($newunit != "") {
       $newelement->setUnite($newunit);
     }
@@ -531,7 +535,7 @@ class snapmaker extends eqLogic {
     $replace['#heightmenu#'] = strval(intval($replace['#height#'])-50);
     $replace['#widthmenu#'] = strval(intval($replace['#width#']));
     $widgetType = getTemplate('core', $version, 'box', __CLASS__);
-		return $this->postToHtml($version, template_replace($replace, $widgetType));
+		return $this->postToHtml($_version, template_replace($replace, $widgetType));
 	}
 }
 
