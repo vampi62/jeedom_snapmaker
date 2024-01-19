@@ -98,6 +98,10 @@ try {
     if (!file_exists($file)) {
       throw new \Exception(__('Impossible de trouver le fichier', __FILE__).init('file'));
     }
+    # si le fichier n'est pas un .gcode
+    if (strtolower(strrchr($file, '.')) != '.gcode') {
+      throw new \Exception(__('Le fichier n\'est pas un .gcode', __FILE__).init('file'));
+    }
     $numeroLigne = intval(init('line'));
     $pourcentage = 1-(intval(init('percent')) / 100);
     $contenuFichierSource = file($file);
@@ -108,6 +112,38 @@ try {
     $valeur_de_EX = -1;
     $valeur_de_TR = -1;
     $valeur_de_TX = -1;
+    for ($i = $numeroLigne-1; $i >= 0; $i--) {
+      if ((strpos($contenuFichierSource[$i], 'Z') !== false) && ($valeur_de_Z == -1)) {
+        $valeur_de_Z = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'Z') + 1);
+      }
+      if ((strpos($contenuFichierSource[$i], 'E') !== false) && ($valeur_de_EX == -1)) {
+        $valeur_de_EX = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'E') + 1);
+      }
+      if ($valeur_de_Z != -1) {
+        if ($fileis == "dualExtruderToolheadForSM2") {
+          if (strpos($contenuFichierSource[$i], ' T') !== false) {
+            $valeur_de_TX = inval(substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], ' T') + 1));
+            if ($valeur_de_T == -1) {
+              $valeur_de_TR = $valeur_de_TX;
+            }
+            if ($valeur_de_TX == 0) {
+              $valeur_de_E0 = $valeur_de_EX;
+            } else {
+              $valeur_de_E1 = $valeur_de_EX;
+            }
+            $valeur_de_EX = -1;
+          }
+          if (($valeur_de_E0 != -1) && ($valeur_de_E1 != -1) && ($valeur_de_TR != -1)) {
+            break;
+          }
+        } else {
+          if ($valeur_de_EX != -1) {
+            $valeur_de_E0 = $valeur_de_EX;
+            break;
+          }
+        }
+      }
+    }
     if (($fileis == "singleExtruderToolheadForSM2") || ($fileis == "dualExtruderToolheadForSM2")) {// 3d print avec 1 ou 2 extrudeurs
       $LignesActuel = -1;
       $EstimeActuel = -1;
@@ -115,38 +151,6 @@ try {
       $temp2 = -1;
       $bedtemp = -1;
       $contenuPremieresLignes = array_slice($contenuFichierSource, 0, 40);
-      for ($i = $numeroLigne-1; $i >= 0; $i--) {
-        if ((strpos($contenuFichierSource[$i], 'Z') !== false) && ($valeur_de_Z == -1)) {
-          $valeur_de_Z = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'Z') + 1);
-        }
-        if ((strpos($contenuFichierSource[$i], 'E') !== false) && ($valeur_de_EX == -1)) {
-          $valeur_de_EX = substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], 'E') + 1);
-        }
-        if ($valeur_de_Z != -1) {
-          if ($fileis == "dualExtruderToolheadForSM2") {
-            if (strpos($contenuFichierSource[$i], ' T') !== false) {
-              $valeur_de_TX = inval(substr($contenuFichierSource[$i], strpos($contenuFichierSource[$i], ' T') + 1));
-              if ($valeur_de_T == -1) {
-                $valeur_de_TR = $valeur_de_TX;
-              }
-              if ($valeur_de_TX == 0) {
-                $valeur_de_E0 = $valeur_de_EX;
-              } else {
-                $valeur_de_E1 = $valeur_de_EX;
-              }
-              $valeur_de_EX = -1;
-            }
-            if (($valeur_de_E0 != -1) && ($valeur_de_E1 != -1) && ($valeur_de_TR != -1)) {
-              break;
-            }
-          } else {
-            if ($valeur_de_EX != -1) {
-              $valeur_de_E0 = $valeur_de_EX;
-              break;
-            }
-          }
-        }
-      }
       for ($i = 0; $i <= count($contenuPremieresLignes); $i++) {
         if (strpos($contenuPremieresLignes[$i], ';file_total_lines') !== false) {
           $LignesActuel = intval(substr($contenuPremieresLignes[$i], strpos($contenuPremieresLignes[$i], ': ') + 1));
@@ -166,28 +170,28 @@ try {
           $bedtemp = intval(substr($contenuPremieresLignes[$i], strpos($contenuPremieresLignes[$i], ': ') + 1));
         }
       }
-      if ($temp1 != -1) {
-        $contenuPremieresLignes[] = "T0\n";
-        $contenuPremieresLignes[] = "M104 S" . strval($temp1) ."\n";
-        $contenuPremieresLignes[] = "G92 E" . $valeur_de_E0 ."\n";
-      }
-      if (($temp2 != -1) && ($fileis == "dualExtruderToolheadForSM2")) {
-        $contenuPremieresLignes[] = "T1\n";
-        $contenuPremieresLignes[] = "M104 S" . strval($temp2) ."\n";
-        $contenuPremieresLignes[] = "G92 E" . $valeur_de_E1 ."\n";
-      }
-      if ($bedtemp != -1) {
-        $contenuPremieresLignes[] = "M140 S" . strval($bedtemp) ."\n";
-      }
-      if ($fileis == "dualExtruderToolheadForSM2") {
-        $contenuPremieresLignes[] = "T" . $valeur_de_TR ."\n";
-      }
-      $contenuPremieresLignes[] = "G1 Z" . $valeur_de_Z ."\n";
-      $contenuCopie = array_slice($contenuFichierSource, $numeroLigne-1);
-      $contenuCopie = array_merge($contenuPremieresLignes, $contenuCopie);
-      $newfile = $uploaddir . '/reprise_' . init('file');
-      file_put_contents($newfile, implode("", $contenuCopie));
     }
+    if ($temp1 != -1) {
+      $contenuPremieresLignes[] = "T0\n";
+      $contenuPremieresLignes[] = "M104 S" . strval($temp1) ."\n";
+      $contenuPremieresLignes[] = "G92 E" . $valeur_de_E0 ."\n";
+    }
+    if (($temp2 != -1) && ($fileis == "dualExtruderToolheadForSM2")) {
+      $contenuPremieresLignes[] = "T1\n";
+      $contenuPremieresLignes[] = "M104 S" . strval($temp2) ."\n";
+      $contenuPremieresLignes[] = "G92 E" . $valeur_de_E1 ."\n";
+    }
+    if ($bedtemp != -1) {
+      $contenuPremieresLignes[] = "M140 S" . strval($bedtemp) ."\n";
+    }
+    if ($fileis == "dualExtruderToolheadForSM2") {
+      $contenuPremieresLignes[] = "T" . $valeur_de_TR ."\n";
+    }
+    $contenuPremieresLignes[] = "G1 Z" . $valeur_de_Z ."\n";
+    $contenuCopie = array_slice($contenuFichierSource, $numeroLigne-1);
+    $contenuCopie = array_merge($contenuPremieresLignes, $contenuCopie);
+    $newfile = $uploaddir . '/reprise_' . init('file');
+    file_put_contents($newfile, implode("", $contenuCopie));
     ajax::success();
   }
   throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));

@@ -4,6 +4,13 @@
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 19/01/2024
+
+- type generique appliquer sur les commande pour les app mobile
+- les commandes de type action nécessitant un paramètre sont maintenant de type message (start, sendfile, settemp, setspeed, setzoffset) pour les scénarios
+    - pour les commandes start et sendfile envoyer le nom du fichier que vous voulez envoyer
+    - pour les commandes settemp, setspeed et setzoffset envoyer la valeur que vous voulez appliquer (pas de °C,mm, juste le chiffre)
+
 # 06/01/2024
 
 - ajout des commande pour le module d'impresion 3D avec 2 extrudeur
