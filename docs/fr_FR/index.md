@@ -33,7 +33,14 @@ si vous disposez d'une prise connecter pour allumer et eteindre l'imprimante, vo
 - le laser et la fraiseuse CNC peuvent être activé a 40% de leur puissance maximum (attention au laser, veuillez l'activer que si vous controler l'imprimante à proximité de celle ci, sur une durée courte et avec les protections adéquat)
 - une fois que votre imprimante commence un travail si vous avez renseigner les parametres de la prise connecter, vous pouvez activer une option dans le premier menu (sous menu alim) pour éteindre l'imprimante une fois le travail fini jusqu'a 5 minute apres la fin du travail.
 - si votre impression vient à être interrompu (coupure de courant, etc...) le plugin vous proposera de reprendre l'impression à partir de la couche ou elle s'est arrêté (attention à ne pas toucher à l'imprimante pour ne pas déplacer un axe ce qui risque de causé un décalage) (fonctionnalité en cours de test uniquement pour les impressions 3D)
-- si l'impression ne démarre pas, après l'upload d'un fichier avec "start" alors verifier le caplage des élément de l'imprimante et le capteur de filament, (si vous rencontrer des problèmes avec ce capteur, vous pouvez le désactiver avec une commande "M412 S0" et le réactiver avec "M412 S1" (attention si vous le désactiver, prévoyer assez de filament pour votre impression))
+    - pour ce faire, il faut que le fichier que vous avez imprimer soit toujours présent dans la liste des fichiers de l'imprimante et que votre imprimante ne soit pas connecter à jeedom
+    - selectionner le fichier que vous avez imprimer dans la liste des fichiers
+    - cliquer sur le bouton "reprise" dans le menu des fichiers
+    - le plugin va alors créer un nouveau fichier avec le nom "reprise_" + le nom de votre fichier
+    - vous pouvez alors connecter votre imprimante à jeedom et lancer l'impression du fichier "reprise_" + le nom de votre fichier
+    - l'imprimante va alors se positionner à la couche ou elle s'est arrêté et reprendre l'impression (verifier qu'il n'y a pas de décalage durant la reprise)
+
+- lancer une impression ne fonctionne pas si le capteur de filament ne detecte pas de filament, (si vous rencontrer des problèmes avec ce capteur, vous pouvez le désactiver avec une commande "M412 S0" et le réactiver avec "M412 S1" (attention si vous le désactiver, prévoyer assez de filament pour votre impression))
 
 ce plugin a été testé sur une snapmaker 2.0 A350T avec les modules impression 3D, graveur laser 1.6W et 20W, fraiseuse CNC et caisson de protection.
 les modèles similaire devrait fonctionner mais faite un retour sur le forum si vous avez des soucis, ou des suggestions d'amélioration.
