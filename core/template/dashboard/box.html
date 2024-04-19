@@ -3,11 +3,11 @@
     data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-cat_color="#catcolore#"
     data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
 	<span class="statusCmd"></span>
-	<span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
-		<i class="fas fa-sync"></i>
-	</span>
 	<center class="widget-name">
 		<a href="#eqLink#">#name_display# <span class="object_name">#object_name#</span></a>
+		<span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
+			<i class="fas fa-sync"></i>
+		</span>
 	</center>
 	<script>
 		global_#uid#_toolhead = "";
@@ -15,11 +15,12 @@
 		global_#uid#_connect = false;
 		global_#uid#_printstatus = "";
 		if ('#refresh_id#' != ''){
-			$('.eqLogic[data-eqLogic_id=#id#] .refresh').on('click', function () {
+			document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .refresh').addEventListener('click', function () {
 				jeedom.cmd.execute({id: '#refresh_id#'});
 			});
-		} else {
-			$('.eqLogic[data-eqLogic_id=#id#] .refresh').remove();
+		}else{
+			let eqLogic = document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .refresh');
+			eqLogic.parentNode.removeChild(eqLogic);
 		}
 		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
 			local_table = document.createElement("table");
@@ -70,194 +71,195 @@
 			}
 			local_table.appendChild(local_tb);
 			local_table.setAttribute("class","table table-condensed table-bordered table-striped");
-			$('.cmd[data-eqlogic_id=' + nom_tableau + '] .state').empty();
-			$('.cmd[data-eqlogic_id=' + nom_tableau + '] .state').append(local_table);
+			document.querySelector('.cmd[data-eqlogic_id="' + nom_tableau + '"] .state').innerHTML = '';
+			document.querySelector('.cmd[data-eqlogic_id="' + nom_tableau + '"] .state').append(local_table);
 		}
 		function #uid#change_visibility_toolhead(local_value) {
 			if (local_value == "1") { // tete imprimante 3d 1 extrudeur
-				$('.eqLogic[data-eqLogic_id=#id#] .is3dprint').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprint').style.display = 'block';
 				global_#uid#_toolhead = "3dprint";
 			} else if (local_value == "2") { // tete cnc
-				$('.eqLogic[data-eqLogic_id=#id#] .iscnc').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscnc').style.display = 'block';
 				global_#uid#_toolhead = "cnc";
 			} else if (local_value == "3") { // tete laser 1600mw
-				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
 				global_#uid#_toolhead = "laser";
 			} else if (local_value == "4") { // tete laser 10 W
-				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
 				global_#uid#_toolhead = "laser";
 			} else if (local_value == "5") { // tete imprimante 3d 2 extrudeur
-				$('.eqLogic[data-eqLogic_id=#id#] .is3ddoubleprint').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3ddoubleprint').style.display = 'block';
 				global_#uid#_toolhead = "3ddoubleprint";
 			} else if (local_value == "6") { // tete laser 20 W
-				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
 				global_#uid#_toolhead = "laser";
 			} else if (local_value == "7") { // tete laser 40 W
-				$('.eqLogic[data-eqLogic_id=#id#] .islaser').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
 				global_#uid#_toolhead = "laser";
 			}
 		}
 		function #uid#change_visibility_connect() {
 			if (global_#uid#_connect) {
-				$('.eqLogic[data-eqLogic_id=#id#] .isconnected').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isconnected').style.display = 'block';
 			} else {
-				$('.eqLogic[data-eqLogic_id=#id#] .isconnected').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isconnected').style.display = 'none';
 			}
 		}
 		function #uid#change_visibility_status(local_value) {
 			global_#uid#_printstatus = local_value;
 			if (local_value == "PAUSED") {
-				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .smpause').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smresume').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .smstop').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'block';
 			} else if (local_value == "RUNNING") {
-				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .smpause').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .smresume').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smstop').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
 			} else if (local_value == "IDLE") {
-				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smpause').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smresume').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smstop').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'none';
 			} else {// retirer toutes les commandes
-				$('.eqLogic[data-eqLogic_id=#id#] .is3dprintpauseoridle').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .isprintrunning').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smpause').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smresume').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .smstop').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'none';
 			}
 		}
 		function #uid#switch_connect(stats) {
 			if (stats == '1') { // connecter
 				global_#uid#_connect = true;
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').show();
-				$('.cmd[data-cmd_id=#printStatus_id#] .firstloginmsg').empty();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').style.display = 'block';
+				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
 			} else if (stats == '2') { // première connexion
 				global_#uid#_connect = false;
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').show();
-				$('.cmd[data-cmd_id=#printStatus_id#] .firstloginmsg').empty().append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').style.display = 'block';
+				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
+				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
 			} else { // pas de connexion
 				global_#uid#_connect = false;
-				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .start').attr('disabled',true);
-				$('.eqLogic[data-eqLogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconoff').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .iconon').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .connect').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .statusimpr .disconnect').hide();
-				$('.cmd[data-cmd_id=#printStatus_id#] .firstloginmsg').empty();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').style.display = 'none';
+				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
 			}
 			#uid#change_visibility_connect();
 		}
 		function #uid#switch_caisson(stats) {
 			if (stats == 'true') {
-				$('.eqLogic[data-eqLogic_id=#id#] .iscaissonon').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscaissonon').style.display = 'block';
 			} else {
-				$('.eqLogic[data-eqLogic_id=#id#] .iscaissonon').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscaissonon').style.display = 'none';
 			}
 		}
 		function #uid#switch_rotate(stats) {
 			global_#uid#_isrotate = stats;
 			if (stats == 'true') {
-				$('.eqLogic[data-eqLogic_id=#id#] .isrotateon').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isrotateon').style.display = 'block';
 			} else {
-				$('.eqLogic[data-eqLogic_id=#id#] .isrotateon').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isrotateon').style.display = 'none';
 			}
 		}
 		function #uid#switch_reconnect(stats) {
 			if (stats == '1') { // autoconnect actif
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconoff').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconon').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .setautoconnect').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .unsetautoconnect').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconoff').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .setautoconnect').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .unsetautoconnect').style.display = 'block';
 			} else { // pas de valuer ou pas d'autoconnect
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconoff').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .iconon').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .setautoconnect').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoreco .unsetautoconnect').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconon').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .setautoconnect').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .unsetautoconnect').style.display = 'none';
 			}
 		}
 		function #uid#switch_alim(stats) {
 			if (stats == '1') { // active
-				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconoff').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconon').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#onalim_id#]').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#offalim_id#]').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconoff').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"]').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"]').style.display = 'block';
 			} else if (stats == '0') {// inactive
-				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconoff').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#] .iconon').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#onalim_id#]').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#offalim_id#]').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconon').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"]').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"]').style.display = 'none';
 			} else { // pas de commande
-				$('.eqLogic[data-eqLogic_id=#id#] .isaliminfo').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'none';
 			}
 		}
 		function #uid#switch_shutdown(stats) {
 			if (stats == '1') { // autoshutdown actif
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconoff').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconon').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .setautoshutdown').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .unsetautoshutdown').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconoff').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .setautoshutdown').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .unsetautoshutdown').style.display = 'block';
 			} else { // pas de valuer ou pas d'autoshutdown
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconoff').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .iconon').hide();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .setautoshutdown').show();
-				$('.eqLogic[data-eqLogic_id=#id#] .autoshutdown .unsetautoshutdown').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconon').style.display = 'none';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .setautoshutdown').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .unsetautoshutdown').style.display = 'none';
 			}
 		}
 		function #uid#_set_value_saveworkSpeed(speed) {
 			if (isNaN(speed)) {
-				$('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val('100 %')
+				document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value = '100 %';
 			} else {
-				$('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val(parseFloat(speed).toFixed(0) + " %")
+				document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value = parseFloat(speed).toFixed(0) + " %";
 			}
 		}
 		function #uid#_set_value_zoffset(offset) {
 			if (isNaN(offset)) {
-				$('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val('0 mm')
+				document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value = '0 mm';
 			} else {
-				$('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val(parseFloat(offset).toFixed(2) + " mm")
+				document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value = parseFloat(offset).toFixed(2) + " mm";
 			}
 		}
 		function #uid#_set_value_nozzleTargetTemperature(tntemp) {
 			if (isNaN(tntemp)) {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val('0 °C')
+				document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value = '0 °C';
 			} else {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
+				document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value = parseFloat(tntemp).toFixed(0) + " °C";
 			}
 		}
 		function #uid#_set_value_nozzleTargetTemperature1(tntemp) {
 			if (isNaN(tntemp)) {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val('0 °C')
+				document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value = '0 °C';
 			} else {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
+				document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value = parseFloat(tntemp).toFixed(0) + " °C";
 			}
 		}
 		function #uid#_set_value_nozzleTargetTemperature2(tntemp) {
 			if (isNaN(tntemp)) {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val('0 °C')
+				document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value = '0 °C';
 			} else {
-				$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val(parseFloat(tntemp).toFixed(0) + " °C")
+				document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value = parseFloat(tntemp).toFixed(0) + " °C";
 			}
 		}
 		function #uid#_set_value_heatedBedTargetTemperature(tbtemp) {
 			if (isNaN(tbtemp)) {
-				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val('0 °C')
+				document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value = '0 °C';
 			} else {
-				$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val(parseFloat(tbtemp).toFixed(0) + " °C")
+				document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value = parseFloat(tbtemp).toFixed(0) + " °C";
 			}
 		}
 		function #uid#_set_value_Time(element,eliptime) {
@@ -265,11 +267,11 @@
 			let hours   = Math.floor(sec_num / 3600);
 			let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
 			let seconds = sec_num - (hours * 3600) - (minutes * 60);
-			element.find('.state').empty().append(hours+'h '+minutes+'m '+seconds+ 's')
+			element.querySelector('.state').innerHTML = hours + 'h ' + minutes + 'm ' + seconds + 's';
 		}
 		function #uid#js_snapmaker_selectfichier(postion_tableau) {
 			// ajoute l'atribut selected sur la ligne selectionner
-			$('.cmd[data-eqlogic_id=#filelist_id#] .state tr').removeClass('highlight');
+			document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr').classList.remove('highlight');
 			let nomfichier = "";
 			let taillefichier = "";
 			let datefichier = "";
@@ -280,85 +282,84 @@
 			let typeoutil = "";
 			let axerotatif = "";
 			if (postion_tableau > 0) {
-				$('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+')').addClass('highlight');
+				document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+')').classList.add('highlight');
 				// recupere le nom du fichier
-				nomfichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(0)').text();
+				nomfichier = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(0)').textContent;
 				// recupere la taille du fichier
-				taillefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(1)').text();
+				taillefichier = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(1)').textContent;
 				// recupere la date du fichier
-				datefichier = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(2)').text();
+				datefichier = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(2)').textContent;
 				// recupere le nombre de ligne du fichier
-				typemachine = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(3)').text();
+				typemachine = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(3)').textContent;
 				// recupere le nombre de ligne du fichier
-				nbrligne = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(4)').text();
+				nbrligne = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(4)').textContent;
 				// recupere le temps d'impression du fichier
-				temps_impr = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(5)').text();
+				temps_impr = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(5)').textContent;
 				// recupere l'image en base64 du fichier
-				img64 = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(6)').text();
+				img64 = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(6)').textContent;
 				// recupere le temps d'impression du fichier
-				typeoutil = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(7)').text();
+				typeoutil = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(7)').textContent;
 				// recupere l'image en base64 du fichier
-				axerotatif = $('.cmd[data-eqlogic_id=#filelist_id#] .state tr:eq('+postion_tableau+') td:eq(8)').text();
+				axerotatif = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(8)').textContent;
 			}
 
 			// affiche les info du fichier
-			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectname .state').text(nomfichier);
-			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectdate .state').text(datefichier);
-			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselecttaille .state').text(taillefichier);
-			$('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectligne .state').text(nbrligne);
-			#uid#_set_value_Time($('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttemps'),temps_impr);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttype .state').text(typemachine);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselecttool .state').text(typeoutil);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectrotate .state').text(axerotatif);
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent = nomfichier;
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectdate .state').textContent = datefichier;
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttaille .state').textContent = taillefichier;
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectligne .state').textContent = nbrligne;
+			#uid#_set_value_Time(document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttemps'),temps_impr);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttype .state').textContent = typemachine;
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent = typeoutil;
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = axerotatif;
 			// insert l'image en base64 dans le src de l'image
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .fileselectimage .state').attr('src',img64);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src',img64);
 			// active les bouton
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .deletefile').attr('disabled',false);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .download').attr('disabled',false);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled',false);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled',false);
 
 			// si imprimante connecter active les boutons
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',true);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',true);
-			$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',true);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
 			if ((global_#uid#_connect) && (global_#uid#_printstatus == "IDLE")) {
 				// si le type d'outil correspond a la machine active le bouton start
 				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
-						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 					} else if (((typeoutil == "dualExtruderToolheadForSM2") || (typeoutil == "singleExtruderToolheadForSM2")) && (global_#uid#_toolhead == "3ddoubleprint")) {
-						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 					} else if (typeoutil == "unknown") {
-						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 					}
 				} else if (typemachine == "cnc") {
 					if (global_#uid#_toolhead == "cnc") {
 						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 						}
 					} else if (typeoutil == "unknown") {
-						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 					}
 				} else if (typemachine == "laser") {
 					if (global_#uid#_toolhead == "laser") {
 						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
-							$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 						}
 					} else if (typeoutil == "unknown") {
-						$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 					}
 				} else if (typemachine == "unknown") {
-					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .start').attr('disabled',false);
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
 				}
-
-				$('.eqLogic[data-eqlogic_id=#id#] .fileselect .upsnap').attr('disabled',false);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',false);
 			}
 			else if (!global_#uid#_connect) {
-				if ((nomfichier == $('.cmd[data-cmd_id=#fileName_id#] .state').text()) && (parseFloat($('.cmd[data-cmd_id=#progress_id#] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
-					$('.eqLogic[data-eqlogic_id=#id#] .fileselect .reprise').attr('disabled',false);
+				if ((nomfichier == document.querySelector('.cmd[data-cmd_id="#fileName_id#"] .state').textContent) && (parseFloat(document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',false);
 				}
 			}
 		}
@@ -447,15 +448,15 @@
 							</div>
 							<script>
 								#uid#switch_connect('#statusconnect#');
-								$('.cmd[data-cmd_id=#connect_id#]:last .action').off('click').on('click', function () {
+								document.querySelector('.cmd[data-cmd_id="#connect_id#"] .action').addEventListener('click', function () {
 									jeedom.cmd.execute({id: '#connect_id#'})
 								})
-								$('.cmd[data-cmd_id=#disconnect_id#]:last .action').off('click').on('click', function () {
+								document.querySelector('.cmd[data-cmd_id="#disconnect_id#"] .action').addEventListener('click', function () {
 									jeedom.cmd.execute({id: '#disconnect_id#'})
 								})
 								jeedom.cmd.addUpdateFunction('#statusconnect_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#statusconnect_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
+									let cmd = document.querySelector('.cmd[data-cmd_id="#statusconnect_id#"]')
+									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 									#uid#switch_connect(_options.display_value);
 								});
 							</script>
@@ -480,15 +481,15 @@
 							</div>
 							<script>
 								#uid#switch_reconnect('#autoconnect#');
-								$('.cmd[data-cmd_id=#setautoconnect_id#]:last .action').off('click').on('click', function () {
+								document.querySelector('.cmd[data-cmd_id="#setautoconnect_id#"] .action').addEventListener('click', function () {
 									jeedom.cmd.execute({id: '#setautoconnect_id#'})
 								})
-								$('.cmd[data-cmd_id=#unsetautoconnect_id#]:last .action').off('click').on('click', function () {
+								document.querySelector('.cmd[data-cmd_id="#unsetautoconnect_id#"] .action').addEventListener('click', function () {
 									jeedom.cmd.execute({id: '#unsetautoconnect_id#'})
 								})
 								jeedom.cmd.addUpdateFunction('#autoconnect_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#autoconnect_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
+									let cmd = document.querySelector('.cmd[data-cmd_id="#autoconnect_id#"]')
+									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 									#uid#switch_reconnect(_options.display_value);
 								});
 							</script>
@@ -502,9 +503,9 @@
 							<script>
 								#uid#change_visibility_status('#printStatus#');
 								jeedom.cmd.addUpdateFunction('#printStatus_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#printStatus_id#]');
-									cmd.attr('title', 'Valeur du: '+_options.valueDate);
-									cmd.find('.state').empty().append(_options.display_value);
+									let cmd = document.querySelector('.cmd[data-cmd_id="#printStatus_id#"]');
+									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate);
+									cmd.querySelector('.state').innerHTML = _options.display_value;
 									#uid#change_visibility_status(_options.display_value);
 								});
 							</script>
@@ -533,22 +534,22 @@
 									</div>
 									<script>
 										#uid#_set_value_zoffset(#offsetZ#)
-										$('.cmd[data-cmd_id=#setzoffset_id#] .action').off('click').on('click', function () {
-											#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()))
-											jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()).toFixed(2)}});
+										document.querySelector('.cmd[data-cmd_id="#setzoffset_id#"] .action').addEventListener('click', function () {
+											#uid#_set_value_zoffset(parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value))
+											jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value).toFixed(2)}});
 										})
-										$('.cmd[data-cmd_id=#offsetZ_id#] .bt_plus').on('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .bt_plus').addEventListener('click', function () {
 											let max = 2
 											let step = 0.05
-											if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) <= max - step ) {
-												#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) + step)
+											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) <= max - step ) {
+												#uid#_set_value_zoffset(parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) + step)
 											}
 										})
-										$('.cmd[data-cmd_id=#offsetZ_id#] .bt_minus').on('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .bt_minus').addEventListener('click', function () {
 											let min = -2
 											let step = 0.05
-											if (parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) >= min + step) {
-												#uid#_set_value_zoffset(parseFloat($('.cmd[data-cmd_id=#offsetZ_id#] .in_value').val()) - step)
+											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) >= min + step) {
+												#uid#_set_value_zoffset(parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) - step)
 											}
 										})
 										jeedom.cmd.addUpdateFunction('#offsetZ_id#',function(_options) {
@@ -579,22 +580,22 @@
 								</div>
 								<script>
 									#uid#_set_value_saveworkSpeed(parseFloat(#saveworkSpeed#))
-									$('.cmd[data-cmd_id=#setspeed_id#] .action').off('click').on('click', function () {
-										#uid#_set_value_saveworkSpeed(parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()).toFixed(0)}});
+									document.querySelector('.cmd[data-cmd_id="#setspeed_id#"] .action').addEventListener('click', function () {
+										#uid#_set_value_saveworkSpeed(parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value))
+										jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value).toFixed(0)}});
 									})
-									$('.cmd[data-cmd_id=#saveworkSpeed_id#] .bt_plus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .bt_plus').addEventListener('click', function () {
 										let max = 200
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()) <= max - step ) {
-											#uid#_set_value_saveworkSpeed(parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()) + step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) <= max - step ) {
+											#uid#_set_value_saveworkSpeed(parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) + step)
 										}
 									})
-									$('.cmd[data-cmd_id=#saveworkSpeed_id#] .bt_minus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .bt_minus').addEventListener('click', function () {
 										let min = 1
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()) >= min + step) {
-											#uid#_set_value_saveworkSpeed(parseFloat($('.cmd[data-cmd_id=#saveworkSpeed_id#] .in_value').val()) - step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) >= min + step) {
+											#uid#_set_value_saveworkSpeed(parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) - step)
 										}
 									})
 									jeedom.cmd.addUpdateFunction('#saveworkSpeed_id#',function(_options) {
@@ -619,15 +620,15 @@
 									</div>
 								</div>
 								<script>
-									$('.cmd[data-cmd_id=#pause_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#pause_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#pause_id#'})
 										jeedom.cmd.execute({id: '#refresh_id#'})
 									})
-									$('.cmd[data-cmd_id=#resume_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#resume_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#resume_id#'})
 										jeedom.cmd.execute({id: '#refresh_id#'})
 									})
-									$('.cmd[data-cmd_id=#stop_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#stop_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#stop_id#'})
 										jeedom.cmd.execute({id: '#refresh_id#'})
 									})
@@ -639,9 +640,9 @@
 									</div>
 									<script>
 										jeedom.cmd.addUpdateFunction('#fileName_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#fileName_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
-											cmd.find('.state').empty().append(_options.display_value)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#fileName_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+											cmd.querySelector('.state').innerHTML = _options.display_value;
 										});
 									</script>
 								</div>
@@ -656,14 +657,14 @@
 										if (progress#uid# == 'NaN') {
 											progress#uid# = 0
 										}
-										$('.cmd[data-cmd_id=#progress_id#] .state1').empty().append(parseFloat(progress#uid#*100).toFixed(2))
+										document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').innerHTML = parseFloat(progress#uid#*100).toFixed(2);
 										jeedom.cmd.addUpdateFunction('#progress_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#progress_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#progress_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 											if (_options.display_value == '') {
 												_options.display_value = 0
 											}
-											cmd.find('.state1').empty().append(parseFloat(_options.display_value*100).toFixed(2))
+											cmd.querySelector('.state1').innerHTML = parseFloat(_options.display_value*100).toFixed(2);
 										});
 									</script>
 								</div>
@@ -676,14 +677,14 @@
 									</div>
 									<script>
 										jeedom.cmd.addUpdateFunction('#currentLine_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#currentLine_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
-											cmd.find('.state1').empty().append(_options.display_value)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+											cmd.querySelector('.state1').innerHTML = _options.display_value;
 										});
 										jeedom.cmd.addUpdateFunction('#totalLines_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#currentLine_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
-											cmd.find('.state3').empty().append(_options.display_value)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+											cmd.querySelector('.state3').innerHTML = _options.display_value;
 										});
 									</script>
 								</div>
@@ -693,10 +694,10 @@
 										<strong class="state"></strong>
 									</div>
 									<script>
-										#uid#_set_value_Time($('.cmd[data-cmd_id=#elapsedTime_id#]'),#elapsedTime#)
+										#uid#_set_value_Time(document.querySelector('.cmd[data-cmd_id="#elapsedTime_id#"]'),#elapsedTime#)
 										jeedom.cmd.addUpdateFunction('#elapsedTime_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#elapsedTime_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#elapsedTime_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 											#uid#_set_value_Time(cmd,_options.display_value)
 										});
 									</script>
@@ -707,10 +708,10 @@
 										<strong class="state"></strong>
 									</div>
 									<script>
-										#uid#_set_value_Time($('.cmd[data-cmd_id=#remainingTime_id#]'),#remainingTime#)
+										#uid#_set_value_Time(document.querySelector('.cmd[data-cmd_id="#remainingTime_id#"]'),#remainingTime#)
 										jeedom.cmd.addUpdateFunction('#remainingTime_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#remainingTime_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#remainingTime_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 											#uid#_set_value_Time(cmd,_options.display_value)
 										});
 									</script>
@@ -745,9 +746,9 @@
 							<script>
 								#uid#switch_rotate(#rotaryModule#)
 								jeedom.cmd.addUpdateFunction('#rotaryModule_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#rotaryModule_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
-									cmd.find('.state').empty().append(_options.display_value)
+									let cmd = document.querySelector('.cmd[data-cmd_id="#rotaryModule_id#"]')
+									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
 									#uid#switch_rotate(_options.display_value)
 								});
 							</script>
@@ -759,9 +760,9 @@
 							</div>
 							<script>
 								jeedom.cmd.addUpdateFunction('#emergencyStopButton_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#emergencyStopButton_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
-									cmd.find('.state').empty().append(_options.display_value)
+									let cmd = document.querySelector('.cmd[data-cmd_id="#emergencyStopButton_id#"]')
+									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
 								});
 							</script>
 						</div>
@@ -772,9 +773,9 @@
 							</div>
 							<script>
 								jeedom.cmd.addUpdateFunction('#airPurifier_id#',function(_options) {
-									let cmd = $('.cmd[data-cmd_id=#airPurifier_id#]')
-									cmd.attr('title', 'Valeur du: '+_options.valueDate)
-									cmd.find('.state').empty().append(_options.display_value)
+									let cmd = document.querySelector('.cmd[data-cmd_id="#airPurifier_id#"]')
+									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
 								});
 							</script>
 						</div>
@@ -797,9 +798,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#heatedBedTemperature_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state1').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#heatedBedTemperature_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state1').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -814,9 +815,9 @@
 									</div>
 									<script>
 										jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#nozzleTemperature_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
-											cmd.find('.state1').empty().append(_options.display_value)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+											cmd.querySelector('.state1').innerHTML = _options.display_value;
 										});
 									</script>
 								</div>
@@ -831,9 +832,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#nozzleTemperature1_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#nozzleTemperature1_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state1').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature1_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state1').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -847,9 +848,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#nozzleTemperature2_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#nozzleTemperature2_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state1').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature2_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state1').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -875,27 +876,27 @@
 								</div>
 								<script>
 									#uid#_set_value_nozzleTargetTemperature(#nozzleTargetTemperature#)
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .action').off('click').on('click', function () {
-										#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()).toFixed(0)}});
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .action').addEventListener('click', function () {
+										#uid#_set_value_nozzleTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value))
+										jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value).toFixed(0)}});
 									})
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_plus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .bt_plus').addEventListener('click', function () {
 										let max = 300
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) <= max - step ) {
-											#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) + step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) <= max - step ) {
+											#uid#_set_value_nozzleTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) + step)
 										}
 									})
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .bt_minus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .bt_minus').addEventListener('click', function () {
 										let min = 0
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) >= min + step) {
-											#uid#_set_value_nozzleTargetTemperature(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature_id#] .in_value').val()) - step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) >= min + step) {
+											#uid#_set_value_nozzleTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) - step)
 										}
 									})
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
 										#uid#_set_value_nozzleTargetTemperature(_options.display_value)
-										$('.cmd[data-cmd_id=#nozzleTemperature_id#] .state3').empty().append(_options.display_value)
+										document.querySelector('.cmd[data-cmd_id="#nozzleTemperature_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -921,27 +922,27 @@
 								</div>
 								<script>
 									#uid#_set_value_nozzleTargetTemperature1(#nozzleTargetTemperature1#)
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .action').off('click').on('click', function () {
-										#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#settempnozzle1_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()).toFixed(0)}});
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .action').addEventListener('click', function () {
+										#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value))
+										jeedom.cmd.execute({id: '#settempnozzle1_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value).toFixed(0)}});
 									})
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .bt_plus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .bt_plus').addEventListener('click', function () {
 										let max = 300
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) <= max - step ) {
-											#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) + step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) <= max - step ) {
+											#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) + step)
 										}
 									})
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .bt_minus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .bt_minus').addEventListener('click', function () {
 										let min = 0
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) >= min + step) {
-											#uid#_set_value_nozzleTargetTemperature1(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature1_id#] .in_value').val()) - step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) >= min + step) {
+											#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) - step)
 										}
 									})
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature1_id#',function(_options) {
 										#uid#_set_value_nozzleTargetTemperature1(_options.display_value)
-										$('.cmd[data-cmd_id=#nozzleTemperature1_id#] .state3').empty().append(_options.display_value)
+										document.querySelector('.cmd[data-cmd_id="#nozzleTemperature1_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -967,27 +968,27 @@
 								</div>
 								<script>
 									#uid#_set_value_nozzleTargetTemperature2(#nozzleTargetTemperature2#)
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .action').off('click').on('click', function () {
-										#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#settempnozzle2_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()).toFixed(0)}});
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .action').addEventListener('click', function () {
+										#uid#_set_value_nozzleTargetTemperature2(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value))
+										jeedom.cmd.execute({id: '#settempnozzle2_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value).toFixed(0)}});
 									})
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .bt_plus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .bt_plus').addEventListener('click', function () {
 										let max = 300
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) <= max - step ) {
-											#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) + step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) <= max - step ) {
+											#uid#_set_value_nozzleTargetTemperature2(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) + step)
 										}
 									})
-									$('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .bt_minus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .bt_minus').addEventListener('click', function () {
 										let min = 0
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) >= min + step) {
-											#uid#_set_value_nozzleTargetTemperature2(parseFloat($('.cmd[data-cmd_id=#nozzleTargetTemperature2_id#] .in_value').val()) - step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) >= min + step) {
+											#uid#_set_value_nozzleTargetTemperature2(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) - step)
 										}
 									})
 									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature2_id#',function(_options) {
 										#uid#_set_value_nozzleTargetTemperature2(_options.display_value)
-										$('.cmd[data-cmd_id=#nozzleTemperature2_id#] .state3').empty().append(_options.display_value)
+										document.querySelector('.cmd[data-cmd_id="#nozzleTemperature2_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1013,27 +1014,27 @@
 								</div>
 								<script>
 									#uid#_set_value_heatedBedTargetTemperature(#heatedBedTargetTemperature#)
-									$('.cmd[data-cmd_id=#settempbed_id#] .action').off('click').on('click', function () {
-										#uid#_set_value_heatedBedTargetTemperature(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()))
-										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()).toFixed(0)}});
+									document.querySelector('.cmd[data-cmd_id="#settempbed_id#"] .action').addEventListener('click', function () {
+										#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value))
+										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value).toFixed(0)}});
 									})
-									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_plus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_plus').addEventListener('click', function () {
 										let max = 100
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) <= max - step ) {
-											#uid#_set_value_heatedBedTargetTemperature(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) + step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) <= max - step ) {
+											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) + step)
 										}
 									})
-									$('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .bt_minus').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_minus').addEventListener('click', function () {
 										let min = 0
 										let step = 1
-										if (parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) >= min + step) {
-											#uid#_set_value_heatedBedTargetTemperature(parseFloat($('.cmd[data-cmd_id=#heatedBedTargetTemperature_id#] .in_value').val()) - step)
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) >= min + step) {
+											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) - step)
 										}
 									})
 									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
 										#uid#_set_value_heatedBedTargetTemperature(_options.display_value)
-										$('.cmd[data-cmd_id=#heatedBedTemperature_id#] .state3').empty().append(_options.display_value)
+										document.querySelector('.cmd[data-cmd_id="#heatedBedTemperature_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1052,10 +1053,10 @@
 								</div>
 							</div>
 							<script>
-								$('.cmd[data-cmd_id=#reload_id#]:last .action').off('click').on('click', function () {
+								document.querySelector('.cmd[data-cmd_id="#reload_id#"] .action').addEventListener('click', function () {
 									jeedom.cmd.execute({id: '#reload_id#'})
 								})
-								$('.cmd[data-cmd_id=#unload_id#]:last .action').off('click').on('click', function () {
+								document.querySelector('.cmd[data-cmd_id="#unload_id#"] .action').addEventListener('click', function () {
 									jeedom.cmd.execute({id: '#unload_id#'})
 								})
 							</script>
@@ -1066,9 +1067,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#isFilamentOut_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#isFilamentOut_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#isFilamentOut_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1081,9 +1082,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#laserCamera_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#laserCamera_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#laserCamera_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1094,9 +1095,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#laserPower_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#laserPower_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#laserPower_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1107,9 +1108,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#laserFocalLength_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#laserFocalLength_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#laserFocalLength_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1120,9 +1121,9 @@
 								</div>
 								<script>
 									jeedom.cmd.addUpdateFunction('#laser10WErrorState_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#laser10WErrorState_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
-										cmd.find('.state').empty().append(_options.display_value)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#laser10WErrorState_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										cmd.querySelector('.state').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -1157,30 +1158,30 @@
 								<script>
 									function #uid#updatelight_but(stats) {
 										if (stats == '0') { // en attente
-											$('.cmd[data-cmd_id=#led_id#] .iconoff').show();
-											$('.cmd[data-cmd_id=#led_id#] .iconon').hide();
-											$('.cmd[data-cmd_id=#setlight_id#]').show();
-											$('.cmd[data-cmd_id=#unsetlight_id#]').hide();
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#setlight_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"]').style.display = 'none';
 										} else if (stats == '100') { // en cours
-											$('.cmd[data-cmd_id=#led_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#led_id#] .iconon').show();
-											$('.cmd[data-cmd_id=#setlight_id#]').hide();
-											$('.cmd[data-cmd_id=#unsetlight_id#]').show();
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#setlight_id#"]').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"]').style.display = 'block';
 										} else { // pas de commande
-											$('.cmd[data-cmd_id=#led_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#led_id#] .iconon').hide();
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'none';
 										}
 									}
 									#uid#updatelight_but('#led#');
-									$('.cmd[data-cmd_id=#setlight_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#setlight_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#setlight_id#'})
 									})
-									$('.cmd[data-cmd_id=#unsetlight_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#unsetlight_id#'})
 									})
 									jeedom.cmd.addUpdateFunction('#led_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#led_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#led_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 										#uid#updatelight_but(_options.display_value);
 									});
 								</script>
@@ -1206,30 +1207,30 @@
 								<script>
 									function #uid#updatefan_but(stats) {
 										if (stats == '0') { // en attente
-											$('.cmd[data-cmd_id=#fan_id#] .iconoff').show();
-											$('.cmd[data-cmd_id=#fan_id#] .iconon').hide();
-											$('.cmd[data-cmd_id=#setfan_id#]').show();
-											$('.cmd[data-cmd_id=#unsetfan_id#]').hide();
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#setfan_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"]').style.display = 'none';
 										} else if (stats == '1') { // en cours
-											$('.cmd[data-cmd_id=#fan_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#fan_id#] .iconon').show();
-											$('.cmd[data-cmd_id=#setfan_id#]').hide();
-											$('.cmd[data-cmd_id=#unsetfan_id#]').show();
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#setfan_id#"]').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"]').style.display = 'block';
 										} else { // pas de commande
-											$('.cmd[data-cmd_id=#fan_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#fan_id#] .iconon').hide();
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'none';
 										}
 									}
 									#uid#updatefan_but('#fan#');
-									$('.cmd[data-cmd_id=#setfan_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#setfan_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#setfan_id#'})
 									})
-									$('.cmd[data-cmd_id=#unsetfan_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#unsetfan_id#'})
 									})
 									jeedom.cmd.addUpdateFunction('#fan_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#fan_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#fan_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 										#uid#updatefan_but(_options.display_value);
 									});
 								</script>
@@ -1262,51 +1263,51 @@
 								<script>
 									function #uid#updatsifopen_but(stats) {
 										if (stats == '0') { // en attente
-											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').show();
-											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
-											$('.cmd[data-cmd_id=#setpauseifopen_id#]').show();
-											$('.cmd[data-cmd_id=#unsetpauseifopen_id#]').hide();
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"]').style.display = 'none';
 
 										} else if (stats == '1') { // en cours
-											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').show();
-											$('.cmd[data-cmd_id=#setpauseifopen_id#]').hide();
-											$('.cmd[data-cmd_id=#unsetpauseifopen_id#]').show();
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"]').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"]').style.display = 'block';
 										} else { // pas de commande
-											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#] .iconon').hide();
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
 										}
 									}
 									#uid#updatsifopen_but('#stopIfEnclosureDoorOpen#');
-									$('.cmd[data-cmd_id=#setpauseifopen_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#setpauseifopen_id#'})
 									})
-									$('.cmd[data-cmd_id=#unsetpauseifopen_id#]:last .action').off('click').on('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"] .action').addEventListener('click', function () {
 										jeedom.cmd.execute({id: '#unsetpauseifopen_id#'})
 									})
 									jeedom.cmd.addUpdateFunction('#stopIfEnclosureDoorOpen_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#stopIfEnclosureDoorOpen_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 										#uid#updatsifopen_but(_options.display_value);
 									});
 								</script>
 								<script>
 									function #uid#updatsisopen_but(stats) {
 										if (stats == '0') { // en attente
-											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').show();
-											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
 										} else if (stats == '1') { // en cours
-											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').show();
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'block';
 										} else { // pas de commande
-											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconoff').hide();
-											$('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#] .iconon').hide();
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
 										}
 									}
 									#uid#updatsisopen_but('#isEnclosureDoorOpen#');
 									jeedom.cmd.addUpdateFunction('#isEnclosureDoorOpen_id#',function(_options) {
-										let cmd = $('.cmd[data-cmd_id=#isEnclosureDoorOpen_id#]')
-										cmd.attr('title', 'Valeur du: '+_options.valueDate)
+										let cmd = document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 										#uid#updatsisopen_but(_options.display_value);
 									});
 								</script>
@@ -1338,10 +1339,10 @@
 						</div>
 						<script>
 							#uid#switch_alim('#aliminfo#');
-							$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#onalim_id#]:last .action').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"] .action').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#onalim_id#'})
 							})
-							$('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#offalim_id#]:last .action').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"] .action').addEventListener('click', function () {
 								if (global_#uid#_printstatus == "IDLE") {
 									jeedom.cmd.execute({id: '#offalim_id#'})
 								} else {
@@ -1352,8 +1353,8 @@
 								}
 							})
 							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
-								let cmd = $('.eqLogic[data-eqLogic_id=#id#] .cmd[data-cmd_id=#aliminfo_id#]')
-								cmd.attr('title', 'Valeur du: '+_options.valueDate)
+								let cmd = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"]')
+								cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 								#uid#switch_alim(_options.display_value);
 							});
 						</script>
@@ -1380,15 +1381,15 @@
 									</div>
 									<script>
 										#uid#switch_shutdown('#autoshutdown#');
-										$('.cmd[data-cmd_id=#setautoshutdown_id#]:last .action').off('click').on('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#setautoshutdown_id#"] .action').addEventListener('click', function () {
 											jeedom.cmd.execute({id: '#setautoshutdown_id#'})
 										})
-										$('.cmd[data-cmd_id=#unsetautoshutdown_id#]:last .action').off('click').on('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#unsetautoshutdown_id#"] .action').addEventListener('click', function () {
 											jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
 										})
 										jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
-											let cmd = $('.cmd[data-cmd_id=#autoshutdown_id#]')
-											cmd.attr('title', 'Valeur du: '+_options.valueDate)
+											let cmd = document.querySelector('.cmd[data-cmd_id="#autoshutdown_id#"]')
+											cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 											#uid#switch_shutdown(_options.display_value);
 										});
 									</script>
@@ -1492,91 +1493,85 @@
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<script>
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').on('click', function() {
-							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled') == 'disabled') {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').addEventListener('click', function() {
+							// if is disabled
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').getAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
-							$.ajax({
-								type: "POST",
-								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
-								data: { action:'delete', id: '#id#', file: fileName },
-								success: function(response) {
+							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							fetch('plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=delete&id=#id#&file='+fileName)
+								.then(response => response.json())
+								.then(data => {
 									jeedom.cmd.execute({id: '#refresh_id#'});
 									#uid#js_snapmaker_selectfichier(-1);
-								},
-								error: function (request, status, error) {
+								})
+								.catch((error) => {
 									handleAjaxError(request, status, error);
-								}
-							});
+								});
 						});
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .reprise').on('click', function() {
-							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .reprise').attr('disabled') == 'disabled') {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').addEventListener('click', function() {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').getAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
-							var line = $('.cmd[data-cmd_id=#currentLine_id#] .state1').text();
-							var percent = $('.cmd[data-cmd_id=#progress_id#] .state1').text();
-							var fileis = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselecttool .state').text();
-							$.ajax({
-								type: "POST",
-								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
-								data: { action:'reprise', id: '#id#', file: fileName, line: line, percent: percent, fileis: fileis},
-								success: function(response) {
+							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							var line = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"] .state1').textContent;
+							var percent = document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').textContent;
+							var fileis = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent;
+							fetch('plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=reprise&id=#id#&file='+fileName+'&line='+line+'&percent='+percent+'&fileis='+fileis)
+								.then(response => response.json())
+								.then(data => {
 									jeedom.cmd.execute({id: '#refresh_id#'});
 									#uid#js_snapmaker_selectfichier(-1);
-								},
-								error: function (request, status, error) {
+								})
+								.catch((error) => {
 									handleAjaxError(request, status, error);
-								}
-							});
+								});
 						});
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').on('click', function() {
-							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled') == 'disabled') {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').addEventListener('click', function() {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
 							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .msg').empty().append('<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>');
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>';
 						});
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').on('click', function() {
-							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .download').attr('disabled') == 'disabled') {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').addEventListener('click', function() {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
-							$.ajax({
-								type: "GET",
-								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
-								data: { action:'download', id: '#id#', file: fileName },
-								contentType: "application/json",
-								complete: function(response) {
+							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							fetch('plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=download&id=#id#&file='+fileName)
+								.then(response => response.text())
+								.then(data => {
 									var link = document.createElement("a");
 									// retire les caractere après "GCode end"
-									link.href = "data:application/octet-stream," + encodeURIComponent(response.responseText.split("{\"state\":\"")[0]);
+									link.href = "data:application/octet-stream," + encodeURIComponent(data.split("{\"state\":\"")[0]);
 									link.download = fileName;
 									link.style.display = "none";
 									document.body.appendChild(link);
 									link.click();
 									document.body.removeChild(link);
-								}
-							});
+								})
+								.catch((error) => {
+									handleAjaxError(request, status, error);
+								});
 						});
-						$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').on('click', function() {
-							if ($('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled') == 'disabled') {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').addEventListener('click', function() {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
 							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .start').attr('disabled', true);
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .deletefile').attr('disabled', true);
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .upsnap').attr('disabled', true);
-							$('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .msg').empty().append('<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>');
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>';
 						});
-						$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').on('click', function() {
-							$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').addEventListener('click', function() {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
 						});
 						jeedom.cmd.addUpdateFunction('#returnstatus_id#',function(_options) {
 							// separe _options.display_value en 2 string via le séparateur " : "
@@ -1604,17 +1599,17 @@
 									level: 'danger'
 								})
 							} else if (msgreturn#uid#[1] == "409") {
-								// si il y a du contenue dans la balise .eqLogic[data-eqLogic_id=#id#] .fileselect .msg
-								if ($('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').text() != "") {
-									$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+								// si il y a du contenue dans la balise .eqLogic[data-eqLogic_id="#id#"] .fileselect .msg
+								if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
+									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
 								}
 								$.fn.showAlert({
 									message: "erreur de communication avec la snapmaker",
 									level: 'danger'
 								})
 							} else if (msgreturn#uid#[1] == "200") {
-								if ($('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').text() != "") {
-									$('.eqLogic[data-eqLogic_id=#id#] .fileselect .msg').empty();
+								if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
+									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
 									$.fn.showAlert({
 										message: "fichier envoyée avec succès",
 										level: 'success'
@@ -1650,7 +1645,7 @@
 								})
 							}
 						});
-						let imageElement#uid# = $('.eqLogic[data-eqLogic_id=#id#] .fileselect .fileselectimage .state')[0];
+						let imageElement#uid# = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state');
 						let isZoomed#uid# = false;
 						imageElement#uid#.addEventListener("click", function() {
 						if (isZoomed#uid#) {
@@ -1755,13 +1750,13 @@
 								<a class="btn btn-xs execute">envoyer</a>
 							</div>
 							<script>
-								$('.cmd[data-cmd_id=#execcomande_id#]:last .execute').on('click', function() {
-									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: $('.cmd[data-cmd_id=#execcomande_id#] .message').value()}});
+								document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .execute').addEventListener('click', function() {
+									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .message').value}});
 									// vide le champ de saisie du message
-									$('.cmd[data-cmd_id=#execcomande_id#] .message').val('');
+									document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .message').value = '';
 								});
 								function #uid#updateRangeValue(input,namedisplay,unit) {
-									$('.eqLogic[data-eqLogic_id=#id#]:last .' + namedisplay).text(input.value + unit);
+									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .' + namedisplay).textContent = input.value + unit;
 								}
 								function #uid#onRangeRelease(input,cut = '') {
 									if (global_#uid#_toolhead == "laser") {
@@ -1813,71 +1808,71 @@
 								function #uid#gotoworkorigin(axis) { // go to work origin
 									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G90"}});
 									if (axis == "home") {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 X0 Y0 Z0 B0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value()}});
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 X0 Y0 Z0 B0 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value}});
 									} else {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 " + axis + "0 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value()}});
+										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 " + axis + "0 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value}});
 									}
 								}
 							</script>
 						</div>
 						<script>
-							$('.eqLogic[data-eqLogic_id=#id#]:last .home').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .home').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .left').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .left').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " X-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " X-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .right').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .right').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " X+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
-							})
-
-							$('.eqLogic[data-eqLogic_id=#id#]:last .ymax').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Y+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
-							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .ymin').off('click').on('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Y-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " X+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
 
-							$('.eqLogic[data-eqLogic_id=#id#]:last .up').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .ymax').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Z+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Y+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .down').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .ymin').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " Z-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Y-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
 
-							$('.eqLogic[data-eqLogic_id=#id#]:last .inserte1').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .up').addEventListener('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Z+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
+							})
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .down').addEventListener('click', function () {
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Z-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
+							})
+
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .inserte1').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T0"}}); // selectionne l'extrudeur 1
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .inserte2').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .inserte2').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T1"}}); // selectionne l'extrudeur 2
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .retracte1').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .retracte1').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T0"}}); // selectionne l'extrudeur 1
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .retracte2').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .retracte2').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T1"}}); // selectionne l'extrudeur 2
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " E-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .axe_horaire').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .axe_horaire').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " B+" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " B+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
-							$('.eqLogic[data-eqLogic_id=#id#]:last .axe_antihoraire').off('click').on('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .axe_antihoraire').addEventListener('click', function () {
 								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + $('.eqLogic[data-eqLogic_id=#id#]:last .sliderspeedValue').value() + " B-" + $('input[name=Radiosdistance#id#]:checked').val()}}); // deplacement
+								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " B-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
 							})
 						</script>
 					</div>
@@ -1916,61 +1911,90 @@
 			</tr>
 			<script>
 				if ('#numberTryWithoutSuccess#' >= 3) {
-					$('.eqLogic[data-eqLogic_id=#id#] .infcmd').css('color', 'red');
+					document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').style.color = 'red';
 				}
 				//**************************************//	
-				$('.eqLogic[data-eqLogic_id=#id#] .infcmd').off('click').on('click', function () {
-					$('.eqLogic[data-eqLogic_id=#id#] .infcmd').popover({
-						container: "body",
-						html: true,
-						placement: "auto",
-						selector : true,
-						//title: false,//"<strong>Liste des équipements</strong>",
-						content: function () {return $('.eqLogic[data-eqLogic_id=#id#] .infhtm').html(); } ,
-					})
-						.on("show.bs.popover", function () { 
-							$(this).data("bs.popover").tip()
-							.css({
-								"max-width": "500px",
-								"max-height":  "400px",
-								//overflow: "auto",
-								"overflow-y": "auto",
-								"background-color": "#474646",//'background-color',
-								"background": "#474646",
-							});
-						});
-					$('.eqLogic[data-eqLogic_id=#id#] .infcmd').popover('show'); 
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .infcmd').addEventListener('click', function () {
+					let popover = document.createElement("div");
+					popover.innerHTML = document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infhtm').innerHTML;
+					popover.style.position = "absolute";
+					popover.style.zIndex = "1000";
+					popover.style.backgroundColor = "#474646";
+					popover.style.border = "1px solid #474646";
+					popover.style.borderRadius = "5px";
+					popover.style.maxWidth = "500px";
+					popover.style.maxHeight = "400px";
+					popover.style.overflow = "auto";
+					popover.style.overflowY = "auto";
+					popover.style.background = "#474646";
+					popover.style.display = "inline-block";
+					popover.style.padding = "5px";
+					popover.style.left = 20 + "px";
+					popover.style.top = (-40) + "px";
+					document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').appendChild(popover);
+
+					// fermeture du popover si click en dehors
+					document.addEventListener('click', function(event) {
+						if (!popover.contains(event.target) && !document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').contains(event.target)) {
+							popover.style.display = "none";
+						}
+					});
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .changecmdmenu').on('click',function () { // menu
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_menu').show();
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_fichier').hide();
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_axes').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdmenu').addEventListener('click',function () { // menu
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_menu').style.display = 'block';
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').style.display = 'none';
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_axes').style.display = 'none';
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .changecmdfichier').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_menu').hide();
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_fichier').show();
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_axes').hide();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdfichier').addEventListener('click',function () { // fichier
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_menu').style.display = 'none';
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').style.display = 'block';
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_axes').style.display = 'none';
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .changecmdaxes').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_menu').hide();
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_fichier').hide();
-					$('.eqLogic[data-eqLogic_id=#id#] .Pan_axes').show();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdaxes').addEventListener('click',function () { // fichier
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_menu').style.display = 'none';
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').style.display = 'none';
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_axes').style.display = 'block';
 				});
 
-				$('.eqLogic[data-eqLogic_id=#id#] .menu-menu .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .menu-menu .contenue').toggle();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .titre').addEventListener('click',function () { // fichier
+					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .contenue');
+					if (_element.style.display === 'none') {
+						_element.style.display = 'block';
+					} else {
+						_element.style.display = 'none';
+					}
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .menu-module .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .menu-module .contenue').toggle();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .titre').addEventListener('click',function () { // fichier
+					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .contenue');
+					if (_element.style.display === 'none') {
+						_element.style.display = 'block';
+					} else {
+						_element.style.display = 'none';
+					}
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .menu-outil .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .menu-outil .contenue').toggle();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .titre').addEventListener('click',function () { // fichier
+					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .contenue');
+					if (_element.style.display === 'none') {
+						_element.style.display = 'block';
+					} else {
+						_element.style.display = 'none';
+					}
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .menu-caisson .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .menu-caisson .contenue').toggle();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .titre').addEventListener('click',function () { // fichier
+					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .contenue');
+					if (_element.style.display === 'none') {
+						_element.style.display = 'block';
+					} else {
+						_element.style.display = 'none';
+					}
 				});
-				$('.eqLogic[data-eqLogic_id=#id#] .menu-alim .titre').on('click',function () { // fichier
-					$('.eqLogic[data-eqLogic_id=#id#] .menu-alim .contenue').toggle();
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .titre').addEventListener('click',function () { // fichier
+					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .contenue');
+					if (_element.style.display === 'none') {
+						_element.style.display = 'block';
+					} else {
+						_element.style.display = 'none';
+					}
 				});
 			</script>
 		</table>
