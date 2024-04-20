@@ -22,6 +22,36 @@
 			let eqLogic = document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .refresh');
 			eqLogic.parentNode.removeChild(eqLogic);
 		}
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isconnected').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .is3dprint').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .is3ddoubleprint').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .islaser').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .iscnc').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .iscaissonon').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isrotateon').forEach(function(element) {
+			element.style.display = 'none';
+		});
+		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').forEach(function(element) {
+			element.style.display = 'none';
+		});
 		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
 			local_table = document.createElement("table");
 			local_thr = document.createElement("thead");
@@ -64,8 +94,7 @@
 						}
 						local_tr.appendChild(local_td);
 					}
-					local_incrementj = j + 1;
-					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + local_incrementj + ");");
+					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + j + ");");
 					local_tb.appendChild(local_tr);
 				}
 			}
@@ -76,95 +105,145 @@
 		}
 		function #uid#change_visibility_toolhead(local_value) {
 			if (local_value == "1") { // tete imprimante 3d 1 extrudeur
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprint').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprint')
 				global_#uid#_toolhead = "3dprint";
 			} else if (local_value == "2") { // tete cnc
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscnc').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .iscnc')
 				global_#uid#_toolhead = "cnc";
 			} else if (local_value == "3") { // tete laser 1600mw
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser')
 				global_#uid#_toolhead = "laser";
 			} else if (local_value == "4") { // tete laser 10 W
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser')
 				global_#uid#_toolhead = "laser";
 			} else if (local_value == "5") { // tete imprimante 3d 2 extrudeur
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3ddoubleprint').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .is3ddoubleprint')
 				global_#uid#_toolhead = "3ddoubleprint";
 			} else if (local_value == "6") { // tete laser 20 W
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser')
 				global_#uid#_toolhead = "laser";
 			} else if (local_value == "7") { // tete laser 40 W
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .islaser')
 				global_#uid#_toolhead = "laser";
 			}
 		}
 		function #uid#change_visibility_connect() {
 			if (global_#uid#_connect) {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isconnected').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .isconnected')
 			} else {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isconnected').style.display = 'none';
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isconnected').forEach(function(element) {
+					element.style.display = 'none';
+				});
 			}
 		}
+		
+		function #uid#showElementInQuerySelector(querySelector) {
+			document.querySelectorAll(querySelector).forEach(function(element) {
+				if (element.classList.contains('show-run-in')) {
+					element.style.display = '';
+				} else if (element.classList.contains('show-block')) {
+					element.style.display = 'block';
+				} else {
+					element.style.display = 'inline';
+				}
+			});
+		}
+		
 		function #uid#change_visibility_status(local_value) {
 			global_#uid#_printstatus = local_value;
 			if (local_value == "PAUSED") {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'block';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle')
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smresume').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume')
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop')
 			} else if (local_value == "RUNNING") {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'block';
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning')
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smresume').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop')
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
 			} else if (local_value == "IDLE") {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'none';
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smpause').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smresume').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smstop').forEach(function(element) {
+					element.style.display = 'none';
+				});
 			} else {// retirer toutes les commandes
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smpause').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smresume').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .smstop').style.display = 'none';
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .is3dprintpauseoridle').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isprintrunning').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smpause').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smresume').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .smstop').forEach(function(element) {
+					element.style.display = 'none';
+				});
 			}
 		}
 		function #uid#switch_connect(stats) {
 			if (stats == '1') { // connecter
 				global_#uid#_connect = true;
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').style.display = 'block';
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect')
 				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
 			} else if (stats == '2') { // première connexion
 				global_#uid#_connect = false;
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').style.display = 'block';
-				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
-				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').append('<span class="label label-warning">valider sur la snapmaker la première connexion</span>');
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect')
+				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '<span class="label label-warning">valider sur la snapmaker la première connexion</span>';
 			} else { // pas de connexion
 				global_#uid#_connect = false;
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').forEach(function(element) {
+					element.style.display = 'none';
+				});
+				#uid#showElementInQuerySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect')
+				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').forEach(function(element) {
+					element.style.display = 'none';
+				});
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconoff').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .iconon').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .connect').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').style.display = 'none';
 				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
 			}
 			#uid#change_visibility_connect();
 		}
 		function #uid#switch_caisson(stats) {
 			if (stats == 'true') {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscaissonon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscaissonon').style.display = 'inline';
 			} else {
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .iscaissonon').style.display = 'none';
 			}
@@ -172,7 +251,7 @@
 		function #uid#switch_rotate(stats) {
 			global_#uid#_isrotate = stats;
 			if (stats == 'true') {
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isrotateon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isrotateon').style.display = 'inline';
 			} else {
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isrotateon').style.display = 'none';
 			}
@@ -180,28 +259,28 @@
 		function #uid#switch_reconnect(stats) {
 			if (stats == '1') { // autoconnect actif
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconoff').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconon').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .setautoconnect').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .unsetautoconnect').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .unsetautoconnect').style.display = 'inline';
 			} else { // pas de valuer ou pas d'autoconnect
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconoff').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .iconon').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .setautoconnect').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .setautoconnect').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoreco .unsetautoconnect').style.display = 'none';
 			}
 		}
 		function #uid#switch_alim(stats) {
 			if (stats == '1') { // active
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconoff').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconon').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"]').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"]').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"]').style.display = 'inline';
 			} else if (stats == '0') {// inactive
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'block';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'inline';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconoff').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"] .iconon').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"]').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"]').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"]').style.display = 'none';
 			} else { // pas de commande
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').style.display = 'none';
@@ -210,13 +289,13 @@
 		function #uid#switch_shutdown(stats) {
 			if (stats == '1') { // autoshutdown actif
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconoff').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconon').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconon').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .setautoshutdown').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .unsetautoshutdown').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .unsetautoshutdown').style.display = 'inline';
 			} else { // pas de valuer ou pas d'autoshutdown
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconoff').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconoff').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .iconon').style.display = 'none';
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .setautoshutdown').style.display = 'block';
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .setautoshutdown').style.display = 'inline';
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .autoshutdown .unsetautoshutdown').style.display = 'none';
 			}
 		}
@@ -271,7 +350,16 @@
 		}
 		function #uid#js_snapmaker_selectfichier(postion_tableau) {
 			// ajoute l'atribut selected sur la ligne selectionner
-			document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr').classList.remove('highlight');
+			_tbody = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tbody');
+			_tbody.querySelector('.highlight')?.classList.remove('highlight');
+			if (postion_tableau == -1) {
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
+				return;
+			}
 			let nomfichier = "";
 			let taillefichier = "";
 			let datefichier = "";
@@ -281,27 +369,37 @@
 			let img64 = "";
 			let typeoutil = "";
 			let axerotatif = "";
-			if (postion_tableau > 0) {
-				document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+')').classList.add('highlight');
-				// recupere le nom du fichier
-				nomfichier = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(0)').textContent;
-				// recupere la taille du fichier
-				taillefichier = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(1)').textContent;
-				// recupere la date du fichier
-				datefichier = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(2)').textContent;
-				// recupere le nombre de ligne du fichier
-				typemachine = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(3)').textContent;
-				// recupere le nombre de ligne du fichier
-				nbrligne = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(4)').textContent;
-				// recupere le temps d'impression du fichier
-				temps_impr = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(5)').textContent;
-				// recupere l'image en base64 du fichier
-				img64 = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(6)').textContent;
-				// recupere le temps d'impression du fichier
-				typeoutil = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(7)').textContent;
-				// recupere l'image en base64 du fichier
-				axerotatif = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tr:eq('+postion_tableau+') td:eq(8)').textContent;
-			}
+			_tbody.rows[postion_tableau].classList.add('highlight');
+			// if click outside the Pan_fichier
+			document.body.addEventListener('click', function(event) {
+				if (!document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .Pan_fichier').contains(event.target)) {
+					document.body.removeEventListener('click', function(event) {});
+					document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state .highlight')?.classList.remove('highlight');
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled',true);
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled',true);
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
+				}
+			});
+			// recupere le nom du fichier
+			nomfichier = _tbody.rows[postion_tableau].cells[0].textContent;
+			// recupere la taille du fichier
+			taillefichier = _tbody.rows[postion_tableau].cells[1].textContent;
+			// recupere la date du fichier
+			datefichier = _tbody.rows[postion_tableau].cells[2].textContent;
+			// recupere le nombre de ligne du fichier
+			typemachine = _tbody.rows[postion_tableau].cells[3].textContent;
+			// recupere le nombre de ligne du fichier
+			nbrligne = _tbody.rows[postion_tableau].cells[4].textContent;
+			// recupere le temps d'impression du fichier
+			temps_impr = _tbody.rows[postion_tableau].cells[5].textContent;
+			// recupere l'image en base64 du fichier
+			img64 = _tbody.rows[postion_tableau].cells[6].textContent;
+			// recupere le temps d'impression du fichier
+			typeoutil = _tbody.rows[postion_tableau].cells[7].textContent;
+			// recupere l'image en base64 du fichier
+			axerotatif = _tbody.rows[postion_tableau].cells[8].textContent;
 
 			// affiche les info du fichier
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent = nomfichier;
@@ -315,8 +413,8 @@
 			// insert l'image en base64 dans le src de l'image
 			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src',img64);
 			// active les bouton
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled',false);
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled',false);
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').removeAttribute('disabled');
+			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').removeAttribute('disabled');
 
 			// si imprimante connecter active les boutons
 			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
@@ -326,51 +424,48 @@
 				// si le type d'outil correspond a la machine active le bouton start
 				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					} else if (((typeoutil == "dualExtruderToolheadForSM2") || (typeoutil == "singleExtruderToolheadForSM2")) && (global_#uid#_toolhead == "3ddoubleprint")) {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					} else if (typeoutil == "unknown") {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					}
 				} else if (typemachine == "cnc") {
 					if (global_#uid#_toolhead == "cnc") {
 						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						}
 					} else if (typeoutil == "unknown") {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					}
 				} else if (typemachine == "laser") {
 					if (global_#uid#_toolhead == "laser") {
 						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						}
 					} else if (typeoutil == "unknown") {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					}
 				} else if (typemachine == "unknown") {
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',false);
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 				}
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',false);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').removeAttribute('disabled');
 			}
 			else if (!global_#uid#_connect) {
 				if ((nomfichier == document.querySelector('.cmd[data-cmd_id="#fileName_id#"] .state').textContent) && (parseFloat(document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',false);
+				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').removeAttribute('disabled');
 				}
 			}
 		}
-	</script>
-	<script>
+
 		#uid#change_visibility_toolhead('#headType#');
 		jeedom.cmd.addUpdateFunction('#headType_id#',function(_options) {
 			#uid#change_visibility_toolhead(_options.display_value);
 		});
-	</script>
-	<script>
 		#uid#switch_caisson('#hasEnclosure#')
 		jeedom.cmd.addUpdateFunction('#hasEnclosure_id#',function(_options) {
 			#uid#switch_caisson(_options.display_value)
@@ -389,36 +484,6 @@
 		.titre {
 			cursor: pointer;
 		}
-		.isconnected {
-			display: none;
-		}
-		.isprintrunning {
-			display: none;
-		}
-		.is3dprint {
-			display: none;
-		}
-		.is3dprintpauseoridle {
-			display: none;
-		}
-		.is3ddoubleprint {
-			display: none;
-		}
-		.islaser {
-			display: none;
-		}
-		.iscnc {
-			display: none;
-		}
-		.iscaissonon {
-			display: none;
-		}
-		.isrotateon {
-			display: none;
-		}
-		.isaliminfo {
-			display: none;
-		}
 	</style>
 	<div class="eq_body_#id#" >
 		<center>
@@ -430,36 +495,38 @@
 					<div class="contenue">
 						<div class="statusimpr">
 							<span class="cmdName">status connexion : </span>
-							<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#statusconnect_id#" data-cmd_uid="cmd#statusconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #statusconnect_collectDate#">
-								<div class="content-sm">
-									<span class="iconoff"><i class="fas fa-times"></i></span>
-									<span class="iconon"><i class="icon jeedom-prise"></i></span>
+							<span>
+								<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#statusconnect_id#" data-cmd_uid="cmd#statusconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #statusconnect_collectDate#">
+									<div class="content-sm">
+										<span class="iconoff"><i class="fas fa-times"></i></span>
+										<span class="iconon"><i class="icon jeedom-prise"></i></span>
+									</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips connect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#connect_id#" data-cmd_uid="cmd#connect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">connect</a>
+								<div class="cmd cmd-widget tooltips connect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#connect_id#" data-cmd_uid="cmd#connect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">connect</a>
+									</div>
 								</div>
-							</div>
-							<div class="cmd cmd-widget tooltips disconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#disconnect_id#" data-cmd_uid="cmd#disconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<a class="btn btn-sm btn-default action">disconnect</a>
+								<div class="cmd cmd-widget tooltips disconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#disconnect_id#" data-cmd_uid="cmd#disconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">disconnect</a>
+									</div>
 								</div>
-							</div>
-							<script>
-								#uid#switch_connect('#statusconnect#');
-								document.querySelector('.cmd[data-cmd_id="#connect_id#"] .action').addEventListener('click', function () {
-									jeedom.cmd.execute({id: '#connect_id#'})
-								})
-								document.querySelector('.cmd[data-cmd_id="#disconnect_id#"] .action').addEventListener('click', function () {
-									jeedom.cmd.execute({id: '#disconnect_id#'})
-								})
-								jeedom.cmd.addUpdateFunction('#statusconnect_id#',function(_options) {
-									let cmd = document.querySelector('.cmd[data-cmd_id="#statusconnect_id#"]')
-									cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
-									#uid#switch_connect(_options.display_value);
-								});
-							</script>
+								<script>
+									#uid#switch_connect('#statusconnect#');
+									document.querySelector('.cmd[data-cmd_id="#connect_id#"] .action').addEventListener('click', function () {
+										jeedom.cmd.execute({id: '#connect_id#'})
+									})
+									document.querySelector('.cmd[data-cmd_id="#disconnect_id#"] .action').addEventListener('click', function () {
+										jeedom.cmd.execute({id: '#disconnect_id#'})
+									})
+									jeedom.cmd.addUpdateFunction('#statusconnect_id#',function(_options) {
+										let cmd = document.querySelector('.cmd[data-cmd_id="#statusconnect_id#"]')
+										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
+										#uid#switch_connect(_options.display_value);
+									});
+								</script>
+							</span>
 						</div>
 						<div class="autoreco">
 							<span class="cmdName">status re-connexion : </span>
@@ -510,7 +577,7 @@
 								});
 							</script>
 						</div>
-						<div class="isconnected"><!--visible si connecter -->
+						<div class="isconnected show-block"><!--visible si connecter -->
 							<div class="is3dprint is3ddoubleprint">
 								<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#offsetZ_id#" data-cmd_uid="#offsetZ_uid#" data-version="dashboard" data-eqlogic_id="678">
 									<div class="title ">
@@ -782,7 +849,7 @@
 					</div>
 					<br/>
 				</div>
-				<div class="menu-outil isconnected"><!--visible si connecter -->
+				<div class="menu-outil isconnected show-block"><!--visible si connecter -->
 					<div class="content-xs titre">
 						<strong>MENU outil</strong>
 					</div>
@@ -851,6 +918,52 @@
 										let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature2_id#"]')
 										cmd.setAttribute('title', 'Valeur du: '+_options.valueDate)
 										cmd.querySelector('.state1').innerHTML = _options.display_value;
+									});
+								</script>
+							</div>
+							<div style="padding: 5px;" class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="title ">
+									<div class="cmdName">Temperature cible du lit</div>
+								</div>
+								<div class="content-sm ">
+									<div class="input-group buttons">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
+									</span>
+									<input type="text" class="input-sm in_value form-control" value="">
+									<span class="input-group-btn" style="position: relative;">
+										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
+									</span>
+									</div>
+								</div>
+								<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">set</a>
+									</div>
+								</div>
+								<script>
+									#uid#_set_value_heatedBedTargetTemperature(#heatedBedTargetTemperature#)
+									document.querySelector('.cmd[data-cmd_id="#settempbed_id#"] .action').addEventListener('click', function () {
+										#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value))
+										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value).toFixed(0)}});
+									})
+									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_plus').addEventListener('click', function () {
+										let max = 100
+										let step = 1
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) <= max - step ) {
+											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) + step)
+										}
+									})
+									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_minus').addEventListener('click', function () {
+										let min = 0
+										let step = 1
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) >= min + step) {
+											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) - step)
+										}
+									})
+									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
+										#uid#_set_value_heatedBedTargetTemperature(_options.display_value)
+										document.querySelector('.cmd[data-cmd_id="#heatedBedTemperature_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
@@ -992,52 +1105,6 @@
 									});
 								</script>
 							</div>
-							<div style="padding: 5px;" class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
-								<div class="title ">
-									<div class="cmdName">Temperature cible du lit</div>
-								</div>
-								<div class="content-sm ">
-									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
-									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">set</a>
-									</div>
-								</div>
-								<script>
-									#uid#_set_value_heatedBedTargetTemperature(#heatedBedTargetTemperature#)
-									document.querySelector('.cmd[data-cmd_id="#settempbed_id#"] .action').addEventListener('click', function () {
-										#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value))
-										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value).toFixed(0)}});
-									})
-									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_plus').addEventListener('click', function () {
-										let max = 100
-										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) <= max - step ) {
-											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) + step)
-										}
-									})
-									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_minus').addEventListener('click', function () {
-										let min = 0
-										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) >= min + step) {
-											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) - step)
-										}
-									})
-									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
-										#uid#_set_value_heatedBedTargetTemperature(_options.display_value)
-										document.querySelector('.cmd[data-cmd_id="#heatedBedTemperature_id#"] .state3').innerHTML = _options.display_value;
-									});
-								</script>
-							</div>
 							<div class="is3dprint">
 								<div class="is3dprintpauseoridle"><!--visible si print idle ou pause -->
 									<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
@@ -1060,7 +1127,7 @@
 									jeedom.cmd.execute({id: '#unload_id#'})
 								})
 							</script>
-							<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric" data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+							<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric" data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#" data-version="dashboard" data-template="block" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<span class="cmdName">Filament absent : </span>
 									<strong class="state">#isFilamentOut#</strong>
@@ -1131,7 +1198,7 @@
 					</div>
 				</div>
 				<br/>
-				<div class="isconnected">
+				<div class="isconnected show-block">
 					<div class="menu-caisson iscaissonon"><!--visible si caisson -->
 						<div class="content-xs titre">
 							<strong>MENU caisson</strong>
@@ -1158,15 +1225,15 @@
 								<script>
 									function #uid#updatelight_but(stats) {
 										if (stats == '0') { // en attente
-											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#setlight_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#setlight_id#"]').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"]').style.display = 'none';
 										} else if (stats == '100') { // en cours
 											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#setlight_id#"]').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"]').style.display = 'inline';
 										} else { // pas de commande
 											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconoff').style.display = 'none';
 											document.querySelector('.cmd[data-cmd_id="#led_id#"] .iconon').style.display = 'none';
@@ -1207,15 +1274,15 @@
 								<script>
 									function #uid#updatefan_but(stats) {
 										if (stats == '0') { // en attente
-											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#setfan_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#setfan_id#"]').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"]').style.display = 'none';
 										} else if (stats == '1') { // en cours
 											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#setfan_id#"]').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"]').style.display = 'inline';
 										} else { // pas de commande
 											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconoff').style.display = 'none';
 											document.querySelector('.cmd[data-cmd_id="#fan_id#"] .iconon').style.display = 'none';
@@ -1263,16 +1330,16 @@
 								<script>
 									function #uid#updatsifopen_but(stats) {
 										if (stats == '0') { // en attente
-											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"]').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"]').style.display = 'none';
 
 										} else if (stats == '1') { // en cours
 											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"]').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"]').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"]').style.display = 'inline';
 										} else { // pas de commande
 											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
 											document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
@@ -1294,11 +1361,11 @@
 								<script>
 									function #uid#updatsisopen_but(stats) {
 										if (stats == '0') { // en attente
-											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'inline';
 											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
 										} else if (stats == '1') { // en cours
 											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
-											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'block';
+											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'inline';
 										} else { // pas de commande
 											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconoff').style.display = 'none';
 											document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"] .iconon').style.display = 'none';
@@ -1359,8 +1426,8 @@
 							});
 						</script>
 						<br/>
-						<div class="isconnected">
-							<div class="isprintrunning">
+						<div class="isconnected show-block">
+							<div class="isprintrunning show-block">
 								<div class="autoshutdown">
 									<span class="cmdName">status autoshutdown si travail terminer : </span>
 									<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="Valeur du: #autoshutdown_collectDate#">
@@ -1478,12 +1545,12 @@
 					</div>
 					<div class="content-xs">
 						<span class="is3dprint is3ddoubleprint">
-							<a class="btn btn-sm btn-default reprise" disabled>reprise</a>
+							<a class="btn btn-sm btn-default reprise" disabled="true">reprise</a>
 						</span>
-						<a class="btn btn-sm btn-default deletefile" disabled>delete</a>
-						<a class="btn btn-sm btn-default start" disabled>start</a>
-						<a class="btn btn-sm btn-default download" download="" disabled>download</a>
-						<a class="btn btn-sm btn-default upsnap" disabled>upload snap</a>
+						<a class="btn btn-sm btn-default deletefile" disabled="true">delete</a>
+						<a class="btn btn-sm btn-default start" disabled="true">start</a>
+						<a class="btn btn-sm btn-default download" download="" disabled="true">download</a>
+						<a class="btn btn-sm btn-default upsnap" disabled="true">upload snap</a>
 						<span class="btn btn-default btn-file" style="width:100%;">
 							<i class="fas fa-cloud-upload-alt"></i>Ajouter un fichier<input id="bt_uploadgcode" type="file" name="file" accept=".gcode, .nc, .cnc" data-url="plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#">
 						</span>
@@ -1493,45 +1560,51 @@
 				</div>
 				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
 					<script>
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').addEventListener('click', function() {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').addEventListener('click', async function() {
 							// if is disabled
 							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').getAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							fetch('plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=delete&id=#id#&file='+fileName)
-								.then(response => response.json())
-								.then(data => {
+							let fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							$.ajax({
+								type: "POST",
+								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+								data: { action:'delete', id: '#id#', file: fileName },
+								success: function(response) {
 									jeedom.cmd.execute({id: '#refresh_id#'});
 									#uid#js_snapmaker_selectfichier(-1);
-								})
-								.catch((error) => {
+								},
+								error: function (request, status, error) {
 									handleAjaxError(request, status, error);
-								});
+								}
+							});
 						});
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').addEventListener('click', function() {
+						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').addEventListener('click', async function() {
 							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').getAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							var line = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"] .state1').textContent;
-							var percent = document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').textContent;
-							var fileis = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent;
-							fetch('plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=reprise&id=#id#&file='+fileName+'&line='+line+'&percent='+percent+'&fileis='+fileis)
-								.then(response => response.json())
-								.then(data => {
+							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							let line = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"] .state1').textContent;
+							let percent = document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').textContent;
+							let fileis = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent;
+							$.ajax({
+								type: "POST",
+								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+								data: { action:'reprise', id: '#id#', file: fileName, line: line, percent: percent, fileis: fileis},
+								success: function(response) {
 									jeedom.cmd.execute({id: '#refresh_id#'});
 									#uid#js_snapmaker_selectfichier(-1);
-								})
-								.catch((error) => {
+								},
+								error: function (request, status, error) {
 									handleAjaxError(request, status, error);
-								});
+								}
+							});
 						});
 						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').addEventListener('click', function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled') == 'true') {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').getAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
 							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
 							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
 							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
@@ -1539,31 +1612,33 @@
 							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours d\'upload vers la snapmaker</span>';
 						});
 						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').addEventListener('click', function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled') == 'true') {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').getAttribute('disabled') == 'true') {
+
 								return;
 							}
-							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							fetch('plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=download&id=#id#&file='+fileName)
-								.then(response => response.text())
-								.then(data => {
-									var link = document.createElement("a");
+							let fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
+							$.ajax({
+								type: "GET",
+								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+								data: { action:'download', id: '#id#', file: fileName },
+								contentType: "application/json",
+								complete: function(response) {
+									let link = document.createElement("a");
 									// retire les caractere après "GCode end"
-									link.href = "data:application/octet-stream," + encodeURIComponent(data.split("{\"state\":\"")[0]);
+									link.href = "data:application/octet-stream," + encodeURIComponent(response.responseText.split("{\"state\":\"")[0]);
 									link.download = fileName;
 									link.style.display = "none";
 									document.body.appendChild(link);
 									link.click();
 									document.body.removeChild(link);
-								})
-								.catch((error) => {
-									handleAjaxError(request, status, error);
-								});
+								}
+							});
 						});
 						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').addEventListener('click', function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled') == 'true') {
+							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').getAttribute('disabled') == 'true') {
 								return;
 							}
-							var fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
 							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
 							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
 							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
@@ -1697,8 +1772,8 @@
 								<td class="text-center">XY</td>
 								<td ><button class="right"><i class="fa fa-arrow-right fa-5x"></i></button></td>
 								<td class="text-center">Z</td>
-								<td class="text-center is3dprint is3ddoubleprint">E1</td>
-								<td class="text-center is3ddoubleprint">E2</td>
+								<td class="text-center is3dprint is3ddoubleprint show-run-in">E1</td>
+								<td class="text-center is3ddoubleprint show-run-in">E2</td>
 								<td class="text-center isrotateon">O</td>
 								
 							</tr>
@@ -1937,6 +2012,7 @@
 					document.addEventListener('click', function(event) {
 						if (!popover.contains(event.target) && !document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').contains(event.target)) {
 							popover.style.display = "none";
+							document.body.removeEventListener('click', function(event) {});
 						}
 					});
 				});
@@ -1959,7 +2035,7 @@
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .titre').addEventListener('click',function () { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .contenue');
 					if (_element.style.display === 'none') {
-						_element.style.display = 'block';
+						_element.style.display = 'inline';
 					} else {
 						_element.style.display = 'none';
 					}
@@ -1967,7 +2043,7 @@
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .titre').addEventListener('click',function () { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .contenue');
 					if (_element.style.display === 'none') {
-						_element.style.display = 'block';
+						_element.style.display = 'inline';
 					} else {
 						_element.style.display = 'none';
 					}
@@ -1975,7 +2051,7 @@
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .titre').addEventListener('click',function () { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .contenue');
 					if (_element.style.display === 'none') {
-						_element.style.display = 'block';
+						_element.style.display = 'inline';
 					} else {
 						_element.style.display = 'none';
 					}
@@ -1983,7 +2059,7 @@
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .titre').addEventListener('click',function () { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .contenue');
 					if (_element.style.display === 'none') {
-						_element.style.display = 'block';
+						_element.style.display = 'inline';
 					} else {
 						_element.style.display = 'none';
 					}
@@ -1991,7 +2067,7 @@
 				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .titre').addEventListener('click',function () { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .contenue');
 					if (_element.style.display === 'none') {
-						_element.style.display = 'block';
+						_element.style.display = 'inline';
 					} else {
 						_element.style.display = 'none';
 					}
