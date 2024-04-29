@@ -5,7 +5,7 @@
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
 # 20/04/2024
-suppression de la majotité des commande jquery pour les remplacer par des commandes javascript
+suppression de la majorité des commande jquery pour les remplacer par des commandes javascript
 
 # 19/01/2024
 
