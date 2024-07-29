@@ -380,6 +380,15 @@
 					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
 					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
 					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectdate .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectsize .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectligne .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttemps .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttype .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src',"");
 				}
 			});
 			// recupere le nom du fichier
@@ -404,7 +413,7 @@
 			// affiche les info du fichier
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent = nomfichier;
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectdate .state').textContent = datefichier;
-			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttaille .state').textContent = taillefichier;
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectsize .state').textContent = taillefichier;
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectligne .state').textContent = nbrligne;
 			#uid#_set_value_Time(document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttemps'),temps_impr);
 			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttype .state').textContent = typemachine;
@@ -1414,7 +1423,7 @@
 								if (global_#uid#_printstatus == "IDLE") {
 									jeedom.cmd.execute({id: '#offalim_id#'})
 								} else {
-									$.fn.showAlert({
+									jeedomUtils.showAlert({
 										message: 'impossible d\'éteindre l\'alimentation en cours d\'impression',
 										level: 'danger'
 									})
@@ -1486,61 +1495,59 @@
 					</script>
 				</div>
 				<div class="tooltips cmd cmd-widget fileselect" style="display: block;">
-					<div style="display: flex; justify-content: space-around;">
-						<div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-							<div class="cmd cmd-widget fileselectname">
-								<div class="content-xs">
-									<span   class="cmdName">nom : </span> 
-									<strong class="state"></strong>
-								</div>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 10px;">
+						<div class="cmd cmd-widget fileselectname">
+							<div class="content-xs">
+								<span class="cmdName">nom : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselectdate">
-								<div class="content-xs">
-									<span   class="cmdName">date d'insertion : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselectimage" style="position: relative;">
+							<div class="content-xs">
+								<span class="cmdName"></span>
+								<img class="state" src="" style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease 0s; transform: scale(1);">
 							</div>
-							<div class="cmd cmd-widget fileselecttaille">
-								<div class="content-xs">
-									<span   class="cmdName">taille : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselectsize">
+							<div class="content-xs">
+								<span class="cmdName">taille : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselectligne">
-								<div class="content-xs">
-									<span   class="cmdName">nbr de commandes : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselectdate">
+							<div class="content-xs">
+								<span class="cmdName">date d'insertion : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselecttemps">
-								<div class="content-xs">
-									<span   class="cmdName">temps de travail : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselectligne">
+							<div class="content-xs">
+								<span class="cmdName">nbr de commandes : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselecttype">
-								<div class="content-xs">
-									<span   class="cmdName">machine : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselecttemps">
+							<div class="content-xs">
+								<span class="cmdName">temps de travail : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselecttool">
-								<div class="content-xs">
-									<span   class="cmdName">outil : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselecttype">
+							<div class="content-xs">
+								<span class="cmdName">machine : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselectrotate">
-								<div class="content-xs">
-									<span   class="cmdName">axe rotatif : </span> 
-									<strong class="state"></strong>
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselecttool">
+							<div class="content-xs">
+								<span class="cmdName">outil : </span>
+								<strong class="state"></strong>
 							</div>
-							<div class="cmd cmd-widget fileselectimage" style="position: relative;">
-								<div class="content-xs">
-									<span   class="cmdName">image : </span>
-									<img class="state" src="" style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease;">
-								</div>
+						</div>
+						<div class="cmd cmd-widget fileselectrotate">
+							<div class="content-xs">
+								<span class="cmdName">axe rotatif : </span>
+								<strong class="state"></strong>
 							</div>
 						</div>
 					</div>
@@ -1552,8 +1559,9 @@
 						<a class="btn btn-sm btn-default start" disabled="true">start</a>
 						<a class="btn btn-sm btn-default download" download="" disabled="true">download</a>
 						<a class="btn btn-sm btn-default upsnap" disabled="true">upload snap</a>
-						<span class="btn btn-default btn-file" style="width:100%;">
-							<i class="fas fa-cloud-upload-alt"></i>Ajouter un fichier<input id="bt_uploadgcode" type="file" name="file" accept=".gcode, .nc, .cnc" data-url="plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#">
+						<br/>
+						<span class="btn btn-sm btn-default btn-file">
+							<i class="fas fa-cloud-upload-alt"></i>Ajouter un fichier<input id="bt_uploadgcode" type="file" name="file" accept=".gcode, .nc, .cnc">
 						</span>
 						<!-- balise message "fichier en cours d'envoie"-->
 						<span class="msg"></span>
@@ -1566,8 +1574,8 @@
 							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').getAttribute('disabled') == 'true') {
 								return;
 							}
-							let fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
-							$.ajax({
+							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							domUtils.ajax({
 								type: "POST",
 								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
 								data: { action:'delete', id: '#id#', file: fileName },
@@ -1588,7 +1596,7 @@
 							let line = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"] .state1').textContent;
 							let percent = document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').textContent;
 							let fileis = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent;
-							$.ajax({
+							domUtils.ajax({
 								type: "POST",
 								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
 								data: { action:'reprise', id: '#id#', file: fileName, line: line, percent: percent, fileis: fileis},
@@ -1614,25 +1622,25 @@
 						});
 						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').addEventListener('click', function() {
 							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').getAttribute('disabled') == 'true') {
-
 								return;
 							}
-							let fileName = $('.eqLogic[data-eqlogic_id=#id#]:last .fileselect .fileselectname .state').text();
-							$.ajax({
-								type: "GET",
-								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
-								data: { action:'download', id: '#id#', file: fileName },
-								contentType: "application/json",
-								complete: function(response) {
-									let link = document.createElement("a");
-									// retire les caractere après "GCode end"
-									link.href = "data:application/octet-stream," + encodeURIComponent(response.responseText.split("{\"state\":\"")[0]);
-									link.download = fileName;
-									link.style.display = "none";
-									document.body.appendChild(link);
-									link.click();
-									document.body.removeChild(link);
+							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+							fetch("plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=download&id=#id#&file="+fileName, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
 								}
+							})
+							.then(response => response.text())
+							.then(response => {
+								console.log(response);
+								let link = document.createElement("a");
+								link.href = "data:application/octet-stream," + encodeURIComponent(response.split("{\"state\":\"")[0]);
+								link.setAttribute('download', fileName);
+								link.style.display = "none";
+								document.body.appendChild(link);
+								link.click();
+								link.parentNode.removeChild(link);
 							});
 						});
 						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').addEventListener('click', function() {
@@ -1655,22 +1663,22 @@
 							msgreturn#uid# = msgreturn#uid#.split(" : ");
 							// si la 2eme string contient 1
 							if (msgreturn#uid#[1] == "1") {
-								$.fn.showAlert({
+								jeedomUtils.showAlert({
 									message: "fichier non trouvé",
 									level: 'danger'
 								})
 							} else if (msgreturn#uid#[1] == "2") {
-								$.fn.showAlert({
+								jeedomUtils.showAlert({
 									message: "format de fichier non reconnue",
 									level: 'danger'
 								})
 							} else if (msgreturn#uid#[1] == "3") {
-								$.fn.showAlert({
+								jeedomUtils.showAlert({
 									message: "commande non reconnue",
 									level: 'danger'
 								})
 							} else if (msgreturn#uid#[1] == "4") {
-								$.fn.showAlert({
+								jeedomUtils.showAlert({
 									message: "imprimante non connectée",
 									level: 'danger'
 								})
@@ -1679,47 +1687,65 @@
 								if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
 									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
 								}
-								$.fn.showAlert({
+								jeedomUtils.showAlert({
 									message: "erreur de communication avec la snapmaker",
 									level: 'danger'
 								})
 							} else if (msgreturn#uid#[1] == "200") {
 								if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
 									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
-									$.fn.showAlert({
+									jeedomUtils.showAlert({
 										message: "fichier envoyée avec succès",
 										level: 'success'
 									})
 								} else {
-									$.fn.showAlert({
+									jeedomUtils.showAlert({
 										message: "commande : " + msgreturn#uid#[0] + " envoyée avec succès",
 										level: 'success'
 									})
 								}
 							} else {
-								$.fn.showAlert({
+								jeedomUtils.showAlert({
 									message: "retour de commande inconnue : " + _options.display_value,
 									level: 'warning'
 								})
 							}
 						});
-						$('#bt_uploadgcode').fileupload({
-							dataType: 'json',
-							replaceFileInput: false,
-							done: function(e, data) {
-								if (data.result.state != 'ok') {
-									$.fn.showAlert({
-										message: data.result.result,
+
+
+						document.getElementById('bt_uploadgcode').addEventListener('change', function(event) {
+							const files = event.target.files;
+							if (files.length === 0) {
+								return;
+							}
+							formData = new FormData();
+							formData.append('file', files[0]);
+							fetch("plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#", {
+								method: 'POST',
+								body: formData
+							})
+							.then(response => response.json())
+							.then(data => {
+								if (data.state !== 'ok') {
+									jeedomUtils.showAlert({
+										message: data.result,
 										level: 'danger'
-									})
-									return
+									});
+									return;
 								}
 								jeedom.cmd.execute({id: '#refresh_id#'});
-								$.fn.showAlert({
-									message: 'Fichier(s) ajouté(s) avec succès',
-									level: 'success'
-								})
-							}
+								jeedomUtils.showAlert({
+								message: 'Fichier(s) ajouté(s) avec succès',
+								level: 'success'
+								});
+							})
+							.catch(error => {
+								console.error(error);
+								jeedomUtils.showAlert({
+								message: 'Une erreur est survenue lors de l\'upload des fichiers',
+								level: 'danger'
+								});
+							});
 						});
 						let imageElement#uid# = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state');
 						let isZoomed#uid# = false;
@@ -1855,7 +1881,7 @@
 							<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px;">
 								<table style="border: none; ">
 									<tr>
-										<td>set origin</td>
+										<td>set work origin</td>
 										<td><button class="button" onclick="#uid#setworkorigin('home')">home origin</button></td>
 										<td><button class="button" onclick="#uid#setworkorigin('X')">X origin</button></td>
 										<td><button class="button" onclick="#uid#setworkorigin('Y')">Y origin</button></td>
@@ -1863,7 +1889,7 @@
 										<td class="isrotateon"><button class="button" onclick="#uid#setworkorigin('B')">axe origin</button></td>
 									</tr>
 									<tr>
-										<td>go to origin</td>
+										<td>go to work origin</td>
 										<td><button class="button" onclick="#uid#gotoworkorigin('home')">home origin</button></td>
 										<td><button class="button" onclick="#uid#gotoworkorigin('X')">X origin</button></td>
 										<td><button class="button" onclick="#uid#gotoworkorigin('Y')">Y origin</button></td>
