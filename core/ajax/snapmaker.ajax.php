@@ -23,7 +23,7 @@ try {
 	ajax::init(array('upload', 'download'));
 	
 	if (!isConnect()) {
-		throw new Exception(__('401 - Accès non autorisé', __FILE__));
+		throw new Exception(__('{{401 - Accès non autorisé}}', __FILE__));
 	}
   if (init('action') == 'upload') {
     $uploaddir = __DIR__ . '/../../data/' . init('id');
@@ -31,48 +31,48 @@ try {
       mkdir($uploaddir);
     }
     if (!file_exists($uploaddir)) {
-      throw new Exception(__('Répertoire de téléversement non trouvé :', __FILE__) . ' ' . $uploaddir);
+      throw new Exception(__('{{Répertoire de téléversement non trouvé :}}', __FILE__) . ' ' . $uploaddir);
     }
     if (!isset($_FILES['file'])) {
-      throw new Exception(__('Aucun fichier trouvé. Vérifiez le paramètre PHP (post size limit)', __FILE__));
+      throw new Exception(__('{{Aucun fichier trouvé. Vérifiez le paramètre PHP (post size limit)}}', __FILE__));
     }
     $extension = strtolower(strrchr($_FILES['file']['name'], '.'));
     if (!in_array($extension, array('.gcode','.nc','.cnc'))) {
-      throw new Exception(__('Extension du fichier non valide (autorisé .gcode, .nc, .cnc) :', __FILE__) . ' ' . $extension);
+      throw new Exception(__('{{Extension du fichier non valide (autorisé .gcode, .nc, .cnc) :}}', __FILE__) . ' ' . $extension);
     }
     if (filesize($_FILES['file']['tmp_name']) > 500000000) {
-      throw new Exception(__('Le fichier est trop gros (maximum 500Mo)', __FILE__));
+      throw new Exception(__('{{Le fichier est trop gros (maximum 500Mo)}}', __FILE__));
     }
     if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploaddir . '/' . $_FILES['file']['name'])) {
-      throw new Exception(__('Impossible de déplacer le fichier temporaire', __FILE__));
+      throw new Exception(__('{{Impossible de déplacer le fichier temporaire}}', __FILE__));
     }
     if (!file_exists($uploaddir . '/' . $_FILES['file']['name'])) {
-      throw new Exception(__('Impossible de téléverser le fichier (limite du serveur web ?)', __FILE__));
+      throw new Exception(__('{{Impossible de téléverser le fichier (limite du serveur web ?)}}', __FILE__));
     }
     ajax::success();
   }
   if (init('action') == 'delete') {
     $uploaddir = __DIR__ . '/../../data/' . init('id');
     if (!file_exists($uploaddir)) {
-      throw new \Exception(__('Impossible de trouver le répertoire de l\'équipement', __FILE__).init('id'));
+      throw new \Exception(__('{{Impossible de trouver le répertoire de l\'équipement}}', __FILE__).init('id'));
     }
     $file = $uploaddir . '/' . init('file');
     if (!file_exists($file)) {
-      throw new \Exception(__('Impossible de trouver le fichier', __FILE__).init('file'));
+      throw new \Exception(__('{{Impossible de trouver le fichier}}', __FILE__).init('file'));
     }
     if (!unlink($file)) {
-      throw new \Exception(__('Impossible de supprimer le fichier', __FILE__).init('file'));
+      throw new \Exception(__('{{Impossible de supprimer le fichier}}', __FILE__).init('file'));
     }
     ajax::success();
   }
   if (init('action') == 'download') {
     $uploaddir = __DIR__ . '/../../data/' . init('id');
     if (!file_exists($uploaddir)) {
-      throw new \Exception(__('Impossible de trouver le répertoire de l\'équipement', __FILE__).init('id'));
+      throw new \Exception(__('{{Impossible de trouver le répertoire de l\'équipement}}', __FILE__).init('id'));
     }
     $file = $uploaddir . '/' . init('file');
     if (!file_exists($file)) {
-      throw new \Exception(__('Impossible de trouver le fichier', __FILE__).init('file'));
+      throw new \Exception(__('{{Impossible de trouver le fichier}}', __FILE__).init('file'));
     }
 
     /* 
@@ -92,15 +92,15 @@ try {
   if (init('action') == 'reprise') {
     $uploaddir = __DIR__ . '/../../data/' . init('id');
     if (!file_exists($uploaddir)) {
-      throw new \Exception(__('Impossible de trouver le répertoire de l\'équipement', __FILE__).init('id'));
+      throw new \Exception(__('{{Impossible de trouver le répertoire de l\'équipement}}', __FILE__).init('id'));
     }
     $file = $uploaddir . '/' . init('file');
     if (!file_exists($file)) {
-      throw new \Exception(__('Impossible de trouver le fichier', __FILE__).init('file'));
+      throw new \Exception(__('{{Impossible de trouver le fichier}}', __FILE__).init('file'));
     }
     # si le fichier n'est pas un .gcode
     if (strtolower(strrchr($file, '.')) != '.gcode') {
-      throw new \Exception(__('Le fichier n\'est pas un .gcode', __FILE__).init('file'));
+      throw new \Exception(__('{{Le fichier n\'est pas un .gcode}}', __FILE__).init('file'));
     }
     $numeroLigne = intval(init('line'));
     $pourcentage = 1-(intval(init('percent')) / 100);
@@ -194,7 +194,7 @@ try {
     file_put_contents($newfile, implode("", $contenuCopie));
     ajax::success();
   }
-  throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
+  throw new Exception(__('{{Aucune méthode correspondante à}}', __FILE__) . ' : ' . init('action'));
   /*     * *********Catch exeption*************** */
 }
 catch (Exception $e) {

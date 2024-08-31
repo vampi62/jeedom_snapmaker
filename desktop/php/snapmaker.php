@@ -137,7 +137,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{port daemon}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez un port libre pour le deamon}}"></i></sup>
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez un port libre pour le daemon}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="socketport" placeholder="{{12100 ne pas utiliser le même pour pour plusieurs machines}}">
@@ -145,7 +145,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{cycle}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez un cycle}}"></i></sup>
+									<sup><i class="fas fa-question-circle tooltips" title="{{temps de pause du daemon entre chaque verification de commande}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
 									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="cycle" placeholder="{{0.3 a 1}}">
@@ -160,8 +160,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{status alim}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{retour de la prise d'alimentation de la snapmaker}}"></i></sup>
+								<label class="col-sm-4 control-label">{{status prise externe alimentation}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{retour de status de la prise d'alimentation de la snapmaker}}"></i></sup>
 								</label>
 								<div class="col-sm-7">
 									<div class="input-group">
@@ -173,8 +173,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{on alim}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{bouton on de la prise d'alimentation de la snapmaker}}"></i></sup>
+								<label class="col-sm-4 control-label">{{commande "on" prise externe alimentation}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{bouton 'on' de la prise d'alimentation de la snapmaker}}"></i></sup>
 								</label>
 								<div class="col-sm-7">
 									<div class="input-group">
@@ -186,8 +186,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{off alim}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{bouton off de la prise d'alimentation de la snapmaker}}"></i></sup>
+								<label class="col-sm-4 control-label">{{commande "off" prise externe alimentation}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{bouton 'off' de la prise d'alimentation de la snapmaker}}"></i></sup>
 								</label>
 								<div class="col-sm-7">
 									<div class="input-group">
