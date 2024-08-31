@@ -1,25 +1,35 @@
 {
-	"id" : "snapmaker",
-	"name" : "snapmaker",
-	"description" : {
-		"fr_FR": "connecter une ou plusieurs imprimantes 3D snapmaker à jeedom, stocker vos fichiers et lancer vos impressions depuis jeedom"
+	"id": "snapmaker",
+	"name": "snapmaker",
+	"description": {
+		"fr_FR": "connecter une ou plusieurs imprimantes 3D snapmaker à jeedom, stocker vos fichiers et lancer vos impressions depuis jeedom",
+		"en_US": "connect one or more snapmaker 3D printers to jeedom, store your files and print from jeedom",
+		"es_ES": "conecta una o más impresoras snapmaker 3D a jeedom, almacena tus archivos e imprime desde jeedom",
+		"de_DE": "einen oder mehrere snapmaker 3D-Drucker mit jeedom verbinden, deine Dateien speichern und deine Drucke von jeedom aus starten",
+		"it_IT": "collegare una o più stampanti 3D snapmaker a jeedom, memorizzare i file e stampare da jeedom",
+		"pt_PT": "ligar uma ou mais impressoras 3D snapmaker ao jeedom, armazenar os seus ficheiros e imprimir a partir do jeedom"
 	},
-	"licence" : "AGPL",
-	"author" : "vampi62",
-	"require" : "4.2.0",
-	"category" : "monitoring",
-	"hasDependency" : false,
-	"hasOwnDeamon" : true,
-	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/changelog.md",
-	"documentation" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/index.md",
-	"changelog_beta" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/changelog.md",
-	"documentation_beta" : "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/index.md",
-	"link" : {
-		"forum":"https://github.com/vampi62/jeedom_snapmaker/issues"
+	"licence": "AGPL",
+	"author": "vampi62",
+	"require": "4.2.0",
+	"category": "monitoring",
+	"hasDependency": false,
+	"hasOwnDeamon": true,
+	"maxDependancyInstallTime": 0,
+	"changelog": "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/changelog.md",
+	"documentation": "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/index.md",
+	"changelog_beta": "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/changelog.md",
+	"documentation_beta": "https://github.com/vampi62/jeedom_snapmaker/blob/main/docs/fr_FR/index.md",
+	"link": {
+		"forum": "https://github.com/vampi62/jeedom_snapmaker/issues"
 	},
 	"language": [
-		"fr_FR"
+		"de_DE",
+		"en_US",
+		"es_ES",
+		"fr_FR",
+		"it_IT",
+		"pt_PT"
 	],
 	"compatibility": [
 		"miniplus",
