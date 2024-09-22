@@ -1,7 +1,8 @@
 <div class="eqLogic eqLogic-widget allowResize allowReorderCmd allowLayout #custom_layout# #eqLogic_class# #category#"
-    style="min-height: 150px;min-width:140px; position: relative; width:#width#; height:#height#;background-color:#background-color#!important; color:#color#; border:#border#; border-radius:#border-radius#;#style#"
-    data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-cat_color="#catcolore#"
-    data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
+	style="min-height: 150px;min-width:140px; position: relative; width:#width#; height:#height#;background-color:#background-color#!important; color:#color#; border:#border#; border-radius:#border-radius#;#style#"
+	data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-cat_color="#catcolore#"
+	data-version="#version#" data-translate-category="#translate_category#" data-category="#category#"
+	data-tags="#tags#">
 	<span class="statusCmd"></span>
 	<center class="widget-name">
 		<a href="#eqLink#">#name_display# <span class="object_name">#object_name#</span></a>
@@ -14,12 +15,12 @@
 		global_#uid#_isrotate = "";
 		global_#uid#_connect = false;
 		global_#uid#_printstatus = "";
-		if ('#refresh_id#' != ''){
-			document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .refresh').addEventListener('click', function () {
-				jeedom.cmd.execute({id: '#refresh_id#'});
+		if ('#refresh_id#' != '') {
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .refresh').addEventListener('click', function() {
+				jeedom.cmd.execute({ id: '#refresh_id#' });
 			});
-		}else{
-			let eqLogic = document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .refresh');
+		} else {
+			let eqLogic = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .refresh');
 			eqLogic.parentNode.removeChild(eqLogic);
 		}
 		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isconnected').forEach(function(element) {
@@ -52,54 +53,43 @@
 		document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .isaliminfo').forEach(function(element) {
 			element.style.display = 'none';
 		});
-		function #uid#js_snapmaker_printhtmltable(list,nom_tableau,headtable,commande) {
+		function #uid#js_snapmaker_printhtmltable(list, nom_tableau, listIndex) {
 			local_table = document.createElement("table");
 			local_thr = document.createElement("thead");
 			local_tr = document.createElement("tr");
-			local_tr.setAttribute("style","white-space: nowrap;");
-			for(j = 0; headtable.length > j; j++) {
+			local_tr.setAttribute("style", "white-space: nowrap;");
+			for (const key in listIndex) {
 				local_th = document.createElement("th");
-				local_th.setAttribute("style","padding: 5px;");
-				if (headtable[j] == null) {
-					local_th.style.display = "none";
+				local_th.setAttribute("style", "padding: 5px;");
+				if (listIndex[key]['isVisible']) {
+					local_th.innerHTML = listIndex[key]['showName'];
 				} else {
-					local_th.innerHTML = headtable[j];
+					local_th.style.display = "none";
 				}
 				local_tr.appendChild(local_th);
 			}
 			local_thr.appendChild(local_tr);
 			local_table.appendChild(local_thr);
+			// convert <'> to <"> in string before parse
+			list = JSON.stringify(list).replace(/'!!/g, '"');
+			list = JSON.parse(list.substring(1, list.length - 1)); // remove the first and last character of the string before parse
 			local_tb = document.createElement("tbody");
-			if (list != "") {
-				line = list.split('-!-');
-				for(j = 0; line.length > j; j++) {
-					local_tr = document.createElement("tr");
-					lineelement = line[j].split('-:-');
-					for(k = 0; lineelement.length > k; k++) {
-						local_td = document.createElement("td");
-						local_td.setAttribute("style","padding: 5px;");
-						local_td.innerHTML = lineelement[k];
-						if (headtable[k] == null) {
-							local_td.style.display = "none";
-						}
-						local_tr.appendChild(local_td);
+			for (j = 0; list.length > j; j++) {
+				local_tr = document.createElement("tr");
+				for (const key in listIndex) {
+					local_td = document.createElement("td");
+					local_td.setAttribute("style", "padding: 5px;");
+					local_td.innerHTML = list[j][key];
+					if (!listIndex[key]['isVisible']) {
+						local_td.style.display = "none";
 					}
-					for(k = 0; commande.length > k; k++) {
-						local_td = document.createElement("td");
-						bouton_table = commande[k]
-						bouton_table = bouton_table.replaceAll("#value#", lineelement[0]); // remplace value par la valeur de la premiere colonne de la ligne
-						local_td.innerHTML = bouton_table;
-						if (headtable[k] == null) {
-							local_td.style.display = "none";
-						}
-						local_tr.appendChild(local_td);
-					}
-					local_tr.setAttribute("onclick","#uid#js_snapmaker_selectfichier(" + j + ");");
-					local_tb.appendChild(local_tr);
+					local_tr.appendChild(local_td);
 				}
+				local_tr.setAttribute("onclick", "#uid#js_snapmaker_selectfichier(" + j + ");");
+				local_tb.appendChild(local_tr);
 			}
 			local_table.appendChild(local_tb);
-			local_table.setAttribute("class","table table-condensed table-bordered table-striped");
+			local_table.setAttribute("class", "table table-condensed table-bordered table-striped");
 			document.querySelector('.cmd[data-eqlogic_id="' + nom_tableau + '"] .state').innerHTML = '';
 			document.querySelector('.cmd[data-eqlogic_id="' + nom_tableau + '"] .state').append(local_table);
 		}
@@ -136,7 +126,7 @@
 				});
 			}
 		}
-		
+
 		function #uid#showElementInQuerySelector(querySelector) {
 			document.querySelectorAll(querySelector).forEach(function(element) {
 				if (element.classList.contains('show-run-in')) {
@@ -148,7 +138,7 @@
 				}
 			});
 		}
-		
+
 		function #uid#change_visibility_status(local_value) {
 			global_#uid#_printstatus = local_value;
 			if (local_value == "PAUSED") {
@@ -235,8 +225,8 @@
 				document.querySelectorAll('.eqLogic[data-eqLogic_id="#id#"] .statusimpr .disconnect').forEach(function(element) {
 					element.style.display = 'none';
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
 				document.querySelector('.cmd[data-cmd_id="#printStatus_id#"] .firstloginmsg').innerHTML = '';
 			}
 			#uid#change_visibility_connect();
@@ -341,9 +331,9 @@
 				document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value = parseFloat(tbtemp).toFixed(0) + " °C";
 			}
 		}
-		function #uid#_set_value_Time(element,eliptime) {
+		function #uid#_set_value_Time(element, eliptime) {
 			let sec_num = parseInt(eliptime, 10);
-			let hours   = Math.floor(sec_num / 3600);
+			let hours = Math.floor(sec_num / 3600);
 			let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
 			let seconds = sec_num - (hours * 3600) - (minutes * 60);
 			element.querySelector('.state').innerHTML = hours + 'h ' + minutes + 'm ' + seconds + 's';
@@ -353,11 +343,11 @@
 			_tbody = document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state tbody');
 			_tbody.querySelector('.highlight')?.classList.remove('highlight');
 			if (postion_tableau == -1) {
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled',true);
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled',true);
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .download').setAttribute('disabled', true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .reprise').setAttribute('disabled', true);
 				return;
 			}
 			let nomfichier = "";
@@ -372,23 +362,23 @@
 			_tbody.rows[postion_tableau].classList.add('highlight');
 			// if click outside the Pan_fichier
 			document.body.addEventListener('click', function(event) {
-				if (!document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .Pan_fichier').contains(event.target)) {
-					document.body.removeEventListener('click', function(event) {});
+				if (!document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').contains(event.target)) {
+					document.body.removeEventListener('click', function(event) { });
 					document.querySelector('.cmd[data-eqlogic_id="#filelist_id#"] .state .highlight')?.classList.remove('highlight');
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled',true);
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').setAttribute('disabled',true);
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .download').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .reprise').setAttribute('disabled', true);
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent = "";
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectdate .state').textContent = "";
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectsize .state').textContent = "";
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectligne .state').textContent = "";
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttemps .state').textContent = "";
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttype .state').textContent = "";
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent = "";
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = "";
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src',"");
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttemps .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttype .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttool .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = "";
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src', "");
 				}
 			});
 			// recupere le nom du fichier
@@ -415,67 +405,67 @@
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectdate .state').textContent = datefichier;
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectsize .state').textContent = taillefichier;
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectligne .state').textContent = nbrligne;
-			#uid#_set_value_Time(document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttemps'),temps_impr);
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttype .state').textContent = typemachine;
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent = typeoutil;
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = axerotatif;
+			#uid#_set_value_Time(document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttemps'), temps_impr);
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttype .state').textContent = typemachine;
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttool .state').textContent = typeoutil;
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = axerotatif;
 			// insert l'image en base64 dans le src de l'image
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src',img64);
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src', img64);
 			// active les bouton
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').removeAttribute('disabled');
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').removeAttribute('disabled');
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').removeAttribute('disabled');
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .download').removeAttribute('disabled');
 
 			// si imprimante connecter active les boutons
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled',true);
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled',true);
-			document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').setAttribute('disabled',true);
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .reprise').setAttribute('disabled', true);
 			if ((global_#uid#_connect) && (global_#uid#_printstatus == "IDLE")) {
 				// si le type d'outil correspond a la machine active le bouton start
 				if (typemachine == "3dp") {
 					if ((typeoutil == "singleExtruderToolheadForSM2") && (global_#uid#_toolhead == "3dprint")) {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					} else if (((typeoutil == "dualExtruderToolheadForSM2") || (typeoutil == "singleExtruderToolheadForSM2")) && (global_#uid#_toolhead == "3ddoubleprint")) {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					} else if (typeoutil == "unknown") {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					}
 				} else if (typemachine == "cnc") {
 					if (global_#uid#_toolhead == "cnc") {
 						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						}
 					} else if (typeoutil == "unknown") {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					}
 				} else if (typemachine == "laser") {
 					if (global_#uid#_toolhead == "laser") {
 						if ((global_#uid#_isrotate == "true") && (axerotatif == "true")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						} else if ((!global_#uid#_isrotate == "false") && (axerotatif == "false")) {
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 						}
 					} else if (typeoutil == "unknown") {
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 					}
 				} else if (typemachine == "unknown") {
-					document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').removeAttribute('disabled');
 				}
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').removeAttribute('disabled');
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').removeAttribute('disabled');
 			} else if (!global_#uid#_connect) {
 				if ((nomfichier == document.querySelector('.cmd[data-cmd_id="#fileName_id#"] .state').textContent) && (parseFloat(document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1')).toFixed(2) < 100)) { // si le fichier selectionner est le fichier qui était en cours d'impression
-				document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').removeAttribute('disabled');
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .reprise').removeAttribute('disabled');
 				}
 			}
 		}
 
 		#uid#change_visibility_toolhead('#headType#');
-		jeedom.cmd.addUpdateFunction('#headType_id#',function(_options) {
+		jeedom.cmd.addUpdateFunction('#headType_id#', function(_options) {
 			#uid#change_visibility_toolhead(_options.display_value);
 		});
 		#uid#switch_caisson('#hasEnclosure#')
-		jeedom.cmd.addUpdateFunction('#hasEnclosure_id#',function(_options) {
+		jeedom.cmd.addUpdateFunction('#hasEnclosure_id#', function(_options) {
 			#uid#switch_caisson(_options.display_value)
 		});
 	</script>
@@ -483,6 +473,7 @@
 		.table tbody tr.highlight td {
 			background-color: rgb(72, 150, 92);
 		}
+
 		.vertical-range {
 			writing-mode: vertical-lr;
 			direction: rtl;
@@ -490,13 +481,15 @@
 			height: 175px;
 			padding: 0 5px;
 		}
+
 		.titre {
 			cursor: pointer;
 		}
 	</style>
-	<div class="eq_body_#id#" >
+	<div class="eq_body_#id#">
 		<center>
-			<div class="Pan_menu" style="max-width: #widthmenu#px; min-width: #widthmenu#px; max-height: #heightmenu#px; min-height: #heightmenu#px; overflow:auto;">
+			<div class="Pan_menu"
+				style="max-width: #widthmenu#px; min-width: #widthmenu#px; max-height: #heightmenu#px; min-height: #heightmenu#px; overflow:auto;">
 				<div class="menu-menu">
 					<div class="content-xs titre">
 						<strong>{{MENU PRINCIPAL}}</strong>
@@ -505,33 +498,40 @@
 						<div class="statusimpr">
 							<span class="cmdName">{{status connexion :}} </span>
 							<span>
-								<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric" data-cmd_id="#statusconnect_id#" data-cmd_uid="cmd#statusconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #statusconnect_collectDate#">
+								<div class="cmd cmd-widget tooltips status" data-type="info" data-subtype="numeric"
+									data-cmd_id="#statusconnect_id#" data-cmd_uid="cmd#statusconnect_uid#"
+									data-version="dashboard" data-template="default" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #statusconnect_collectDate#">
 									<div class="content-sm">
 										<span class="iconoff"><i class="fas fa-times"></i></span>
 										<span class="iconon"><i class="icon jeedom-prise"></i></span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips connect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#connect_id#" data-cmd_uid="cmd#connect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips connect" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#connect_id#" data-cmd_uid="cmd#connect_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{Connecter}}</a>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips disconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#disconnect_id#" data-cmd_uid="cmd#disconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips disconnect" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#disconnect_id#"
+									data-cmd_uid="cmd#disconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{Déconnecter}}</a>
 									</div>
 								</div>
 								<script>
 									#uid#switch_connect('#statusconnect#');
-									document.querySelector('.cmd[data-cmd_id="#connect_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#connect_id#'})
+									document.querySelector('.cmd[data-cmd_id="#connect_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#connect_id#' })
 									})
-									document.querySelector('.cmd[data-cmd_id="#disconnect_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#disconnect_id#'})
+									document.querySelector('.cmd[data-cmd_id="#disconnect_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#disconnect_id#' })
 									})
-									jeedom.cmd.addUpdateFunction('#statusconnect_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#statusconnect_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#statusconnect_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										#uid#switch_connect(_options.display_value);
 									});
 								</script>
@@ -539,48 +539,59 @@
 						</div>
 						<div class="autoreco">
 							<span class="cmdName">{{status auto-reconnexion :}} </span>
-							<div class="cmd cmd-widget tooltips autoconnect" data-type="info" data-subtype="numeric" data-cmd_id="#autoconnect_id#" data-cmd_uid="cmd#autoconnect_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #autoconnect_collectDate#">
+							<div class="cmd cmd-widget tooltips autoconnect" data-type="info" data-subtype="numeric"
+								data-cmd_id="#autoconnect_id#" data-cmd_uid="cmd#autoconnect_uid#"
+								data-version="dashboard" data-template="default" data-eqlogic_id="#id#"
+								title="{{Valeur du :}} #autoconnect_collectDate#">
 								<div class="content-sm">
 									<span class="iconoff"><i class="fas fa-times"></i></span>
 									<span class="iconon"><i class="icon jeedom-off"></i></span>
 								</div>
 							</div>
-							<div class="cmd cmd-widget tooltips setautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoconnect_id#" data-cmd_uid="cmd#setautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+							<div class="cmd cmd-widget tooltips setautoconnect" data-type="action" data-subtype="other"
+								data-template="default" data-cmd_id="#setautoconnect_id#"
+								data-cmd_uid="cmd#setautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">{{activer auto-reconnexion}}</a>
 								</div>
 							</div>
-							<div class="cmd cmd-widget tooltips unsetautoconnect" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoconnect_id#" data-cmd_uid="cmd#unsetautoconnect_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+							<div class="cmd cmd-widget tooltips unsetautoconnect" data-type="action"
+								data-subtype="other" data-template="default" data-cmd_id="#unsetautoconnect_id#"
+								data-cmd_uid="cmd#unsetautoconnect_uid#" data-version="dashboard"
+								data-eqlogic_id="#id#">
 								<div class="content-sm">
 									<a class="btn btn-sm btn-default action">{{désactiver auto-reconnexion}}</a>
 								</div>
 							</div>
 							<script>
 								#uid#switch_reconnect('#autoconnect#');
-								document.querySelector('.cmd[data-cmd_id="#setautoconnect_id#"] .action').addEventListener('click', function () {
-									jeedom.cmd.execute({id: '#setautoconnect_id#'})
+								document.querySelector('.cmd[data-cmd_id="#setautoconnect_id#"] .action').addEventListener('click', function() {
+									jeedom.cmd.execute({ id: '#setautoconnect_id#' })
 								})
-								document.querySelector('.cmd[data-cmd_id="#unsetautoconnect_id#"] .action').addEventListener('click', function () {
-									jeedom.cmd.execute({id: '#unsetautoconnect_id#'})
+								document.querySelector('.cmd[data-cmd_id="#unsetautoconnect_id#"] .action').addEventListener('click', function() {
+									jeedom.cmd.execute({ id: '#unsetautoconnect_id#' })
 								})
-								jeedom.cmd.addUpdateFunction('#autoconnect_id#',function(_options) {
+								jeedom.cmd.addUpdateFunction('#autoconnect_id#', function(_options) {
 									let cmd = document.querySelector('.cmd[data-cmd_id="#autoconnect_id#"]')
-									cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 									#uid#switch_reconnect(_options.display_value);
 								});
 							</script>
 						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#printStatus_id#" data-cmd_uid="cmd#printStatus_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #printStatus_collectDate#">
+						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+							data-cmd_id="#printStatus_id#" data-cmd_uid="cmd#printStatus_uid#" data-version="dashboard"
+							data-template="line" data-eqlogic_id="#id#"
+							title="{{Valeur du :}} #printStatus_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">{{status impression :}} </span>
+								<span class="cmdName">{{status impression :}} </span>
 								<strong class="state">#printStatus#</strong>
 								<strong class="firstloginmsg"></strong>
 							</div>
 							<script>
 								#uid#change_visibility_status('#printStatus#');
-								jeedom.cmd.addUpdateFunction('#printStatus_id#',function(_options) {
+								jeedom.cmd.addUpdateFunction('#printStatus_id#', function(_options) {
 									let cmd = document.querySelector('.cmd[data-cmd_id="#printStatus_id#"]');
-									cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate);
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate);
 									cmd.querySelector('.state').innerHTML = _options.display_value;
 									#uid#change_visibility_status(_options.display_value);
 								});
@@ -588,143 +599,165 @@
 						</div>
 						<div class="isconnected show-block"><!--visible si connecter -->
 							<div class="is3dprint is3ddoubleprint">
-								<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#offsetZ_id#" data-cmd_uid="#offsetZ_uid#" data-version="dashboard" data-eqlogic_id="678">
+								<div class="cmd cmd-widget" data-type="action" data-subtype="slider"
+									data-template="button" data-cmd_id="#offsetZ_id#" data-cmd_uid="#offsetZ_uid#"
+									data-version="dashboard" data-eqlogic_id="678">
 									<div class="title ">
 										<div class="cmdName">{{offset Z}}</div>
 									</div>
 									<div class="content-sm ">
 										<div class="input-group buttons">
-										<span class="input-group-btn" style="position: relative;">
-											<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-										</span>
-										<input type="text" class="input-sm in_value form-control" value="">
-										<span class="input-group-btn" style="position: relative;">
-											<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-										</span>
+											<span class="input-group-btn" style="position: relative;">
+												<a class="btn btn-default btn-sm bt_minus roundedLeft"><i
+														class="fas fa-minus"></i></a>
+											</span>
+											<input type="text" class="input-sm in_value form-control" value="">
+											<span class="input-group-btn" style="position: relative;">
+												<a class="btn btn-default btn-sm bt_plus roundedRight"><i
+														class="fa fa-plus"></i></a>
+											</span>
 										</div>
 									</div>
-									<div class="cmd cmd-widget tooltips setzoffset" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#" data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="cmd cmd-widget tooltips setzoffset" data-type="action"
+										data-subtype="other" data-template="default" data-cmd_id="#setzoffset_id#"
+										data-cmd_uid="cmd#setzoffset_uid#" data-version="dashboard"
+										data-eqlogic_id="#id#">
 										<div class="content-sm">
 											<a class="btn btn-sm btn-default action">{{modifier}}</a>
 										</div>
 									</div>
 									<script>
 										#uid#_set_value_zoffset(#offsetZ#)
-										document.querySelector('.cmd[data-cmd_id="#setzoffset_id#"] .action').addEventListener('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#setzoffset_id#"] .action').addEventListener('click', function() {
 											#uid#_set_value_zoffset(parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value))
-											jeedom.cmd.execute({id: '#setzoffset_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value).toFixed(2)}});
+											jeedom.cmd.execute({ id: '#setzoffset_id#', value: { message: parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value).toFixed(2) } });
 										})
-										document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .bt_plus').addEventListener('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .bt_plus').addEventListener('click', function() {
 											let max = 2
 											let step = 0.05
-											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) <= max - step ) {
+											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) <= max - step) {
 												#uid#_set_value_zoffset(parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) + step)
 											}
 										})
-										document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .bt_minus').addEventListener('click', function () {
+										document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .bt_minus').addEventListener('click', function() {
 											let min = -2
 											let step = 0.05
 											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) >= min + step) {
 												#uid#_set_value_zoffset(parseFloat(document.querySelector('.cmd[data-cmd_id="#offsetZ_id#"] .in_value').value) - step)
 											}
 										})
-										jeedom.cmd.addUpdateFunction('#offsetZ_id#',function(_options) {
+										jeedom.cmd.addUpdateFunction('#offsetZ_id#', function(_options) {
 											#uid#_set_value_zoffset(_options.display_value)
 										});
 									</script>
 								</div>
 							</div>
-							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#saveworkSpeed_id#" data-cmd_uid="#saveworkSpeed_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button"
+								data-cmd_id="#saveworkSpeed_id#" data-cmd_uid="#saveworkSpeed_uid#"
+								data-version="dashboard" data-eqlogic_id="678">
 								<div class="title ">
 									<div class="cmdName">{{vitesse}}</div>
 								</div>
 								<div class="content-sm ">
 									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_minus roundedLeft"><i
+													class="fas fa-minus"></i></a>
+										</span>
+										<input type="text" class="input-sm in_value form-control" value="">
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_plus roundedRight"><i
+													class="fa fa-plus"></i></a>
+										</span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips setspeed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setspeed_id#" data-cmd_uid="cmd#setspeed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips setspeed" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#setspeed_id#" data-cmd_uid="cmd#setspeed_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{modifier}}</a>
 									</div>
 								</div>
 								<script>
 									#uid#_set_value_saveworkSpeed(parseFloat(#saveworkSpeed#))
-									document.querySelector('.cmd[data-cmd_id="#setspeed_id#"] .action').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#setspeed_id#"] .action').addEventListener('click', function() {
 										#uid#_set_value_saveworkSpeed(parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value))
-										jeedom.cmd.execute({id: '#setspeed_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value).toFixed(0)}});
+										jeedom.cmd.execute({ id: '#setspeed_id#', value: { message: parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value).toFixed(0) } });
 									})
-									document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .bt_plus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .bt_plus').addEventListener('click', function() {
 										let max = 200
 										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) <= max - step ) {
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) <= max - step) {
 											#uid#_set_value_saveworkSpeed(parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) + step)
 										}
 									})
-									document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .bt_minus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .bt_minus').addEventListener('click', function() {
 										let min = 1
 										let step = 1
 										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) >= min + step) {
 											#uid#_set_value_saveworkSpeed(parseFloat(document.querySelector('.cmd[data-cmd_id="#saveworkSpeed_id#"] .in_value').value) - step)
 										}
 									})
-									jeedom.cmd.addUpdateFunction('#saveworkSpeed_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#saveworkSpeed_id#', function(_options) {
 										#uid#_set_value_saveworkSpeed(parseFloat(_options.display_value))
 									});
 								</script>
 							</div>
 							<div class="isprintrunning"><!--visible si objet en cours d'impression -->
-								<div class="cmd cmd-widget tooltips smpause" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#pause_id#" data-cmd_uid="cmd#pause_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips smpause" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#pause_id#" data-cmd_uid="cmd#pause_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-xs">
 										<a class="btn btn-sm btn-default action">{{pause}}</a>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips smresume" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#resume_id#" data-cmd_uid="cmd#resume_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips smresume" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#resume_id#" data-cmd_uid="cmd#resume_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-xs">
 										<a class="btn btn-sm btn-default action">{{reprendre}}</a>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips smstop" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#stop_id#" data-cmd_uid="cmd#stop_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips smstop" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#stop_id#" data-cmd_uid="cmd#stop_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-xs">
 										<a class="btn btn-sm btn-default action">{{stop}}</a>
 									</div>
 								</div>
 								<script>
-									document.querySelector('.cmd[data-cmd_id="#pause_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#pause_id#'})
-										jeedom.cmd.execute({id: '#refresh_id#'})
+									document.querySelector('.cmd[data-cmd_id="#pause_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#pause_id#' })
 									})
-									document.querySelector('.cmd[data-cmd_id="#resume_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#resume_id#'})
-										jeedom.cmd.execute({id: '#refresh_id#'})
+									document.querySelector('.cmd[data-cmd_id="#resume_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#resume_id#' })
 									})
-									document.querySelector('.cmd[data-cmd_id="#stop_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#stop_id#'})
-										jeedom.cmd.execute({id: '#refresh_id#'})
+									document.querySelector('.cmd[data-cmd_id="#stop_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#stop_id#' })
 									})
 								</script>
-								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#fileName_id#" data-cmd_uid="cmd#fileName_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #fileName_collectDate#">
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+									data-cmd_id="#fileName_id#" data-cmd_uid="cmd#fileName_uid#"
+									data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #fileName_collectDate#">
 									<div class="content-xs">
-										<span   class="cmdName">{{nom du fichier :}} </span>
+										<span class="cmdName">{{nom du fichier :}} </span>
 										<strong class="state">#fileName#</strong>
 									</div>
 									<script>
-										jeedom.cmd.addUpdateFunction('#fileName_id#',function(_options) {
+										jeedom.cmd.addUpdateFunction('#fileName_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#fileName_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 											cmd.querySelector('.state').innerHTML = _options.display_value;
 										});
 									</script>
 								</div>
-								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#progress_id#" data-cmd_uid="cmd#progress_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #progress_collectDate#">
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+									data-cmd_id="#progress_id#" data-cmd_uid="cmd#progress_uid#"
+									data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #progress_collectDate#">
 									<div class="content-xs">
-										<span   class="cmdName">{{avancement :}} </span>
+										<span class="cmdName">{{avancement :}} </span>
 										<strong class="state1"></strong>
 										<strong class="state2"> %</strong>
 									</div>
@@ -733,62 +766,71 @@
 										if (progress#uid# == 'NaN') {
 											progress#uid# = 0
 										}
-										document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').innerHTML = parseFloat(progress#uid#*100).toFixed(2);
-										jeedom.cmd.addUpdateFunction('#progress_id#',function(_options) {
+										document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').innerHTML = parseFloat(progress#uid# * 100).toFixed(2);
+										jeedom.cmd.addUpdateFunction('#progress_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#progress_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 											if (_options.display_value == '') {
 												_options.display_value = 0
 											}
-											cmd.querySelector('.state1').innerHTML = parseFloat(_options.display_value*100).toFixed(2);
+											cmd.querySelector('.state1').innerHTML = parseFloat(_options.display_value * 100).toFixed(2);
 										});
 									</script>
 								</div>
-								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#currentLine_id#" data-cmd_uid="cmd#currentLine_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #currentLine_collectDate#">
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+									data-cmd_id="#currentLine_id#" data-cmd_uid="cmd#currentLine_uid#"
+									data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #currentLine_collectDate#">
 									<div class="content-xs">
-										<span   class="cmdName">{{ligne en cours:}} </span>
+										<span class="cmdName">{{ligne en cours:}} </span>
 										<strong class="state1">#currentLine#</strong>
 										<strong class="state2"> / </strong>
 										<strong class="state3">#totalLines#</strong>
 									</div>
 									<script>
-										jeedom.cmd.addUpdateFunction('#currentLine_id#',function(_options) {
+										jeedom.cmd.addUpdateFunction('#currentLine_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 											cmd.querySelector('.state1').innerHTML = _options.display_value;
 										});
-										jeedom.cmd.addUpdateFunction('#totalLines_id#',function(_options) {
+										jeedom.cmd.addUpdateFunction('#totalLines_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 											cmd.querySelector('.state3').innerHTML = _options.display_value;
 										});
 									</script>
 								</div>
-								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#elapsedTime_id#" data-cmd_uid="cmd#elapsedTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #elapsedTime_collectDate#">
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+									data-cmd_id="#elapsedTime_id#" data-cmd_uid="cmd#elapsedTime_uid#"
+									data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #elapsedTime_collectDate#">
 									<div class="content-xs">
-										<span   class="cmdName">{{impression démarrer depuis:}} </span>
+										<span class="cmdName">{{impression démarrer depuis:}} </span>
 										<strong class="state"></strong>
 									</div>
 									<script>
-										#uid#_set_value_Time(document.querySelector('.cmd[data-cmd_id="#elapsedTime_id#"]'),#elapsedTime#)
-										jeedom.cmd.addUpdateFunction('#elapsedTime_id#',function(_options) {
+										#uid#_set_value_Time(document.querySelector('.cmd[data-cmd_id="#elapsedTime_id#"]'), #elapsedTime#)
+										jeedom.cmd.addUpdateFunction('#elapsedTime_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#elapsedTime_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-											#uid#_set_value_Time(cmd,_options.display_value)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+											#uid#_set_value_Time(cmd, _options.display_value)
 										});
 									</script>
 								</div>
-								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#remainingTime_id#" data-cmd_uid="cmd#remainingTime_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #remainingTime_collectDate#">
+								<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+									data-cmd_id="#remainingTime_id#" data-cmd_uid="cmd#remainingTime_uid#"
+									data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #remainingTime_collectDate#">
 									<div class="content-xs">
-										<span   class="cmdName">{{temps restant:}} </span>
+										<span class="cmdName">{{temps restant:}} </span>
 										<strong class="state"></strong>
 									</div>
 									<script>
-										#uid#_set_value_Time(document.querySelector('.cmd[data-cmd_id="#remainingTime_id#"]'),#remainingTime#)
-										jeedom.cmd.addUpdateFunction('#remainingTime_id#',function(_options) {
+										#uid#_set_value_Time(document.querySelector('.cmd[data-cmd_id="#remainingTime_id#"]'), #remainingTime#)
+										jeedom.cmd.addUpdateFunction('#remainingTime_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#remainingTime_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-											#uid#_set_value_Time(cmd,_options.display_value)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+											#uid#_set_value_Time(cmd, _options.display_value)
 										});
 									</script>
 								</div>
@@ -796,67 +838,80 @@
 						</div>
 					</div>
 				</div>
-				<br/>
+				<br />
 				<div class="menu-module">
 					<div class="content-xs titre">
 						<strong>{{MENU MODULE}}</strong>
 					</div>
 					<div class="contenue">
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#toolHead_id#" data-cmd_uid="cmd#toolHead_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #toolHead_collectDate#">
+						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+							data-cmd_id="#toolHead_id#" data-cmd_uid="cmd#toolHead_uid#" data-version="dashboard"
+							data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #toolHead_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">{{outil :}} </span>
+								<span class="cmdName">{{outil :}} </span>
 								<strong class="state">#toolHead#</strong>
 							</div>
 						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#enclosure_id#" data-cmd_uid="cmd#enclosure_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #enclosure_collectDate#">
+						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+							data-cmd_id="#enclosure_id#" data-cmd_uid="cmd#enclosure_uid#" data-version="dashboard"
+							data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #enclosure_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">{{caisson :}} </span>
+								<span class="cmdName">{{caisson :}} </span>
 								<strong class="state">#enclosure#</strong>
 							</div>
 						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#rotaryModule_id#" data-cmd_uid="cmd#rotaryModule_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #rotaryModule_collectDate#">
+						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+							data-cmd_id="#rotaryModule_id#" data-cmd_uid="cmd#rotaryModule_uid#"
+							data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+							title="{{Valeur du :}} #rotaryModule_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">{{module rotatif :}} </span>
+								<span class="cmdName">{{module rotatif :}} </span>
 								<strong class="state">#rotaryModule#</strong>
 							</div>
 							<script>
 								#uid#switch_rotate(#rotaryModule#)
-								jeedom.cmd.addUpdateFunction('#rotaryModule_id#',function(_options) {
+								jeedom.cmd.addUpdateFunction('#rotaryModule_id#', function(_options) {
 									let cmd = document.querySelector('.cmd[data-cmd_id="#rotaryModule_id#"]')
-									cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 									cmd.querySelector('.state').innerHTML = _options.display_value;
 									#uid#switch_rotate(_options.display_value)
 								});
 							</script>
 						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#emergencyStopButton_id#" data-cmd_uid="cmd#emergencyStopButton_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #emergencyStopButton_collectDate#">
+						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+							data-cmd_id="#emergencyStopButton_id#" data-cmd_uid="cmd#emergencyStopButton_uid#"
+							data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+							title="{{Valeur du :}} #emergencyStopButton_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">{{bouton d arret d urgence :}} </span>
+								<span class="cmdName">{{bouton d arret d urgence :}} </span>
 								<strong class="state">#emergencyStopButton#</strong>
 							</div>
 							<script>
-								jeedom.cmd.addUpdateFunction('#emergencyStopButton_id#',function(_options) {
+								jeedom.cmd.addUpdateFunction('#emergencyStopButton_id#', function(_options) {
 									let cmd = document.querySelector('.cmd[data-cmd_id="#emergencyStopButton_id#"]')
-									cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 									cmd.querySelector('.state').innerHTML = _options.display_value;
 								});
 							</script>
 						</div>
-						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#airPurifier_id#" data-cmd_uid="cmd#airPurifier_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #airPurifier_collectDate#">
+						<div class="tooltips cmd cmd-widget" data-type="info" data-subtype="numeric"
+							data-cmd_id="#airPurifier_id#" data-cmd_uid="cmd#airPurifier_uid#" data-version="dashboard"
+							data-template="line" data-eqlogic_id="#id#"
+							title="{{Valeur du :}} #airPurifier_collectDate#">
 							<div class="content-xs">
-								<span   class="cmdName">{{purificateur d air :}} </span>
+								<span class="cmdName">{{purificateur d air :}} </span>
 								<strong class="state">#airPurifier#</strong>
 							</div>
 							<script>
-								jeedom.cmd.addUpdateFunction('#airPurifier_id#',function(_options) {
+								jeedom.cmd.addUpdateFunction('#airPurifier_id#', function(_options) {
 									let cmd = document.querySelector('.cmd[data-cmd_id="#airPurifier_id#"]')
-									cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 									cmd.querySelector('.state').innerHTML = _options.display_value;
 								});
 							</script>
 						</div>
 					</div>
-					<br/>
+					<br />
 				</div>
 				<div class="menu-outil isconnected show-block"><!--visible si connecter -->
 					<div class="content-xs titre">
@@ -864,349 +919,409 @@
 					</div>
 					<div class="contenue">
 						<div class="is3dprint is3ddoubleprint"><!--visible si outil est imprimante3d -->
-							<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-cmd_id="#heatedBedTemperature_id#" data-cmd_uid="cmd#heatedBedTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #heatedBedTemperature_collectDate#">
+							<div class="cmd cmd-widget" data-type="info" data-subtype="numeric"
+								data-cmd_id="#heatedBedTemperature_id#" data-cmd_uid="cmd#heatedBedTemperature_uid#"
+								data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+								title="{{Valeur du :}} #heatedBedTemperature_collectDate#">
 								<div class="content-xs">
-									<span   class="cmdName">{{Temperature du lit :}} </span> 
+									<span class="cmdName">{{Temperature du lit :}} </span>
 									<strong class="state1">#heatedBedTemperature#</strong>
 									<strong class="state2"> °C / </strong>
 									<strong class="state3">#heatedBedTargetTemperature#</strong>
 									<strong class="state4"> °C</strong>
 								</div>
 								<script>
-									jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#heatedBedTemperature_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#heatedBedTemperature_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										cmd.querySelector('.state1').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
 							<div class="is3dprint">
-								<div class="cmd cmd-widget is3dprint" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #nozzleTemperature_collectDate#">
+								<div class="cmd cmd-widget is3dprint" data-type="info" data-subtype="numeric"
+									data-cmd_id="#nozzleTemperature_id#" data-cmd_uid="cmd#nozzleTemperature_uid#"
+									data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #nozzleTemperature_collectDate#">
 									<div class="content-xs">
-										<span   class="cmdName">{{Temperature buse :}} </span> 
+										<span class="cmdName">{{Temperature buse :}} </span>
 										<strong class="state1">#nozzleTemperature#</strong>
 										<strong class="state2"> °C / </strong>
 										<strong class="state3">#nozzleTargetTemperature#</strong>
 										<strong class="state4"> °C</strong>
 									</div>
 									<script>
-										jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#',function(_options) {
+										jeedom.cmd.addUpdateFunction('#nozzleTemperature_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 											cmd.querySelector('.state1').innerHTML = _options.display_value;
 										});
 									</script>
 								</div>
 							</div>
-							<div class="cmd cmd-widget is3ddoubleprint" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature1_id#" data-cmd_uid="cmd#nozzleTemperature1_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #nozzleTemperature1_collectDate#">
+							<div class="cmd cmd-widget is3ddoubleprint" data-type="info" data-subtype="numeric"
+								data-cmd_id="#nozzleTemperature1_id#" data-cmd_uid="cmd#nozzleTemperature1_uid#"
+								data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+								title="{{Valeur du :}} #nozzleTemperature1_collectDate#">
 								<div class="content-xs">
-									<span   class="cmdName">{{Temperature buse 1 :}} </span> 
+									<span class="cmdName">{{Temperature buse 1 :}} </span>
 									<strong class="state1">#nozzleTemperature1#</strong>
 									<strong class="state2"> °C / </strong>
 									<strong class="state3">#nozzleTargetTemperature1#</strong>
 									<strong class="state4"> °C</strong>
 								</div>
 								<script>
-									jeedom.cmd.addUpdateFunction('#nozzleTemperature1_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#nozzleTemperature1_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature1_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										cmd.querySelector('.state1').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
-							<div class="cmd cmd-widget is3ddoubleprint" data-type="info" data-subtype="numeric" data-cmd_id="#nozzleTemperature2_id#" data-cmd_uid="cmd#nozzleTemperature2_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="{{Valeur du :}} #nozzleTemperature2_collectDate#">
+							<div class="cmd cmd-widget is3ddoubleprint" data-type="info" data-subtype="numeric"
+								data-cmd_id="#nozzleTemperature2_id#" data-cmd_uid="cmd#nozzleTemperature2_uid#"
+								data-version="dashboard" data-template="line" data-eqlogic_id="#id#"
+								title="{{Valeur du :}} #nozzleTemperature2_collectDate#">
 								<div class="content-xs">
-									<span   class="cmdName">{{Temperature buse 2 :}} </span> 
+									<span class="cmdName">{{Temperature buse 2 :}} </span>
 									<strong class="state1">#nozzleTemperature2#</strong>
 									<strong class="state2"> °C / </strong>
 									<strong class="state3">#nozzleTargetTemperature2#</strong>
 									<strong class="state4"> °C</strong>
 								</div>
 								<script>
-									jeedom.cmd.addUpdateFunction('#nozzleTemperature2_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#nozzleTemperature2_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#nozzleTemperature2_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										cmd.querySelector('.state1').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
-							<div style="padding: 5px;" class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#" data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div style="padding: 5px;" class="cmd cmd-widget" data-type="action" data-subtype="slider"
+								data-template="button" data-cmd_id="#heatedBedTargetTemperature_id#"
+								data-cmd_uid="#heatedBedTargetTemperature_uid#" data-version="dashboard"
+								data-eqlogic_id="678">
 								<div class="title ">
 									<div class="cmdName">{{Temperature cible du lit}}</div>
 								</div>
 								<div class="content-sm ">
 									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_minus roundedLeft"><i
+													class="fas fa-minus"></i></a>
+										</span>
+										<input type="text" class="input-sm in_value form-control" value="">
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_plus roundedRight"><i
+													class="fa fa-plus"></i></a>
+										</span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempbed_id#" data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips settempbed" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#settempbed_id#"
+									data-cmd_uid="cmd#settempbed_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{modifier}}</a>
 									</div>
 								</div>
 								<script>
 									#uid#_set_value_heatedBedTargetTemperature(#heatedBedTargetTemperature#)
-									document.querySelector('.cmd[data-cmd_id="#settempbed_id#"] .action').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#settempbed_id#"] .action').addEventListener('click', function() {
 										#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value))
-										jeedom.cmd.execute({id: '#settempbed_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value).toFixed(0)}});
+										jeedom.cmd.execute({ id: '#settempbed_id#', value: { message: parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value).toFixed(0) } });
 									})
-									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_plus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_plus').addEventListener('click', function() {
 										let max = 100
 										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) <= max - step ) {
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) <= max - step) {
 											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) + step)
 										}
 									})
-									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_minus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .bt_minus').addEventListener('click', function() {
 										let min = 0
 										let step = 1
 										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) >= min + step) {
 											#uid#_set_value_heatedBedTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#heatedBedTargetTemperature_id#"] .in_value').value) - step)
 										}
 									})
-									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#heatedBedTargetTemperature_id#', function(_options) {
 										#uid#_set_value_heatedBedTargetTemperature(_options.display_value)
 										document.querySelector('.cmd[data-cmd_id="#heatedBedTemperature_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
-							<div style="padding: 5px;" class="cmd cmd-widget is3dprint" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#" data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div style="padding: 5px;" class="cmd cmd-widget is3dprint" data-type="action"
+								data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature_id#"
+								data-cmd_uid="#nozzleTargetTemperature_uid#" data-version="dashboard"
+								data-eqlogic_id="678">
 								<div class="title ">
 									<div class="cmdName">{{Temperature cible de la buse}}</div>
 								</div>
 								<div class="content-sm ">
 									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_minus roundedLeft"><i
+													class="fas fa-minus"></i></a>
+										</span>
+										<input type="text" class="input-sm in_value form-control" value="">
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_plus roundedRight"><i
+													class="fa fa-plus"></i></a>
+										</span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action"
+									data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#"
+									data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard"
+									data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{modifier}}</a>
 									</div>
 								</div>
 								<script>
 									#uid#_set_value_nozzleTargetTemperature(#nozzleTargetTemperature#)
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .action').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .action').addEventListener('click', function() {
 										#uid#_set_value_nozzleTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value))
-										jeedom.cmd.execute({id: '#settempnozzle_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value).toFixed(0)}});
+										jeedom.cmd.execute({ id: '#settempnozzle_id#', value: { message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value).toFixed(0) } });
 									})
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .bt_plus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .bt_plus').addEventListener('click', function() {
 										let max = 300
 										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) <= max - step ) {
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) <= max - step) {
 											#uid#_set_value_nozzleTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) + step)
 										}
 									})
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .bt_minus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .bt_minus').addEventListener('click', function() {
 										let min = 0
 										let step = 1
 										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) >= min + step) {
 											#uid#_set_value_nozzleTargetTemperature(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature_id#"] .in_value').value) - step)
 										}
 									})
-									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature_id#', function(_options) {
 										#uid#_set_value_nozzleTargetTemperature(_options.display_value)
 										document.querySelector('.cmd[data-cmd_id="#nozzleTemperature_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
-							<div style="padding: 5px;" class="cmd cmd-widget is3ddoubleprint" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature1_id#" data-cmd_uid="#nozzleTargetTemperature1_uid#" data-version="dashboard" data-eqlogic_id="678">
-								<div class="title ">
-									<div class="cmdName">{{Temperature cible de la buse 1}}</div>
-								</div>
-								<div class="content-sm ">
-									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
+							<div style="padding: 5px;" class="cmd cmd-widget is3ddoubleprint" data-type="action"
+								data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature1_id#"
+								data-cmd_uid="#nozzleTargetTemperature1_uid#" data-version="dashboard"
+								data-eqlogic_id="678">
+								<div class="is3dprintpauseoridle">
+									<div class="title ">
+										<div class="cmdName">{{Temperature cible de la buse 1}}</div>
 									</div>
-								</div>
-								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-									<div class="content-sm">
-										<a class="btn btn-sm btn-default action">{{modifier}}</a>
+									<div class="content-sm ">
+										<div class="input-group buttons">
+											<span class="input-group-btn" style="position: relative;">
+												<a class="btn btn-default btn-sm bt_minus roundedLeft"><i
+														class="fas fa-minus"></i></a>
+											</span>
+											<input type="text" class="input-sm in_value form-control" value="">
+											<span class="input-group-btn" style="position: relative;">
+												<a class="btn btn-default btn-sm bt_plus roundedRight"><i
+														class="fa fa-plus"></i></a>
+											</span>
+										</div>
 									</div>
+									<div class="cmd cmd-widget tooltips settempnozzle" data-type="action"
+										data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#"
+										data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard"
+										data-eqlogic_id="#id#">
+										<div class="content-sm">
+											<a class="btn btn-sm btn-default action">{{modifier}}</a>
+										</div>
+									</div>
+									<script>
+										#uid#_set_value_nozzleTargetTemperature1(#nozzleTargetTemperature1#)
+										document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .action').addEventListener('click', function() {
+											#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value))
+											jeedom.cmd.execute({ id: '#settempnozzle1_id#', value: { message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value).toFixed(0) } });
+										})
+										document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .bt_plus').addEventListener('click', function() {
+											let max = 300
+											let step = 1
+											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) <= max - step) {
+												#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) + step)
+											}
+										})
+										document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .bt_minus').addEventListener('click', function() {
+											let min = 0
+											let step = 1
+											if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) >= min + step) {
+												#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) - step)
+											}
+										})
+										jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature1_id#', function(_options) {
+											#uid#_set_value_nozzleTargetTemperature1(_options.display_value)
+											document.querySelector('.cmd[data-cmd_id="#nozzleTemperature1_id#"] .state3').innerHTML = _options.display_value;
+										});
+									</script>
 								</div>
-								<script>
-									#uid#_set_value_nozzleTargetTemperature1(#nozzleTargetTemperature1#)
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .action').addEventListener('click', function () {
-										#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value))
-										jeedom.cmd.execute({id: '#settempnozzle1_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value).toFixed(0)}});
-									})
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .bt_plus').addEventListener('click', function () {
-										let max = 300
-										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) <= max - step ) {
-											#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) + step)
-										}
-									})
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .bt_minus').addEventListener('click', function () {
-										let min = 0
-										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) >= min + step) {
-											#uid#_set_value_nozzleTargetTemperature1(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature1_id#"] .in_value').value) - step)
-										}
-									})
-									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature1_id#',function(_options) {
-										#uid#_set_value_nozzleTargetTemperature1(_options.display_value)
-										document.querySelector('.cmd[data-cmd_id="#nozzleTemperature1_id#"] .state3').innerHTML = _options.display_value;
-									});
-								</script>
 							</div>
-							<div style="padding: 5px;" class="cmd cmd-widget is3ddoubleprint" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature2_id#" data-cmd_uid="#nozzleTargetTemperature2_uid#" data-version="dashboard" data-eqlogic_id="678">
+							<div style="padding: 5px;" class="cmd cmd-widget is3ddoubleprint" data-type="action"
+								data-subtype="slider" data-template="button" data-cmd_id="#nozzleTargetTemperature2_id#"
+								data-cmd_uid="#nozzleTargetTemperature2_uid#" data-version="dashboard"
+								data-eqlogic_id="678">
+								<div class="is3dprintpauseoridle"></div>
 								<div class="title ">
 									<div class="cmdName">{{Temperature cible de la buse 2}}</div>
 								</div>
 								<div class="content-sm ">
 									<div class="input-group buttons">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_minus roundedLeft"><i class="fas fa-minus"></i></a>
-									</span>
-									<input type="text" class="input-sm in_value form-control" value="">
-									<span class="input-group-btn" style="position: relative;">
-										<a class="btn btn-default btn-sm bt_plus roundedRight"><i class="fa fa-plus"></i></a>
-									</span>
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_minus roundedLeft"><i
+													class="fas fa-minus"></i></a>
+										</span>
+										<input type="text" class="input-sm in_value form-control" value="">
+										<span class="input-group-btn" style="position: relative;">
+											<a class="btn btn-default btn-sm bt_plus roundedRight"><i
+													class="fa fa-plus"></i></a>
+										</span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#" data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips settempnozzle" data-type="action"
+									data-subtype="other" data-template="default" data-cmd_id="#settempnozzle_id#"
+									data-cmd_uid="cmd#settempnozzle_uid#" data-version="dashboard"
+									data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{modifier}}</a>
 									</div>
 								</div>
 								<script>
 									#uid#_set_value_nozzleTargetTemperature2(#nozzleTargetTemperature2#)
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .action').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .action').addEventListener('click', function() {
 										#uid#_set_value_nozzleTargetTemperature2(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value))
-										jeedom.cmd.execute({id: '#settempnozzle2_id#', value: {message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value).toFixed(0)}});
+										jeedom.cmd.execute({ id: '#settempnozzle2_id#', value: { message: parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value).toFixed(0) } });
 									})
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .bt_plus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .bt_plus').addEventListener('click', function() {
 										let max = 300
 										let step = 1
-										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) <= max - step ) {
+										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) <= max - step) {
 											#uid#_set_value_nozzleTargetTemperature2(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) + step)
 										}
 									})
-									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .bt_minus').addEventListener('click', function () {
+									document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .bt_minus').addEventListener('click', function() {
 										let min = 0
 										let step = 1
 										if (parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) >= min + step) {
 											#uid#_set_value_nozzleTargetTemperature2(parseFloat(document.querySelector('.cmd[data-cmd_id="#nozzleTargetTemperature2_id#"] .in_value').value) - step)
 										}
 									})
-									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature2_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#nozzleTargetTemperature2_id#', function(_options) {
 										#uid#_set_value_nozzleTargetTemperature2(_options.display_value)
 										document.querySelector('.cmd[data-cmd_id="#nozzleTemperature2_id#"] .state3').innerHTML = _options.display_value;
 									});
 								</script>
 							</div>
-							<div class="is3dprint">
-								<div class="is3dprintpauseoridle"><!--visible si print idle ou pause -->
-									<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-										<div class="content-sm">
-											<a class="btn btn-sm btn-default action">{{charger le filament}}</a>
-										</div>
+						</div>
+						<div class="is3dprint">
+							<div class="is3dprintpauseoridle"><!--visible si print idle ou pause -->
+								<div class="cmd cmd-widget tooltips reload" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#reload_id#" data-cmd_uid="cmd#reload_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">{{charger le filament}}</a>
 									</div>
-									<div class="cmd cmd-widget tooltips unload" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unload_id#" data-cmd_uid="cmd#unload_uid#" data-version="dashboard" data-eqlogic_id="#id#">
-										<div class="content-sm">
-											<a class="btn btn-sm btn-default action">{{décharger le filament}}</a>
-										</div>
+								</div>
+								<div class="cmd cmd-widget tooltips unload" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#unload_id#" data-cmd_uid="cmd#unload_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="content-sm">
+										<a class="btn btn-sm btn-default action">{{décharger le filament}}</a>
 									</div>
 								</div>
 							</div>
 							<script>
-								document.querySelector('.cmd[data-cmd_id="#reload_id#"] .action').addEventListener('click', function () {
-									jeedom.cmd.execute({id: '#reload_id#'})
+								document.querySelector('.cmd[data-cmd_id="#reload_id#"] .action').addEventListener('click', function() {
+									jeedom.cmd.execute({ id: '#reload_id#' })
 								})
-								document.querySelector('.cmd[data-cmd_id="#unload_id#"] .action').addEventListener('click', function () {
-									jeedom.cmd.execute({id: '#unload_id#'})
+								document.querySelector('.cmd[data-cmd_id="#unload_id#"] .action').addEventListener('click', function() {
+									jeedom.cmd.execute({ id: '#unload_id#' })
 								})
 							</script>
-							<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric" data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#" data-version="dashboard" data-template="block" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<span class="cmdName">{{Filament absent :}} </span>
-									<strong class="state">#isFilamentOut#</strong>
-								</div>
-								<script>
-									jeedom.cmd.addUpdateFunction('#isFilamentOut_id#',function(_options) {
-										let cmd = document.querySelector('.cmd[data-cmd_id="#isFilamentOut_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-										cmd.querySelector('.state').innerHTML = _options.display_value;
-									});
-								</script>
-							</div>
 						</div>
-						<div class="islaser">
-							<div class="cmd cmd-widget tooltips laserCamera" data-type="info" data-subtype="numeric" data-cmd_id="#laserCamera_id#" data-cmd_uid="cmd#laserCamera_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<span class="cmdName">{{camera du laser :}} </span>
-									<strong class="state">#laserCamera#</strong>
-								</div>
-								<script>
-									jeedom.cmd.addUpdateFunction('#laserCamera_id#',function(_options) {
-										let cmd = document.querySelector('.cmd[data-cmd_id="#laserCamera_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-										cmd.querySelector('.state').innerHTML = _options.display_value;
-									});
-								</script>
+						<div class="cmd cmd-widget tooltips isFilamentOut" data-type="info" data-subtype="numeric"
+							data-cmd_id="#isFilamentOut_id#" data-cmd_uid="cmd#isFilamentOut_uid#"
+							data-version="dashboard" data-template="block" data-eqlogic_id="#id#">
+							<div class="content-sm">
+								<span class="cmdName">{{Filament absent :}} </span>
+								<strong class="state">#isFilamentOut#</strong>
 							</div>
-							<div class="cmd cmd-widget tooltips laserPower" data-type="info" data-subtype="numeric" data-cmd_id="#laserPower_id#" data-cmd_uid="cmd#laserPower_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<span class="cmdName">{{puissance du laser :}} </span>
-									<strong class="state">#laserPower#</strong>
-								</div>
-								<script>
-									jeedom.cmd.addUpdateFunction('#laserPower_id#',function(_options) {
-										let cmd = document.querySelector('.cmd[data-cmd_id="#laserPower_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-										cmd.querySelector('.state').innerHTML = _options.display_value;
-									});
-								</script>
+							<script>
+								jeedom.cmd.addUpdateFunction('#isFilamentOut_id#', function(_options) {
+									let cmd = document.querySelector('.cmd[data-cmd_id="#isFilamentOut_id#"]')
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
+								});
+							</script>
+						</div>
+					</div>
+					<div class="islaser">
+						<div class="cmd cmd-widget tooltips laserCamera" data-type="info" data-subtype="numeric"
+							data-cmd_id="#laserCamera_id#" data-cmd_uid="cmd#laserCamera_uid#" data-version="dashboard"
+							data-template="line" data-eqlogic_id="#id#">
+							<div class="content-sm">
+								<span class="cmdName">{{camera du laser :}} </span>
+								<strong class="state">#laserCamera#</strong>
 							</div>
-							<div class="cmd cmd-widget tooltips laserFocalLength" data-type="info" data-subtype="numeric" data-cmd_id="#laserFocalLength_id#" data-cmd_uid="cmd#laserFocalLength_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<span class="cmdName">{{longueur focal :}} </span>
-									<strong class="state">#laserFocalLength#</strong>
-								</div>
-								<script>
-									jeedom.cmd.addUpdateFunction('#laserFocalLength_id#',function(_options) {
-										let cmd = document.querySelector('.cmd[data-cmd_id="#laserFocalLength_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-										cmd.querySelector('.state').innerHTML = _options.display_value;
-									});
-								</script>
+							<script>
+								jeedom.cmd.addUpdateFunction('#laserCamera_id#', function(_options) {
+									let cmd = document.querySelector('.cmd[data-cmd_id="#laserCamera_id#"]')
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
+								});
+							</script>
+						</div>
+						<div class="cmd cmd-widget tooltips laserPower" data-type="info" data-subtype="numeric"
+							data-cmd_id="#laserPower_id#" data-cmd_uid="cmd#laserPower_uid#" data-version="dashboard"
+							data-template="line" data-eqlogic_id="#id#">
+							<div class="content-sm">
+								<span class="cmdName">{{puissance du laser :}} </span>
+								<strong class="state">#laserPower#</strong>
 							</div>
-							<div class="cmd cmd-widget tooltips laser10WErrorState" data-type="info" data-subtype="numeric" data-cmd_id="#laser10WErrorState_id#" data-cmd_uid="cmd#laser10WErrorState_uid#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
-								<div class="content-sm">
-									<span class="cmdName">{{laser status erreur :}} </span>
-									<strong class="state">#laser10WErrorState#</strong>
-								</div>
-								<script>
-									jeedom.cmd.addUpdateFunction('#laser10WErrorState_id#',function(_options) {
-										let cmd = document.querySelector('.cmd[data-cmd_id="#laser10WErrorState_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
-										cmd.querySelector('.state').innerHTML = _options.display_value;
-									});
-								</script>
+							<script>
+								jeedom.cmd.addUpdateFunction('#laserPower_id#', function(_options) {
+									let cmd = document.querySelector('.cmd[data-cmd_id="#laserPower_id#"]')
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
+								});
+							</script>
+						</div>
+						<div class="cmd cmd-widget tooltips laserFocalLength" data-type="info" data-subtype="numeric"
+							data-cmd_id="#laserFocalLength_id#" data-cmd_uid="cmd#laserFocalLength_uid#"
+							data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+							<div class="content-sm">
+								<span class="cmdName">{{longueur focal :}} </span>
+								<strong class="state">#laserFocalLength#</strong>
 							</div>
+							<script>
+								jeedom.cmd.addUpdateFunction('#laserFocalLength_id#', function(_options) {
+									let cmd = document.querySelector('.cmd[data-cmd_id="#laserFocalLength_id#"]')
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
+								});
+							</script>
+						</div>
+						<div class="cmd cmd-widget tooltips laser10WErrorState" data-type="info" data-subtype="numeric"
+							data-cmd_id="#laser10WErrorState_id#" data-cmd_uid="cmd#laser10WErrorState_uid#"
+							data-version="dashboard" data-template="line" data-eqlogic_id="#id#">
+							<div class="content-sm">
+								<span class="cmdName">{{laser status erreur :}} </span>
+								<strong class="state">#laser10WErrorState#</strong>
+							</div>
+							<script>
+								jeedom.cmd.addUpdateFunction('#laser10WErrorState_id#', function(_options) {
+									let cmd = document.querySelector('.cmd[data-cmd_id="#laser10WErrorState_id#"]')
+									cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
+									cmd.querySelector('.state').innerHTML = _options.display_value;
+								});
+							</script>
 						</div>
 					</div>
 				</div>
-				<br/>
+				<br />
 				<div class="isconnected show-block">
 					<div class="menu-caisson iscaissonon"><!--visible si caisson -->
 						<div class="content-xs titre">
@@ -1214,19 +1329,26 @@
 						</div>
 						<div class="contenue">
 							<div>
-								<span   class="cmdName">{{lumière :}} </span>
-								<div class="cmd cmd-widget tooltips led" data-type="info" data-subtype="numeric" data-cmd_id="#led_id#" data-cmd_uid="cmd#led_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #led_collectDate#">
+								<span class="cmdName">{{lumière :}} </span>
+								<div class="cmd cmd-widget tooltips led" data-type="info" data-subtype="numeric"
+									data-cmd_id="#led_id#" data-cmd_uid="cmd#led_uid#" data-version="dashboard"
+									data-template="default" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #led_collectDate#">
 									<div class="content-sm">
 										<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
 										<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips setlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setlight_id#" data-cmd_uid="cmd#setlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips setlight" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#setlight_id#" data-cmd_uid="cmd#setlight_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{allumer}}</a>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips unsetlight" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetlight_id#" data-cmd_uid="cmd#unsetlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips unsetlight" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#unsetlight_id#"
+									data-cmd_uid="cmd#unsetlight_uid#" data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{éteindre}}</a>
 									</div>
@@ -1249,33 +1371,40 @@
 										}
 									}
 									#uid#updatelight_but('#led#');
-									document.querySelector('.cmd[data-cmd_id="#setlight_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#setlight_id#'})
+									document.querySelector('.cmd[data-cmd_id="#setlight_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#setlight_id#' })
 									})
-									document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#unsetlight_id#'})
+									document.querySelector('.cmd[data-cmd_id="#unsetlight_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#unsetlight_id#' })
 									})
-									jeedom.cmd.addUpdateFunction('#led_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#led_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#led_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										#uid#updatelight_but(_options.display_value);
 									});
 								</script>
 							</div>
 							<div>
-								<span   class="cmdName">{{ventilation :}} </span>
-								<div class="cmd cmd-widget tooltips fan" data-type="info" data-subtype="numeric" data-cmd_id="#fan_id#" data-cmd_uid="cmd#fan_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #fan_collectDate#">
+								<span class="cmdName">{{ventilation :}} </span>
+								<div class="cmd cmd-widget tooltips fan" data-type="info" data-subtype="numeric"
+									data-cmd_id="#fan_id#" data-cmd_uid="cmd#fan_uid#" data-version="dashboard"
+									data-template="default" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #fan_collectDate#">
 									<div class="content-sm">
 										<span class="iconoff"><i class="fas fa-times"></i></span>
 										<span class="iconon"><i class="fas fa-fan"></i></span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips setfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setfan_id#" data-cmd_uid="cmd#setfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips setfan" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#setfan_id#" data-cmd_uid="cmd#setfan_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{allumer}}</a>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips unsetfan" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetfan_id#" data-cmd_uid="cmd#unsetfan_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips unsetfan" data-type="action" data-subtype="other"
+									data-template="default" data-cmd_id="#unsetfan_id#" data-cmd_uid="cmd#unsetfan_uid#"
+									data-version="dashboard" data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{éteindre}}</a>
 									</div>
@@ -1298,39 +1427,53 @@
 										}
 									}
 									#uid#updatefan_but('#fan#');
-									document.querySelector('.cmd[data-cmd_id="#setfan_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#setfan_id#'})
+									document.querySelector('.cmd[data-cmd_id="#setfan_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#setfan_id#' })
 									})
-									document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#unsetfan_id#'})
+									document.querySelector('.cmd[data-cmd_id="#unsetfan_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#unsetfan_id#' })
 									})
-									jeedom.cmd.addUpdateFunction('#fan_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#fan_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#fan_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										#uid#updatefan_but(_options.display_value);
 									});
 								</script>
 							</div>
 							<div>
-								<span   class="cmdName">{{pause si caisson ouvert :}} </span>
-								<div class="cmd cmd-widget tooltips stopIfEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#stopIfEnclosureDoorOpen_id#" data-cmd_uid="cmd#stopIfEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #stopIfEnclosureDoorOpen_collectDate#">
+								<span class="cmdName">{{pause si caisson ouvert :}} </span>
+								<div class="cmd cmd-widget tooltips stopIfEnclosureDoorOpen" data-type="info"
+									data-subtype="numeric" data-cmd_id="#stopIfEnclosureDoorOpen_id#"
+									data-cmd_uid="cmd#stopIfEnclosureDoorOpen_uid#" data-version="dashboard"
+									data-template="default" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #stopIfEnclosureDoorOpen_collectDate#">
 									<div class="content-sm">
 										<span class="iconoff"><i class="icon jeedom-lumiere-off"></i></span>
 										<span class="iconon"><i class="icon jeedom-lumiere-on"></i></span>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips setpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setpauseifopen_id#" data-cmd_uid="cmd#setpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips setpauseifopen" data-type="action"
+									data-subtype="other" data-template="default" data-cmd_id="#setpauseifopen_id#"
+									data-cmd_uid="cmd#setpauseifopen_uid#" data-version="dashboard"
+									data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{activer}}</a>
 									</div>
 								</div>
-								<div class="cmd cmd-widget tooltips unsetpauseifopen" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetpauseifopen_id#" data-cmd_uid="cmd#unsetpauseifopen_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+								<div class="cmd cmd-widget tooltips unsetpauseifopen" data-type="action"
+									data-subtype="other" data-template="default" data-cmd_id="#unsetpauseifopen_id#"
+									data-cmd_uid="cmd#unsetpauseifopen_uid#" data-version="dashboard"
+									data-eqlogic_id="#id#">
 									<div class="content-sm">
 										<a class="btn btn-sm btn-default action">{{désactiver}}</a>
 									</div>
 								</div>
-								<span   class="cmdName">{{etat porte caisson :}} </span>
-								<div class="cmd cmd-widget tooltips isEnclosureDoorOpen" data-type="info" data-subtype="numeric" data-cmd_id="#isEnclosureDoorOpen_id#" data-cmd_uid="cmd#isEnclosureDoorOpen_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #isEnclosureDoorOpen_collectDate#">
+								<span class="cmdName">{{etat porte caisson :}} </span>
+								<div class="cmd cmd-widget tooltips isEnclosureDoorOpen" data-type="info"
+									data-subtype="numeric" data-cmd_id="#isEnclosureDoorOpen_id#"
+									data-cmd_uid="cmd#isEnclosureDoorOpen_uid#" data-version="dashboard"
+									data-template="default" data-eqlogic_id="#id#"
+									title="{{Valeur du :}} #isEnclosureDoorOpen_collectDate#">
 									<div class="content-sm">
 										<span class="iconoff"><i class="fas fa-door-closed"></i></span>
 										<span class="iconon"><i class="fas fa-door-open"></i></span>
@@ -1355,15 +1498,15 @@
 										}
 									}
 									#uid#updatsifopen_but('#stopIfEnclosureDoorOpen#');
-									document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#setpauseifopen_id#'})
+									document.querySelector('.cmd[data-cmd_id="#setpauseifopen_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#setpauseifopen_id#' })
 									})
-									document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"] .action').addEventListener('click', function () {
-										jeedom.cmd.execute({id: '#unsetpauseifopen_id#'})
+									document.querySelector('.cmd[data-cmd_id="#unsetpauseifopen_id#"] .action').addEventListener('click', function() {
+										jeedom.cmd.execute({ id: '#unsetpauseifopen_id#' })
 									})
-									jeedom.cmd.addUpdateFunction('#stopIfEnclosureDoorOpen_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#stopIfEnclosureDoorOpen_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#stopIfEnclosureDoorOpen_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										#uid#updatsifopen_but(_options.display_value);
 									});
 								</script>
@@ -1381,9 +1524,9 @@
 										}
 									}
 									#uid#updatsisopen_but('#isEnclosureDoorOpen#');
-									jeedom.cmd.addUpdateFunction('#isEnclosureDoorOpen_id#',function(_options) {
+									jeedom.cmd.addUpdateFunction('#isEnclosureDoorOpen_id#', function(_options) {
 										let cmd = document.querySelector('.cmd[data-cmd_id="#isEnclosureDoorOpen_id#"]')
-										cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+										cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 										#uid#updatsisopen_but(_options.display_value);
 									});
 								</script>
@@ -1391,23 +1534,30 @@
 						</div>
 					</div>
 				</div>
-				<br/>
+				<br />
 				<div class="menu-alim isaliminfo"><!--visible si info alim existe-->
 					<div class="content-xs titre">
 						<strong>{{MENU ALIMENTATION}}</strong>
 					</div>
 					<div class="contenue">
-						<div class="cmd cmd-widget tooltips smalimon" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#onalim_id#" data-cmd_uid="cmd#onalim_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+						<div class="cmd cmd-widget tooltips smalimon" data-type="action" data-subtype="other"
+							data-template="default" data-cmd_id="#onalim_id#" data-cmd_uid="cmd#onalim_uid#"
+							data-version="dashboard" data-eqlogic_id="#id#">
 							<div class="content-sm">
 								<a class="btn btn-sm btn-default action">{{alimenter}}</a>
 							</div>
 						</div>
-						<div class="cmd cmd-widget tooltips smalimoff" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#offalim_id#" data-cmd_uid="cmd#offalim_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+						<div class="cmd cmd-widget tooltips smalimoff" data-type="action" data-subtype="other"
+							data-template="default" data-cmd_id="#offalim_id#" data-cmd_uid="cmd#offalim_uid#"
+							data-version="dashboard" data-eqlogic_id="#id#">
 							<div class="content-sm">
 								<a class="btn btn-sm btn-default action">{{éteindre}}</a>
 							</div>
 						</div>
-						<div class="cmd cmd-widget tooltips smalimstatus" data-type="info" data-subtype="numeric" data-cmd_id="#aliminfo_id#" data-cmd_uid="cmd#aliminfo_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #aliminfo_collectDate#">
+						<div class="cmd cmd-widget tooltips smalimstatus" data-type="info" data-subtype="numeric"
+							data-cmd_id="#aliminfo_id#" data-cmd_uid="cmd#aliminfo_uid#" data-version="dashboard"
+							data-template="default" data-eqlogic_id="#id#"
+							title="{{Valeur du :}} #aliminfo_collectDate#">
 							<div class="content-sm">
 								<span class="iconoff"><i class="fas fa-times"></i></span>
 								<span class="iconon"><i class="icon jeedom-prise"></i></span>
@@ -1415,57 +1565,68 @@
 						</div>
 						<script>
 							#uid#switch_alim('#aliminfo#');
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"] .action').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#onalim_id#'})
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#onalim_id#"] .action').addEventListener('click', function() {
+								jeedom.cmd.execute({ id: '#onalim_id#' })
 							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"] .action').addEventListener('click', function () {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#offalim_id#"] .action').addEventListener('click', function() {
 								if (global_#uid#_printstatus == "IDLE") {
-									jeedom.cmd.execute({id: '#offalim_id#'})
-								} else {
-									jeedomUtils.showAlert({
-										message: "{{impossible d éteindre l alimentation si une impression est en cours}}",
-										level: 'danger'
-									})
-								}
+								jeedom.cmd.execute({ id: '#offalim_id#' })
+							} else {
+								jeedomUtils.showAlert({
+									message: "{{impossible d éteindre l alimentation si une impression est en cours}}",
+									level: 'danger'
+								})
+							}
 							})
-							jeedom.cmd.addUpdateFunction('#aliminfo_id#',function(_options) {
+							jeedom.cmd.addUpdateFunction('#aliminfo_id#', function(_options) {
 								let cmd = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .cmd[data-cmd_id="#aliminfo_id#"]')
-								cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+								cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 								#uid#switch_alim(_options.display_value);
 							});
 						</script>
-						<br/>
+						<br />
 						<div class="isconnected show-block">
 							<div class="isprintrunning show-block">
 								<div class="autoshutdown">
 									<span class="cmdName">{{status commande arrêt auto après impression :}} </span>
-									<div class="cmd cmd-widget tooltips autoshutdown" data-type="info" data-subtype="numeric" data-cmd_id="#autoshutdown_id#" data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#" title="{{Valeur du :}} #autoshutdown_collectDate#">
+									<div class="cmd cmd-widget tooltips autoshutdown" data-type="info"
+										data-subtype="numeric" data-cmd_id="#autoshutdown_id#"
+										data-cmd_uid="cmd#autoshutdown_uid#" data-version="dashboard"
+										data-template="default" data-eqlogic_id="#id#"
+										title="{{Valeur du :}} #autoshutdown_collectDate#">
 										<div class="content-sm">
 											<span class="iconoff"><i class="fas fa-times"></i></span>
 											<span class="iconon"><i class="fas fa-stopwatch"></i></span>
 										</div>
 									</div>
-									<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#" data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="cmd cmd-widget tooltips setautoshutdown" data-type="action"
+										data-subtype="other" data-template="default" data-cmd_id="#setautoshutdown_id#"
+										data-cmd_uid="cmd#setautoshutdown_uid#" data-version="dashboard"
+										data-eqlogic_id="#id#">
 										<div class="content-sm">
 											<a class="btn btn-sm btn-default action">{{activer l arret automatique}}</a>
 										</div>
 									</div>
-									<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action" data-subtype="other" data-template="default" data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#" data-version="dashboard" data-eqlogic_id="#id#">
+									<div class="cmd cmd-widget tooltips unsetautoshutdown" data-type="action"
+										data-subtype="other" data-template="default"
+										data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#"
+										data-version="dashboard" data-eqlogic_id="#id#">
 										<div class="content-sm">
-											<a class="btn btn-sm btn-default action">{{désactiver l arret automatique}}</a>
+											<a class="btn btn-sm btn-default action">{{désactiver l arret
+												automatique}}</a>
 										</div>
 									</div>
 									<script>
 										#uid#switch_shutdown('#autoshutdown#');
-										document.querySelector('.cmd[data-cmd_id="#setautoshutdown_id#"] .action').addEventListener('click', function () {
-											jeedom.cmd.execute({id: '#setautoshutdown_id#'})
+										document.querySelector('.cmd[data-cmd_id="#setautoshutdown_id#"] .action').addEventListener('click', function() {
+											jeedom.cmd.execute({ id: '#setautoshutdown_id#' })
 										})
-										document.querySelector('.cmd[data-cmd_id="#unsetautoshutdown_id#"] .action').addEventListener('click', function () {
-											jeedom.cmd.execute({id: '#unsetautoshutdown_id#'})
+										document.querySelector('.cmd[data-cmd_id="#unsetautoshutdown_id#"] .action').addEventListener('click', function() {
+											jeedom.cmd.execute({ id: '#unsetautoshutdown_id#' })
 										})
-										jeedom.cmd.addUpdateFunction('#autoshutdown_id#',function(_options) {
+										jeedom.cmd.addUpdateFunction('#autoshutdown_id#', function(_options) {
 											let cmd = document.querySelector('.cmd[data-cmd_id="#autoshutdown_id#"]')
-											cmd.setAttribute('title', '{{Valeur du :}} '+_options.collectDate)
+											cmd.setAttribute('title', '{{Valeur du :}} ' + _options.collectDate)
 											#uid#switch_shutdown(_options.display_value);
 										});
 									</script>
@@ -1474,591 +1635,576 @@
 						</div>
 					</div>
 				</div>
-			</div> <!-- Pan_menu -->
-			<div class="Pan_fichier" style="display: none;">
-				<div class="content-xs">
-					<strong>{{LISTE FICHIER}}</strong>
+			</div>
+	</div> <!-- Pan_menu -->
+	<div class="Pan_fichier" style="display: none;">
+		<div class="content-xs">
+			<strong>{{LISTE FICHIER}}</strong>
+		</div>
+		<div class="tooltips cmd cmd-widget filelist" data-type="info" data-subtype="string" data-version="dashboard"
+			data-template="default" data-eqlogic_id="#filelist_id#" style="display: block;">
+			<div
+				style="max-width: #widthfilelist#px; min-width: #widthfilelist#px; max-height: #heightfilelist#px; min-height: #heightfilelist#px; overflow:auto;">
+				<div class="state">
 				</div>
-				<div class="tooltips cmd cmd-widget filelist" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" data-eqlogic_id="#filelist_id#" style="display: block;">
-					<div style="max-width: #widthfilelist#px; min-width: #widthfilelist#px; max-height: #heightfilelist#px; min-height: #heightfilelist#px; overflow:auto;">
-						<div class="state">
-						</div>
-					</div>
-					<script>
-						jeedom.cmd.addUpdateFunction('#filelist_id#',function(_options) {
-							let headtable = ["{{nom}}","{{taille}}","{{date}}","{{outil}}"];
-							let commande = [];
-							#uid#js_snapmaker_printhtmltable(_options.display_value,'#filelist_id#',headtable,commande);
-						});
-						jeedom.cmd.refreshValue([{cmd_id :'#filelist_id#',display_value:"#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#'}]);
-					</script>
-				</div>
-				<div class="tooltips cmd cmd-widget fileselect" style="display: block;">
-					<div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 10px;">
-						<div class="cmd cmd-widget fileselectname">
-							<div class="content-xs">
-								<span class="cmdName">{{nom :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselectimage" style="position: relative;">
-							<div class="content-xs">
-								<span class="cmdName"></span>
-								<img class="state" src="" style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease 0s; transform: scale(1);">
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselectsize">
-							<div class="content-xs">
-								<span class="cmdName">{{taille :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselectdate">
-							<div class="content-xs">
-								<span class="cmdName">{{date d insertion :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselectligne">
-							<div class="content-xs">
-								<span class="cmdName">{{nbr de commandes :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselecttemps">
-							<div class="content-xs">
-								<span class="cmdName">{{temps de travail :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselecttype">
-							<div class="content-xs">
-								<span class="cmdName">{{machine :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselecttool">
-							<div class="content-xs">
-								<span class="cmdName">{{outil :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-						<div class="cmd cmd-widget fileselectrotate">
-							<div class="content-xs">
-								<span class="cmdName">{{axe rotatif :}} </span>
-								<strong class="state"></strong>
-							</div>
-						</div>
-					</div>
+			</div>
+			<script>
+				jeedom.cmd.addUpdateFunction('#filelist_id#', function(_options) {
+					let listIndex = {
+						'name':{'isVisible':true,'showName':'{{nom}}'},
+						'size':{'isVisible':true,'showName':'{{taille}}'},
+						'date':{'isVisible':true,'showName':'{{date}}'},
+						'type':{'isVisible':true,'showName':'{{outil}}'},
+						'lines':{'isVisible':false,'showName':''},
+						'time':{'isVisible':false,'showName':''},
+						'thumbnail':{'isVisible':false,'showName':''},
+						'tool':{'isVisible':false,'showName':''},
+						'rotate':{'isVisible':false,'showName':''}};
+					#uid#js_snapmaker_printhtmltable(_options.display_value, '#filelist_id#', listIndex);
+				});
+				jeedom.cmd.refreshValue([{ cmd_id: '#filelist_id#', display_value: "#filelist#", valueDate: '#filelist_valueDate#', collectDate: '#filelist_collectDate#', alertLevel: '#filelist_alertLevel#' }]);
+			</script>
+		</div>
+		<div class="tooltips cmd cmd-widget fileselect" style="display: block;">
+			<div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 10px;">
+				<div class="cmd cmd-widget fileselectname">
 					<div class="content-xs">
-						<span class="is3dprint is3ddoubleprint">
-							<a class="btn btn-sm btn-default reprise" disabled="true">{{reprise impression}}</a>
-						</span>
-						<a class="btn btn-sm btn-default deletefile" disabled="true">{{supprimer}}</a>
-						<a class="btn btn-sm btn-default start" disabled="true">{{démarrer}}</a>
-						<a class="btn btn-sm btn-default download" download="" disabled="true">{{télécharger}}</a>
-						<a class="btn btn-sm btn-default upsnap" disabled="true">{{télécharger vers la snapmaker}}</a>
-						<br/>
-						<span class="btn btn-sm btn-default btn-file">
-							<i class="fas fa-cloud-upload-alt"></i>{{Ajouter un fichier}}<input id="bt_uploadgcode" type="file" name="file" accept=".gcode, .nc, .cnc">
-						</span>
-						<!-- balise message "fichier en cours d'envoie"-->
-						<span class="msg"></span>
+						<span class="cmdName">{{nom :}} </span>
+						<strong class="state"></strong>
 					</div>
 				</div>
-				<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message" data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
-					<script>
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').addEventListener('click', async function() {
-							// if is disabled
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').getAttribute('disabled') == 'true') {
-								return;
-							}
-							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							domUtils.ajax({
-								type: "POST",
-								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
-								data: { action:'delete', id: '#id#', file: fileName },
-								success: function(response) {
-									jeedom.cmd.execute({id: '#refresh_id#'});
-									#uid#js_snapmaker_selectfichier(-1);
-								},
-								error: function (request, status, error) {
-									handleAjaxError(request, status, error);
-								}
-							});
+				<div class="cmd cmd-widget fileselectimage" style="position: relative;">
+					<div class="content-xs">
+						<span class="cmdName"></span>
+						<img class="state" src=""
+							style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease 0s; transform: scale(1);">
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselectsize">
+					<div class="content-xs">
+						<span class="cmdName">{{taille :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselectdate">
+					<div class="content-xs">
+						<span class="cmdName">{{date d insertion :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselectligne">
+					<div class="content-xs">
+						<span class="cmdName">{{nbr de commandes :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselecttemps">
+					<div class="content-xs">
+						<span class="cmdName">{{temps de travail :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselecttype">
+					<div class="content-xs">
+						<span class="cmdName">{{machine :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselecttool">
+					<div class="content-xs">
+						<span class="cmdName">{{outil :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+				<div class="cmd cmd-widget fileselectrotate">
+					<div class="content-xs">
+						<span class="cmdName">{{axe rotatif :}} </span>
+						<strong class="state"></strong>
+					</div>
+				</div>
+			</div>
+			<div class="content-xs">
+				<span class="is3dprint is3ddoubleprint">
+					<a class="btn btn-sm btn-default reprise" disabled="true">{{reprise impression}}</a>
+				</span>
+				<a class="btn btn-sm btn-default deletefile" disabled="true">{{supprimer}}</a>
+				<a class="btn btn-sm btn-default start" disabled="true">{{démarrer}}</a>
+				<a class="btn btn-sm btn-default download" download="" disabled="true">{{télécharger}}</a>
+				<a class="btn btn-sm btn-default upsnap" disabled="true">{{télécharger vers la snapmaker}}</a>
+				<br />
+				<span class="btn btn-sm btn-default btn-file">
+					<i class="fas fa-cloud-upload-alt"></i>{{Ajouter un fichier}}<input id="bt_uploadgcode" type="file"
+						name="file" accept=".gcode, .nc, .cnc">
+				</span>
+				<!-- balise message "fichier en cours d'envoie"-->
+				<span class="msg"></span>
+			</div>
+		</div>
+		<div class="tooltips cmd cmd-widget newfile" data-type="action" data-subtype="message"
+			data-cmd_id="#sendfile_id#" data-cmd_uid="cmd#sendfile_uid#" data-version="dashboard"
+			data-template="default" data-eqlogic_id="#id#">
+			<script>
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').addEventListener('click', async function() {
+					// if is disabled
+					if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').getAttribute('disabled') == 'true') {
+						return;
+					}
+					let fileName = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+					domUtils.ajax({
+						type: "POST",
+						url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+						data: { action: 'delete', id: '#id#', file: fileName },
+						success: function(response) {
+							#uid#js_snapmaker_selectfichier(-1);
+						},
+						error: function(request, status, error) {
+							handleAjaxError(request, status, error);
+						}
+					});
+					jeedom.cmd.execute({ id: '#refresh_id#' });
+				});
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .reprise').addEventListener('click', async function() {
+					if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .reprise').getAttribute('disabled') == 'true') {
+						return;
+					}
+					let fileName = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+					let line = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"] .state1').textContent;
+					let percent = document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').textContent;
+					let fileis = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttool .state').textContent;
+					domUtils.ajax({
+						type: "POST",
+						url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
+						data: { action: 'reprise', id: '#id#', file: fileName, line: line, percent: percent, fileis: fileis },
+						success: function(response) {
+							#uid#js_snapmaker_selectfichier(-1);
+						},
+						error: function(request, status, error) {
+							handleAjaxError(request, status, error);
+						}
+					});
+					jeedom.cmd.execute({ id: '#refresh_id#' });
+				});
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').addEventListener('click', function() {
+					if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').getAttribute('disabled') == 'true') {
+						return;
+					}
+					let fileName = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+					jeedom.cmd.execute({ id: '#start_id#', value: { message: fileName } });
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours de téléchargement vers la snapmaker</span>';
+				});
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .download').addEventListener('click', function() {
+					if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .download').getAttribute('disabled') == 'true') {
+						return;
+					}
+					let fileName = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+					fetch("plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=download&id=#id#&file=" + fileName, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then(response => response.text())
+						.then(response => {
+							let link = document.createElement("a");
+							link.href = "data:application/octet-stream," + encodeURIComponent(response.split("{\"state\":\"")[0]);
+							link.setAttribute('download', fileName);
+							link.style.display = "none";
+							document.body.appendChild(link);
+							link.click();
+							link.parentNode.removeChild(link);
 						});
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').addEventListener('click', async function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .reprise').getAttribute('disabled') == 'true') {
-								return;
-							}
-							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							let line = document.querySelector('.cmd[data-cmd_id="#currentLine_id#"] .state1').textContent;
-							let percent = document.querySelector('.cmd[data-cmd_id="#progress_id#"] .state1').textContent;
-							let fileis = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselecttool .state').textContent;
-							domUtils.ajax({
-								type: "POST",
-								url: "plugins/snapmaker/core/ajax/snapmaker.ajax.php",
-								data: { action:'reprise', id: '#id#', file: fileName, line: line, percent: percent, fileis: fileis},
-								success: function(response) {
-									jeedom.cmd.execute({id: '#refresh_id#'});
-									#uid#js_snapmaker_selectfichier(-1);
-								},
-								error: function (request, status, error) {
-									handleAjaxError(request, status, error);
-								}
-							});
-						});
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').addEventListener('click', function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').getAttribute('disabled') == 'true') {
-								return;
-							}
-							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							jeedom.cmd.execute({id: '#start_id#', value: {message: fileName}});
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours de téléchargement vers la snapmaker</span>';
-						});
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').addEventListener('click', function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .download').getAttribute('disabled') == 'true') {
-								return;
-							}
-							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							fetch("plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=download&id=#id#&file="+fileName, {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								}
-							})
-							.then(response => response.text())
-							.then(response => {
-								console.log(response);
-								let link = document.createElement("a");
-								link.href = "data:application/octet-stream," + encodeURIComponent(response.split("{\"state\":\"")[0]);
-								link.setAttribute('download', fileName);
-								link.style.display = "none";
-								document.body.appendChild(link);
-								link.click();
-								link.parentNode.removeChild(link);
-							});
-						});
-						document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').addEventListener('click', function() {
-							if (document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').getAttribute('disabled') == 'true') {
-								return;
-							}
-							let fileName = document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .fileselectname .state').textContent;
-							jeedom.cmd.execute({id: '#sendfile_id#', value: {message: fileName}});
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
-							document.querySelector('.eqLogic[data-eqlogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours d\'téléchargement vers la snapmaker}}</span>';
-						});
-						document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').addEventListener('click', function() {
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
-						});
-						jeedom.cmd.addUpdateFunction('#returnstatus_id#',function(_options) {
-							// separe _options.display_value en 2 string via le séparateur " : "
-							let msgreturn#uid# = _options.display_value;
+				});
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').addEventListener('click', function() {
+					if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').getAttribute('disabled') == 'true') {
+						return;
+					}
+					let fileName = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent;
+					jeedom.cmd.execute({ id: '#sendfile_id#', value: { message: fileName } });
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .start').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .upsnap').setAttribute('disabled', true);
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '<span class="label label-warning">fichier en cours d\'téléchargement vers la snapmaker}}</span>';
+				});
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').addEventListener('click', function() {
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
+				});
+				jeedom.cmd.addUpdateFunction('#returnstatus_id#', function(_options) {
+					// separe _options.display_value en 2 string via le séparateur " : "
+					let msgreturn#uid# = _options.display_value;
 							msgreturn#uid# = msgreturn#uid#.split(" : ");
-							// si la 2eme string contient 1
-							if (msgreturn#uid#[1] == "1") {
-								jeedomUtils.showAlert({
-									message: "{{fichier non trouvé}}",
-									level: 'danger'
-								})
-							} else if (msgreturn#uid#[1] == "2") {
-								jeedomUtils.showAlert({
-									message: "{{format de fichier non reconnue}}",
-									level: 'danger'
-								})
-							} else if (msgreturn#uid#[1] == "3") {
-								jeedomUtils.showAlert({
-									message: "{{commande non reconnue}}",
-									level: 'danger'
-								})
-							} else if (msgreturn#uid#[1] == "4") {
-								jeedomUtils.showAlert({
-									message: "{{imprimante non connectée}}",
-									level: 'danger'
-								})
-							} else if (msgreturn#uid#[1] == "409") {
-								// si il y a du contenue dans la balise .eqLogic[data-eqLogic_id="#id#"] .fileselect .msg
-								if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
-									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
-								}
-								jeedomUtils.showAlert({
-									message: "{{erreur de communication avec la snapmaker}}",
-									level: 'danger'
-								})
-							} else if (msgreturn#uid#[1] == "200") {
-								if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
-									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
-									jeedomUtils.showAlert({
-										message: "{{fichier envoyée avec succès}}",
-										level: 'success'
-									})
-								} else {
-									jeedomUtils.showAlert({
-										message: "{{commande :}} " + msgreturn#uid#[0] + " {{envoyée avec succès}}",
-										level: 'success'
-									})
-								}
-							} else {
-								jeedomUtils.showAlert({
-									message: "{{retour de commande inconnue : }}" + _options.display_value,
-									level: 'warning'
-								})
-							}
-						});
+					// si la 2eme string contient 1
+					if (msgreturn#uid#[1] == "1") {
+						jeedomUtils.showAlert({
+							message: "{{fichier non trouvé}}",
+							level: 'danger'
+						})
+					} else if (msgreturn#uid#[1] == "2") {
+						jeedomUtils.showAlert({
+							message: "{{format de fichier non reconnue}}",
+							level: 'danger'
+						})
+					} else if (msgreturn#uid#[1] == "3") {
+						jeedomUtils.showAlert({
+							message: "{{commande non reconnue}}",
+							level: 'danger'
+						})
+					} else if (msgreturn#uid#[1] == "4") {
+						jeedomUtils.showAlert({
+							message: "{{imprimante non connectée}}",
+							level: 'danger'
+						})
+					} else if (msgreturn#uid#[1] == "409") {
+						// si il y a du contenue dans la balise .eqLogic[data-eqLogic_id="#id#"] .fileselect .msg
+						if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
+						}
+						jeedomUtils.showAlert({
+							message: "{{erreur de communication avec la snapmaker}}",
+							level: 'danger'
+						})
+					} else if (msgreturn#uid#[1] == "200") {
+						if (document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').textContent != "") {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .msg').innerHTML = '';
+							jeedomUtils.showAlert({
+								message: "{{fichier envoyée avec succès}}",
+								level: 'success'
+							})
+						} else {
+							jeedomUtils.showAlert({
+								message: "{{commande :}} " + msgreturn#uid#[0] + " {{envoyée avec succès}}",
+								level: 'success'
+							})
+						}
+					} else {
+						jeedomUtils.showAlert({
+							message: "{{retour de commande inconnue : }}" + _options.display_value,
+							level: 'warning'
+						})
+					}
+				});
 
 
-						document.getElementById('bt_uploadgcode').addEventListener('change', function(event) {
-							const files = event.target.files;
-							if (files.length === 0) {
+				document.getElementById('bt_uploadgcode').addEventListener('change', function(event) {
+					const files = event.target.files;
+					if (files.length === 0) {
+						return;
+					}
+					formData = new FormData();
+					formData.append('file', files[0]);
+					fetch("plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#", {
+						method: 'POST',
+						body: formData
+					})
+						.then(response => response.json())
+						.then(data => {
+							if (data.state !== 'ok') {
+								jeedomUtils.showAlert({
+									message: data.result,
+									level: 'danger'
+								});
 								return;
 							}
-							formData = new FormData();
-							formData.append('file', files[0]);
-							fetch("plugins/snapmaker/core/ajax/snapmaker.ajax.php?action=upload&id=#id#", {
-								method: 'POST',
-								body: formData
-							})
-							.then(response => response.json())
-							.then(data => {
-								if (data.state !== 'ok') {
-									jeedomUtils.showAlert({
-										message: data.result,
-										level: 'danger'
-									});
-									return;
-								}
-								jeedom.cmd.execute({id: '#refresh_id#'});
-								jeedomUtils.showAlert({
+							jeedomUtils.showAlert({
 								message: '{{Fichier(s) ajouté(s) avec succès}}',
 								level: 'success'
-								});
-							})
-							.catch(error => {
-								console.error(error);
-								jeedomUtils.showAlert({
+							});
+						})
+						.catch(error => {
+							console.error(error);
+							jeedomUtils.showAlert({
 								message: '{{Une erreur est survenue lors du téléchargement des fichiers}}',
 								level: 'danger'
-								});
 							});
 						});
-						let imageElement#uid# = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state');
-						let isZoomed#uid# = false;
-						imageElement#uid#.addEventListener("click", function() {
-						if (isZoomed#uid#) {
-							imageElement#uid#.style.transform = "scale(1)";
-							isZoomed#uid# = false;
-						} else {
-							imageElement#uid#.style.transform = "scale(2)";
-							isZoomed#uid# = true;
-						}
+					jeedom.cmd.execute({ id: '#refresh_id#' });
+				});
+				let imageElement#uid# = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state');
+				let isZoomed#uid# = false;
+				imageElement#uid#.addEventListener("click", function() {
+					if (isZoomed#uid#) {
+						imageElement#uid#.style.transform = "scale(1)";
+						isZoomed#uid# = false;
+					} else {
+						imageElement#uid#.style.transform = "scale(2)";
+						isZoomed#uid# = true;
+					}
+				});
+			</script>
+		</div>
+	</div> <!-- Pan_fichier -->
+	<div class="Pan_axes" style="display: none;">
+		<div class="content-xs">
+			<strong>{{GESTION DES AXES}}</strong>
+		</div>
+		<div class="tooltips cmd cmd-widget axesarrow" data-type="info" data-subtype="string" data-version="dashboard"
+			data-template="default" style="display: block;">
+			<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px;">
+				<table style="border: none; ">
+					<tr>
+						<td><button class="" hidden><i class=""></i></button></td>
+						<td><button class="ymax"><i class="fa fa-arrow-up fa-5x"></i></button></td>
+						<td><button class="" hidden><i class=""></i></button></td>
+						<td><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
+						<td><button class="inserte1 is3dprint is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button>
+						</td>
+						<td><button class="inserte2 is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
+						<td><button class="axe_horaire isrotateon"><i
+									class="fa fa-undo fa-5x fa-flip-horizontal"></i></button></td>
+						<td rowspan="3" style="width:75px;" class="position-relative">
+							<div class="h-80">
+								<div class="text-center">{{vitesse}}</div>
+								<input type="range" class="vertical-range sliderspeedValue" min="100" max="12000"
+									value="6400" step="100" oninput="#uid#updateRangeValue(this,'sliderspeedtext','')">
+								<div class="text-center sliderspeedtext">6400</div>
+							</div>
+						</td>
+						<td rowspan="3" style="width:75px;" class="position-relative islaser iscnc">
+							<div class="h-80">
+								<div class="text-center">{{puissance}}</div>
+								<input type="range" class="vertical-range sliderpowerValue" min="10" max="50" value="30"
+									oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')"
+									onmouseup="#uid#onRangeRelease(this)">
+								<div class="text-center sliderpowertext">30 %</div>
+								<div class="text-center">
+									<button class="button" onclick="#uid#onRangeRelease(this,'off')">off</button>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: right;"><button class="left"><i
+									class="fa fa-arrow-left fa-5x"></i></button>
+						</td>
+						<td class="text-center">XY</td>
+						<td><button class="right"><i class="fa fa-arrow-right fa-5x"></i></button></td>
+						<td class="text-center">Z</td>
+						<td class="text-center is3dprint is3ddoubleprint show-run-in">E1</td>
+						<td class="text-center is3ddoubleprint show-run-in">E2</td>
+						<td class="text-center isrotateon">O</td>
+
+					</tr>
+					<tr>
+						<td><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
+						<td><button class="ymin"><i class="fa fa-arrow-down fa-5x"></i></button></td>
+						<td><button class="" hidden><i class="fa fa-arrow fa-5x"></i></button></td>
+						<td><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
+						<td><button class="retracte1 is3dprint is3ddoubleprint"><i
+									class="fa fa-minus fa-5x"></i></button>
+						</td>
+						<td><button class="retracte2 is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
+						<td><button class="axe_antihoraire isrotateon"><i class="fa fa-undo fa-5x"></i></button></td>
+					</tr>
+				</table>
+				<div style="display: flex; justify-content: space-around;">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.1" checked>
+						<label class="form-check-label">
+							0.1mm
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.5">
+						<label class="form-check-label">
+							0.5mm
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="1">
+						<label class="form-check-label">
+							1mm
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="10">
+						<label class="form-check-label">
+							10mm
+						</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="50">
+						<label class="form-check-label">
+							50mm
+						</label>
+					</div>
+				</div>
+				<div class="tooltips cmd cmd-widget execcomande" data-type="action" data-subtype="message"
+					data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#" data-version="dashboard"
+					data-template="default" data-eqlogic_id="#id#">
+					<div class="content-lg">
+						<textarea class="form-control input-sm message" rows="1" placeholder="Commande"
+							data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#"></textarea>
+						<a class="btn btn-xs execute">{{envoyer}}</a>
+					</div>
+					<script>
+						document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .execute').addEventListener('click', function() {
+							jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .message').value } });
+							// vide le champ de saisie du message
+							document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .message').value = '';
 						});
+						function #uid#updateRangeValue(input, namedisplay, unit) {
+							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .' + namedisplay).textContent = input.value + unit;
+						}
+						function #uid#onRangeRelease(input, cut = '') {
+							if (global_#uid#_toolhead == "laser") {
+								if (cut != '') {
+									jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "M5" } }); // laser off
+								} else {
+									jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "M3 P" + input.value + " S" + Math.round(input.value * 2.55) } }); // laser on
+								}
+							} else if (global_#uid#_toolhead == "cnc") {
+								if (cut != '') {
+									jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "M5" } }); // laser off
+								} else {
+									jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "M3 P" + input.value } }); // laser on
+								}
+							}
+						}
 					</script>
 				</div>
-			</div>  <!-- Pan_fichier -->
-			<div class="Pan_axes" style="display: none;">
-				<div class="content-xs">
-					<strong>{{GESTION DES AXES}}</strong>
-				</div>
-				<div class="tooltips cmd cmd-widget axesarrow" data-type="info" data-subtype="string" data-version="dashboard" data-template="default" style="display: block;">
+				<div class="iscnc islaser">
 					<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px;">
 						<table style="border: none; ">
 							<tr>
-								<td ><button class="" hidden><i class=""></i></button></td>
-								<td ><button class="ymax"><i class="fa fa-arrow-up fa-5x"></i></button></td>
-								<td ><button class="" hidden><i class="" ></i></button></td>
-								<td ><button class="up"><i class="fa fa-arrow-up fa-5x"></i></button></td>
-								<td ><button class="inserte1 is3dprint is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
-								<td ><button class="inserte2 is3ddoubleprint"><i class="fa fa-plus fa-5x"></i></button></td>
-								<td ><button class="axe_horaire isrotateon"><i class="fa fa-undo fa-5x fa-flip-horizontal"></i></button></td>
-								<td rowspan="3" style="width:75px;" class="position-relative">
-									<div class="h-80">
-										<div class="text-center">{{vitesse}}</div>
-										<input type="range" class="vertical-range sliderspeedValue" min="100" max="12000" value="6400" step="100" oninput="#uid#updateRangeValue(this,'sliderspeedtext','')">
-										<div class="text-center sliderspeedtext">6400</div>
-									</div>
+								<td>set work origin</td>
+								<td><button class="button" onclick="#uid#setworkorigin('home')">home origin</button>
 								</td>
-								<td rowspan="3" style="width:75px;" class="position-relative islaser iscnc">
-									<div class="h-80">
-										<div class="text-center">{{puissance}}</div>
-										<input type="range" class="vertical-range sliderpowerValue" min="10" max="50" value="30" oninput="#uid#updateRangeValue(this,'sliderpowertext',' %')" onmouseup="#uid#onRangeRelease(this)">
-										<div class="text-center sliderpowertext">30 %</div>
-										<div class="text-center">
-											<button class="button" onclick="#uid#onRangeRelease(this,'off')">off</button>
-										</div>
-									</div>
-								</td>
+								<td><button class="button" onclick="#uid#setworkorigin('X')">X origin</button></td>
+								<td><button class="button" onclick="#uid#setworkorigin('Y')">Y origin</button></td>
+								<td><button class="button" onclick="#uid#setworkorigin('Z')">Z origin</button></td>
+								<td class="isrotateon"><button class="button" onclick="#uid#setworkorigin('B')">axe
+										origin</button></td>
 							</tr>
 							<tr>
-								<td style="text-align: right;"><button class="left"><i class="fa fa-arrow-left fa-5x"></i></button></td>
-								<td class="text-center">XY</td>
-								<td ><button class="right"><i class="fa fa-arrow-right fa-5x"></i></button></td>
-								<td class="text-center">Z</td>
-								<td class="text-center is3dprint is3ddoubleprint show-run-in">E1</td>
-								<td class="text-center is3ddoubleprint show-run-in">E2</td>
-								<td class="text-center isrotateon">O</td>
-								
-							</tr>
-							<tr>
-								<td ><button class="home"><i class="fa fa-home fa-4x"></i></button></td>
-								<td ><button class="ymin"><i class="fa fa-arrow-down fa-5x"></i></button></td>
-								<td ><button class="" hidden><i class="fa fa-arrow fa-5x"></i></button></td>
-								<td ><button class="down"><i class="fa fa-arrow-down fa-5x"></i></button></td>
-								<td ><button class="retracte1 is3dprint is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
-								<td ><button class="retracte2 is3ddoubleprint"><i class="fa fa-minus fa-5x"></i></button></td>
-								<td ><button class="axe_antihoraire isrotateon"><i class="fa fa-undo fa-5x"></i></button></td>
+								<td>go to work origin</td>
+								<td><button class="button" onclick="#uid#gotoworkorigin('home')">home origin</button>
+								</td>
+								<td><button class="button" onclick="#uid#gotoworkorigin('X')">X origin</button></td>
+								<td><button class="button" onclick="#uid#gotoworkorigin('Y')">Y origin</button></td>
+								<td><button class="button" onclick="#uid#gotoworkorigin('Z')">Z origin</button></td>
+								<td class="isrotateon"><button class="button" onclick="#uid#gotoworkorigin('B')">axe
+										origin</button></td>
 							</tr>
 						</table>
-						<div style="display: flex; justify-content: space-around;">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.1" checked>
-								<label class="form-check-label">
-									0.1mm
-								</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="0.5">
-								<label class="form-check-label">
-									0.5mm
-								</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="1">
-								<label class="form-check-label">
-									1mm
-								</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="10">
-								<label class="form-check-label">
-									10mm
-								</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="Radiosdistance#id#" value="50">
-								<label class="form-check-label">
-									50mm
-								</label>
-							</div>
-						</div>
-						<div class="tooltips cmd cmd-widget execcomande" data-type="action" data-subtype="message" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#" data-version="dashboard" data-template="default" data-eqlogic_id="#id#">
-							<div class="content-lg">
-								<textarea class="form-control input-sm message" rows="1" placeholder="Commande" data-cmd_id="#execcomande_id#" data-cmd_uid="cmd#execcomande_uid#"></textarea>
-								<a class="btn btn-xs execute">{{envoyer}}</a>
-							</div>
-							<script>
-								document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .execute').addEventListener('click', function() {
-									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .message').value}});
-									// vide le champ de saisie du message
-									document.querySelector('.cmd[data-cmd_id="#execcomande_id#"] .message').value = '';
-								});
-								function #uid#updateRangeValue(input,namedisplay,unit) {
-									document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .' + namedisplay).textContent = input.value + unit;
-								}
-								function #uid#onRangeRelease(input,cut = '') {
-									if (global_#uid#_toolhead == "laser") {
-										if (cut != '') {
-											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M5"}}); // laser off
-										} else {
-											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M3 P" + input.value + " S" + Math.round(input.value * 2.55)}}); // laser on
-										}
-									} else if (global_#uid#_toolhead == "cnc") {
-										if (cut != '') {
-											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M5"}}); // laser off
-										} else {
-											jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "M3 P" + input.value}}); // laser on
-										}
-									}
-								}
-							</script>
-						</div>
-						<div class="iscnc islaser">
-							<div style="max-width: #widthfilelist#px; max-height: #heightfilelist#px;">
-								<table style="border: none; ">
-									<tr>
-										<td>set work origin</td>
-										<td><button class="button" onclick="#uid#setworkorigin('home')">home origin</button></td>
-										<td><button class="button" onclick="#uid#setworkorigin('X')">X origin</button></td>
-										<td><button class="button" onclick="#uid#setworkorigin('Y')">Y origin</button></td>
-										<td><button class="button" onclick="#uid#setworkorigin('Z')">Z origin</button></td>
-										<td class="isrotateon"><button class="button" onclick="#uid#setworkorigin('B')">axe origin</button></td>
-									</tr>
-									<tr>
-										<td>go to work origin</td>
-										<td><button class="button" onclick="#uid#gotoworkorigin('home')">home origin</button></td>
-										<td><button class="button" onclick="#uid#gotoworkorigin('X')">X origin</button></td>
-										<td><button class="button" onclick="#uid#gotoworkorigin('Y')">Y origin</button></td>
-										<td><button class="button" onclick="#uid#gotoworkorigin('Z')">Z origin</button></td>
-										<td class="isrotateon"><button class="button" onclick="#uid#gotoworkorigin('B')">axe origin</button></td>
-									</tr>
-								</table>
-							</div>
-							<script>
-								function #uid#setworkorigin(axis) { // set work origin
-									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G90"}});
-									if (axis == "home") {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G92 X0 Y0 Z0 B0"}});
-									} else {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G92 " + axis + "0"}});
-									}
-								}
-								function #uid#gotoworkorigin(axis) { // go to work origin
-									jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G90"}});
-									if (axis == "home") {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 X0 Y0 Z0 B0 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value}});
-									} else {
-										jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G0 " + axis + "0 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value}});
-									}
-								}
-							</script>
-						</div>
-						<script>
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .home').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G28"}}); // home
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .left').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " X-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .right').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " X+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .ymax').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Y+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .ymin').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Y-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .up').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Z+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .down').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Z-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .inserte1').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T0"}}); // selectionne l'extrudeur 1
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .inserte2').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T1"}}); // selectionne l'extrudeur 2
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .retracte1').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T0"}}); // selectionne l'extrudeur 1
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .retracte2').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "T1"}}); // selectionne l'extrudeur 2
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 T1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .axe_horaire').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " B+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-							document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .axe_antihoraire').addEventListener('click', function () {
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G91"}}); // mode relatif
-								jeedom.cmd.execute({id: '#execcomande_id#', value: {message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " B-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value}}); // deplacement
-							})
-						</script>
 					</div>
+					<script>
+						function #uid#setworkorigin(axis) { // set work origin
+							jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G90" } });
+							if (axis == "home") {
+								jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G92 X0 Y0 Z0 B0" } });
+							} else {
+								jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G92 " + axis + "0" } });
+							}
+						}
+						function #uid#gotoworkorigin(axis) { // go to work origin
+							jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G90" } });
+							if (axis == "home") {
+								jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G0 X0 Y0 Z0 B0 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value } });
+							} else {
+								jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G0 " + axis + "0 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value } });
+							}
+						}
+					</script>
 				</div>
-			</div> <!-- Pan_axes -->
-		</center>
-	</div>
+				<script>
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .home').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G28" } }); // home
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .left').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " X-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .right').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " X+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .ymax').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Y+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .ymin').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Y-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .up').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Z+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .down').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " Z-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .inserte1').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "T0" } }); // selectionne l'extrudeur 1
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .inserte2').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "T1" } }); // selectionne l'extrudeur 2
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .retracte1').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "T0" } }); // selectionne l'extrudeur 1
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .retracte2').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "T1" } }); // selectionne l'extrudeur 2
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 T1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " E-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .axe_horaire').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " B+" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .axe_antihoraire').addEventListener('click', function() {
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G91" } }); // mode relatif
+						jeedom.cmd.execute({ id: '#execcomande_id#', value: { message: "G1 F" + document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .sliderspeedValue').value + " B-" + document.querySelector('input[name=Radiosdistance#id#]:checked').value } }); // deplacement
+					})
+				</script>
+			</div>
+		</div>
+	</div> <!-- Pan_axes -->
+	</center>
 	<div class="table_bottom">
-		<table style="position:absolute; right:0px; bottom:0px; width: 100%; height:;border-radius:#border-radius#;" cellspacing="0" cellpadding="0" border="0">	
+		<table style="position:absolute; right:0px; bottom:0px; width: 100%; height:;border-radius:#border-radius#;"
+			cellspacing="0" cellpadding="0" border="0">
 			<tr style="height: 22px;">
-				<td class="td_bot1" style="width: 18px; text-align: left;">
-					<i class="fas fa-info-circle cursor tooltips infcmd noRefresh" title='Autres infos' style="margin-left: 3px; font-size: 0.9em;" ></i>		
-					<div class="infhtm" style="display: none;"> 
-						<div class="tooltips cmd cmd-widget lastCommunication" data-type="info" data-subtype="string" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="display: block;">
-							<div class="content-xs">
-								<span   class="cmdName">{{dernière communication:}} </span>
-								<strong class="state">#lastCommunication#</strong>
-							</div>
-						</div>
-						<br/>
-						<div class="tooltips cmd cmd-widget numberTryWithoutSuccess" data-type="info" data-subtype="string" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="display: block;">
-							<div class="content-xs">
-								<span   class="cmdName">{{nombre de tentative de reconnexion:}} </span> 
-								<strong class="state">#numberTryWithoutSuccess#</strong>
-							</div>
-						</div>
-					</div>
-				</td>
 				<td class="td_bot2" style="text-align: center;">
 				</td>
 				<td class="td_bot3" style="width: 18px;text-align: right;" nowrap>
-					<i class="fas fa-bars cursor tooltips changecmdmenu noRefresh" title='menu' style="margin-right: 3px;"></i>
-					<i class="fas fa-tools cursor tooltips changecmdfichier noRefresh" title='fichiers' style="margin-right: 3px;"></i>
-					<span class="isconnected"><i class="fas fa-border-none cursor tooltips changecmdaxes noRefresh is3dprintpauseoridle" title='axes' style="margin-right: 3px;"></i></span>
+					<i class="fas fa-bars cursor tooltips changecmdmenu noRefresh" title='menu'
+						style="margin-right: 3px;"></i>
+					<i class="fas fa-tools cursor tooltips changecmdfichier noRefresh" title='fichiers'
+						style="margin-right: 3px;"></i>
+					<span class="isconnected"><i
+							class="fas fa-border-none cursor tooltips changecmdaxes noRefresh is3dprintpauseoridle"
+							title='axes' style="margin-right: 3px;"></i></span>
 				</td>
 			</tr>
 			<script>
-				if ('#numberTryWithoutSuccess#' >= 3) {
-					document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').style.color = 'red';
-				}
-				//**************************************//	
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .infcmd').addEventListener('click', function () {
-					let popover = document.createElement("div");
-					popover.innerHTML = document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infhtm').innerHTML;
-					popover.style.position = "absolute";
-					popover.style.zIndex = "1000";
-					popover.style.backgroundColor = "#474646";
-					popover.style.border = "1px solid #474646";
-					popover.style.borderRadius = "5px";
-					popover.style.maxWidth = "500px";
-					popover.style.maxHeight = "400px";
-					popover.style.overflow = "auto";
-					popover.style.overflowY = "auto";
-					popover.style.background = "#474646";
-					popover.style.display = "inline-block";
-					popover.style.padding = "5px";
-					popover.style.left = 20 + "px";
-					popover.style.top = (-40) + "px";
-					document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').appendChild(popover);
-
-					// fermeture du popover si click en dehors
-					document.addEventListener('click', function(event) {
-						if (!popover.contains(event.target) && !document.querySelector('.eqLogic[data-eqLogic_uid="#uid#"] .infcmd').contains(event.target)) {
-							popover.style.display = "none";
-							document.body.removeEventListener('click', function(event) {});
-						}
-					});
-				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdmenu').addEventListener('click',function () { // menu
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdmenu').addEventListener('click', function() { // menu
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_menu').style.display = 'block';
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').style.display = 'none';
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_axes').style.display = 'none';
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdfichier').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdfichier').addEventListener('click', function() { // fichier
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_menu').style.display = 'none';
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').style.display = 'block';
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_axes').style.display = 'none';
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdaxes').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .changecmdaxes').addEventListener('click', function() { // fichier
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_menu').style.display = 'none';
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_fichier').style.display = 'none';
 					document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .Pan_axes').style.display = 'block';
 				});
-
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .titre').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .titre').addEventListener('click', function() { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-menu .contenue');
 					if (_element.style.display === 'none') {
 						_element.style.display = 'inline';
@@ -2066,7 +2212,7 @@
 						_element.style.display = 'none';
 					}
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .titre').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .titre').addEventListener('click', function() { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-module .contenue');
 					if (_element.style.display === 'none') {
 						_element.style.display = 'inline';
@@ -2074,7 +2220,7 @@
 						_element.style.display = 'none';
 					}
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .titre').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .titre').addEventListener('click', function() { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-outil .contenue');
 					if (_element.style.display === 'none') {
 						_element.style.display = 'inline';
@@ -2082,7 +2228,7 @@
 						_element.style.display = 'none';
 					}
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .titre').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .titre').addEventListener('click', function() { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-caisson .contenue');
 					if (_element.style.display === 'none') {
 						_element.style.display = 'inline';
@@ -2090,7 +2236,7 @@
 						_element.style.display = 'none';
 					}
 				});
-				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .titre').addEventListener('click',function () { // fichier
+				document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .titre').addEventListener('click', function() { // fichier
 					let _element = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .menu-alim .contenue');
 					if (_element.style.display === 'none') {
 						_element.style.display = 'inline';

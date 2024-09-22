@@ -536,8 +536,8 @@ class snapmaker extends eqLogic {
     $replace['#heightmenu#'] = strval(intval($replace['#height#'])-50);
     $replace['#widthmenu#'] = strval(intval($replace['#width#']));
     $widgetType = getTemplate('core', $version, 'box', __CLASS__);
-		return $this->postToHtml($_version, template_replace($replace, $widgetType));
-	}
+		return $this->postToHtml($_version, translate::exec(template_replace($replace, $widgetType), 'plugins/snapmaker/core/template/' . $version . '/box.html'));
+  }
 }
 
 class snapmakerCmd extends cmd {
@@ -620,10 +620,10 @@ class snapmakerCmd extends cmd {
             }
           }
           fclose($filecont);
-          $filelist[] = $file . '-:-' . convert(filesize($filedir)) . '-:-' . date("Y-m-d H:i:s", filemtime($filedir)) . '-:-' . $header_type . '-:-' . $file_total_lines . '-:-' . $estimated_time . '-:-' . $thumbnail . '-:-' . $tool_head . '-:-' . $is_rotate;
+          $filelist[] = array('name' => $file, 'size' => convert(filesize($filedir)), 'date' => date("Y-m-d H:i:s", filemtime($filedir)), 'type' => $header_type, 'lines' => $file_total_lines, 'time' => $estimated_time, 'thumbnail' => $thumbnail, 'tool' => $tool_head, 'rotate' => $is_rotate);
         }
-        $filelist = implode("-!-", $filelist);
-        $eqlogic->checkAndUpdateCmd('filelist', $filelist);
+        // en json texte et retire les <"> pour les remplacer par des <'>
+        $eqlogic->checkAndUpdateCmd('filelist', str_replace('"', "'!!", json_encode($filelist)));
       break;
       case 'connect':
         $eqlogic->sendmessage('connect',1);
