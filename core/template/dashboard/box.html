@@ -56,6 +56,9 @@
 		function #uid#js_snapmaker_printhtmltable(list, nom_tableau, listIndex) {
 			local_table = document.createElement("table");
 			local_thr = document.createElement("thead");
+			local_thr.style.position = "sticky";
+			local_thr.style.top = "0";
+			local_thr.style.zIndex = "1";
 			local_tr = document.createElement("tr");
 			local_tr.setAttribute("style", "white-space: nowrap;");
 			for (const key in listIndex) {
@@ -356,7 +359,7 @@
 			let typemachine = "";
 			let nbrligne = "";
 			let temps_impr = "";
-			let img64 = "";
+			//let img64 = "";
 			let typeoutil = "";
 			let axerotatif = "";
 			_tbody.rows[postion_tableau].classList.add('highlight');
@@ -394,11 +397,11 @@
 			// recupere le temps d'impression du fichier
 			temps_impr = _tbody.rows[postion_tableau].cells[5].textContent;
 			// recupere l'image en base64 du fichier
-			img64 = _tbody.rows[postion_tableau].cells[6].textContent;
+			//img64 = _tbody.rows[postion_tableau].cells[6].textContent;
 			// recupere le temps d'impression du fichier
-			typeoutil = _tbody.rows[postion_tableau].cells[7].textContent;
+			typeoutil = _tbody.rows[postion_tableau].cells[6].textContent;
 			// recupere l'image en base64 du fichier
-			axerotatif = _tbody.rows[postion_tableau].cells[8].textContent;
+			axerotatif = _tbody.rows[postion_tableau].cells[7].textContent;
 
 			// affiche les info du fichier
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectname .state').textContent = nomfichier;
@@ -410,7 +413,7 @@
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselecttool .state').textContent = typeoutil;
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectrotate .state').textContent = axerotatif;
 			// insert l'image en base64 dans le src de l'image
-			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src', img64);
+			//document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state').setAttribute('src', img64);
 			// active les bouton
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .deletefile').removeAttribute('disabled');
 			document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .download').removeAttribute('disabled');
@@ -1612,8 +1615,7 @@
 										data-cmd_id="#unsetautoshutdown_id#" data-cmd_uid="cmd#unsetautoshutdown_uid#"
 										data-version="dashboard" data-eqlogic_id="#id#">
 										<div class="content-sm">
-											<a class="btn btn-sm btn-default action">{{désactiver l arret
-												automatique}}</a>
+											<a class="btn btn-sm btn-default action">{{désactiver l arret automatique}}</a>
 										</div>
 									</div>
 									<script>
@@ -1657,7 +1659,7 @@
 						'type':{'isVisible':true,'showName':'{{outil}}'},
 						'lines':{'isVisible':false,'showName':''},
 						'time':{'isVisible':false,'showName':''},
-						'thumbnail':{'isVisible':false,'showName':''},
+						//'thumbnail':{'isVisible':false,'showName':''},
 						'tool':{'isVisible':false,'showName':''},
 						'rotate':{'isVisible':false,'showName':''}};
 					#uid#js_snapmaker_printhtmltable(_options.display_value, '#filelist_id#', listIndex);
@@ -1673,13 +1675,13 @@
 						<strong class="state"></strong>
 					</div>
 				</div>
-				<div class="cmd cmd-widget fileselectimage" style="position: relative;">
+				<!-- <div class="cmd cmd-widget fileselectimage" style="position: relative;">
 					<div class="content-xs">
 						<span class="cmdName"></span>
 						<img class="state" src=""
 							style="width: 100px; height: 100px; max-width: 100%; transition: transform 0.3s ease 0s; transform: scale(1);">
 					</div>
-				</div>
+				</div> -->
 				<div class="cmd cmd-widget fileselectsize">
 					<div class="content-xs">
 						<span class="cmdName">{{taille :}} </span>
@@ -1921,7 +1923,7 @@
 						});
 					jeedom.cmd.execute({ id: '#refresh_id#' });
 				});
-				let imageElement#uid# = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state');
+				/* let imageElement#uid# = document.querySelector('.eqLogic[data-eqLogic_id="#id#"] .fileselect .fileselectimage .state');
 				let isZoomed#uid# = false;
 				imageElement#uid#.addEventListener("click", function() {
 					if (isZoomed#uid#) {
@@ -1931,7 +1933,7 @@
 						imageElement#uid#.style.transform = "scale(2)";
 						isZoomed#uid# = true;
 					}
-				});
+				}); */
 			</script>
 		</div>
 	</div> <!-- Pan_fichier -->
