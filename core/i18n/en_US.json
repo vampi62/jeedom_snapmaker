@@ -70,6 +70,7 @@
         "démarrer": "get started",
         "désactiver": "disable",
         "désactiver auto-reconnexion": "disable auto-login",
+        "désactiver l arret automatique": "disable automatic stop",
         "envoyer": "send",
         "envoyée avec succès": "sent successfully",
         "erreur de communication avec la snapmaker": "communication error with snapmaker",
